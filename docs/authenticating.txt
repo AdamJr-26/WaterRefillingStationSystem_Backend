@@ -1,0 +1,13 @@
+
+
+https://www.permify.co/post/part-1-authentication-system-with-nodejs
+jwt, passport, mongoose
+
+packages:
+passport
+passport-local
+passport-jwt
+passport-local-mongoose
+jsonwebtoken
+mongoose
+express-session

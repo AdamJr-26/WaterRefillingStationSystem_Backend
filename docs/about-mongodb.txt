@@ -1,0 +1,10 @@
+mongoose-mongodb connection
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoose
+
+
+referenced vs embedded = referenced won because it will 
+omptimize the crud operation of the current system design. 
+https://betterprogramming.pub/embedded-vs-referenced-documents-in-mongodb-how-to-choose-correctly-for-increased-performance-d267769b8671
+
+supporting documents from referenced.
+https://9to5answer.com/mongoose-how-to-insert-a-single-subdocument-not-an-array

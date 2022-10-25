@@ -1,0 +1,8 @@
+register
+
+1. register form
+2. store in database
+3. verify 
+4. create verify page from server and put the id of the user.
+5. create verify collection in database
+6. 
