@@ -1,6 +1,7 @@
 const { stationModel } = require("../../model");
 const jwt = require("jsonwebtoken");
 const jwtConfig = require("../../config/jwt.config");
+
 module.exports = (
   mutation,
   query,
@@ -9,7 +10,8 @@ module.exports = (
   responseUtil,
   constantUtils,
   validationResult,
-  comparePassword
+  comparePassword,
+  generateTokens
 ) => {
   return {
     loginAdmin: async (req, res) => {
@@ -32,17 +34,17 @@ module.exports = (
           400,
           isAdminExist?.error,
           "SOMETHING WENT WRONG",
-          "login-admin"
+          "login_admin"
         );
       }
       // if admin did not exists
       else if (!isAdminExist?.data) {
         responseUtil.generateServerErrorCode(
           res,
-          401,
+          409,
           "Cannot find User",
-          "Accoutn can't found",
-          "login-admin"
+          "Account can't find",
+          "login_admin"
         );
       }
       // else no error or admin exists.
@@ -51,23 +53,40 @@ module.exports = (
           password,
           isAdminExist.data?.admin?.password
         );
+
         if (isPasswordMatched) {
+          // if true, then user is granted.
           // create jwt here
-          responseUtil.generateServerResponse(
-            res,
-            201,
-            "Login Granted",
-            "You have successfully logged in.",
-            "data is confidential",
-            "login-admin"
-          );
+
+          // get token and get back to the user
+          const payload = {
+            gmail: isAdminExist.data?.admin?.gmail,
+            _id: isAdminExist.data?.admin?._id,
+          };
+          // generate refresh token.
+
+          const { accessToken, refreshToken } = await generateTokens(payload);
+          if (accessToken) {
+            responseUtil.generateServerResponse(
+              res,
+              202,
+              "token",
+              "user's token.",
+              {
+                accessToken: "Bearer " + accessToken,
+                refreshToken: refreshToken,
+                success: true,
+              },
+              "login_admin"
+            );
+          }
         } else {
           responseUtil.generateServerErrorCode(
             res,
             401,
             "Unauthorized accessed",
             "Wrong Password",
-            "login-admin"
+            "login_admin"
           );
         }
       }

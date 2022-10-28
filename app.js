@@ -4,7 +4,6 @@ const http = require("http");
 require("dotenv").config();
 const cookieParser =require('cookie-parser')
 const  passport  = require('passport');
-const  {  applyPassportStrategy } = require('./store/passport');
 
 const app = express();
 app.use(
@@ -21,8 +20,10 @@ app.use(cookieParser())
 
 
 // passport, jwt, authenticating middlewares
-// app.use(passport.initialize());
-applyPassportStrategy(passport)
+require('./utils/passport.admin.jwt');
+require('./utils/passport.util');
+app.use(passport.initialize());
+
 
 // router
 app.use(require("./routes/index").router);

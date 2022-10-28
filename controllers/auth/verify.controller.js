@@ -5,6 +5,7 @@ module.exports = (mutation, query, responseUtil) => {
       const isVerified = await query.checkAdminIfNotVerified(id);
 
       //   error
+      console.log(isVerified?.data?.verify)
       if (isVerified?.error) {
         responseUtil.generateServerErrorCode(
           res,
@@ -15,8 +16,7 @@ module.exports = (mutation, query, responseUtil) => {
         );
       }
       //   if already verified
-      else if (isVerified?.data?.verify == false) {
-        console.log(isVerified?.data?.verify)
+      else if (isVerified?.data?.verify) {
           responseUtil.generateServerResponse(
             res,
             200,
