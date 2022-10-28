@@ -11,6 +11,6 @@ const stationsSchema= new mongoose.Schema({
   delivery_personels : [delivery_personel]
 });
 
-stationsSchema.plugin(passportLocalMongoose)
+// stationsSchema.plugin(passportLocalMongoose)
 
 module.exports = stationsSchema ;

@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 require("dotenv").config();
-const passport = require("passport");
-const jwtConfig = require("./config/jwt.config");
+const cookieParser =require('cookie-parser')
+const  passport  = require('passport');
+const  {  applyPassportStrategy } = require('./store/passport');
 
 const app = express();
 app.use(
@@ -15,19 +16,16 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
+
+
+
+// passport, jwt, authenticating middlewares
+// app.use(passport.initialize());
+applyPassportStrategy(passport)
 
 // router
 app.use(require("./routes/index").router);
-
-
-// public host
-app.get("/redirect-verify", (req, res) => {
-  console.log("paramsh hahah", req.query, req.hostname, req.url);
-  res.sendFile(__dirname + "/public/verify.html");
-});
-
-// passport, jwt, authenticating middlewares
-app.use(passport.initialize());
 
 const httpServer = http.createServer(app);
 

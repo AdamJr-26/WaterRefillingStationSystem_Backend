@@ -12,9 +12,9 @@ module.exports = (stationModel) => {
           .findOneAndUpdate(filter, { $set: update }, { returnOriginal: false })
           .select(["admin"])
           .exec();
-        return { verified: admin.admin.verify};
-      } catch (err) {
-        return { verified: false, err };
+        return { data: admin.admin};
+      } catch (error) {
+        return { error };
       }
     },
   };

@@ -2,12 +2,34 @@ const router = require("express").Router();
 
 const authController = require("../controllers/auth/index");
 const apiController = require("../controllers/api/index");
+const responseUtil = require("../utils/server.respones.util");
+const passport = require('passport');
 
-router.post("/register/station",apiController.checkAdminEmail, authController.registerStation);
+router.post(
+  "/register/station",
+  apiController.checkAdminEmail,
+  authController.registerAdmin,
+  responseUtil.registerValidation
+);
 
-router.get("/verify-admin",authController.verifyAdmin)
+// router.get("/text-verify", authenticate.verifyUser, (req, res)=>{
+//   res.status(200).send("user is verified", req.user)
+// })
+// router.post('/login', passport.authenticate('local'), (req, res)=>{
+//   var token = authenticate.getToken({_id: req.user._id});
+//   res.status(200).send({logged_in: true, token, satus:"loggin in successfull"})
+// })
+router.post("/login", responseUtil.loginValidation, authController.loginAdmin);
+
+router.get("/verify-admin", authController.verifyAdmin);
+
+// sample restricted route
+router.get("/restricted",passport.authenticate('jwt', {session: false}), (req, res)=>{
+  console.log(req.body)
+  res.status(200).send('yes I am authorized')
+} )
+
 module.exports = { router };
-
 
 
 // const router = require("express").Router();

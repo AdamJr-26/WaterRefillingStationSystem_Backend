@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const passportLocalMongoose = require('passport-local-mongoose');
 module.exports = new mongoose.Schema({
   wrs_name: { type: String },
   gmail: { type: String },
@@ -21,5 +20,5 @@ module.exports = new mongoose.Schema({
     barangay: { type: String },
     street_building_house_no: { type: String },
   },
-}).plugin(passportLocalMongoose)
+})
 //  validation

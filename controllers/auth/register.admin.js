@@ -2,7 +2,7 @@ require("dotenv").config()
 
 module.exports = (mutation, sendEmail, clientCofing, encryptPassword) => {
   return {
-    registerStation: async (req, res) => {
+    registerAdmin_1: async (req, res) => {
       const {
         wrs_name,
         gmail,
@@ -34,7 +34,7 @@ module.exports = (mutation, sendEmail, clientCofing, encryptPassword) => {
       const id = mutationResponse.register.admin._id.toString();
       const link = `${req.protocol}://${req.hostname}:${clientCofing.port}/redirect-verify?id=${id}`;
     // const link = `http://localhost:${require("../../config/server.config").PORT()}/redirect-verify`;
-      console.log("controllers/register/admin" ,req.body)
+    //   console.log("controllers/register/admin" ,req.body)
       if(mutationResponse.registered){
         await sendEmail(
             gmail,
