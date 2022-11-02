@@ -1,4 +1,4 @@
-// it was replaced by generate.tokens.js. it is now no use.
+
 const jwt = require("jsonwebtoken");
 module.exports = {
   accessToken: (payload) =>

@@ -3,7 +3,6 @@ const router = require("express").Router();
 const authController = require("../controllers/auth/index");
 const apiController = require("../controllers/api/index");
 const validationUtil = require("../utils/validation.util")
-const passport = require('passport');
 
 router.post(
   "/register/station",

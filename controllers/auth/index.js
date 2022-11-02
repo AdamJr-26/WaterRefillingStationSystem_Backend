@@ -7,8 +7,7 @@ const query = require("../../data-access/query/index");
 const { sendEmail } = require("../../utils/email/mailer");
 const clientCofing = require("../../config/client.config");
 const { validationResult } = require("express-validator");
-const generateTokens =require("../../utils/generate.tokens");
-
+const signIn = require("../../utils/jwt.sign");
 // for register.controller
 const responseUtil = require("../../utils/server.responses.util");
 const constantUtils = require("../../utils/constant.util");
@@ -40,6 +39,14 @@ module.exports = {
     constantUtils,
     validationResult,
     comparePassword,
-    generateTokens
+    signIn
+  ),
+  ...require("./logout.controller")(),
+  ...require("./update.controller")(
+    mutation,
+    query,
+    comparePassword,
+    encryptPassword,
+    responseUtil,
   ),
 };

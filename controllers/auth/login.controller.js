@@ -1,6 +1,3 @@
-const { stationModel } = require("../../model");
-const jwt = require("jsonwebtoken");
-const jwtConfig = require("../../config/jwt.config");
 
 module.exports = (
   mutation,
@@ -11,7 +8,7 @@ module.exports = (
   constantUtils,
   validationResult,
   comparePassword,
-  generateTokens
+  signIn
 ) => {
   return {
     loginAdmin: async (req, res) => {
@@ -25,8 +22,8 @@ module.exports = (
           "login-admin"
         );
       }
-      const isAdminExist = await query.isAdminExist({ gmail, password });
-
+      const isAdminExist = await query.isAdminExistAndVerified({ gmail, password });
+      console.log("isAdminExist",isAdminExist)
       // if error when finding admin
       if (isAdminExist?.error) {
         responseUtil.generateServerErrorCode(
@@ -65,20 +62,18 @@ module.exports = (
           };
           // generate refresh token.
 
-          const { accessToken, refreshToken } = await generateTokens(payload);
+          const accessToken = await signIn.accessToken(payload);
           if (accessToken) {
-            responseUtil.generateServerResponse(
-              res,
-              202,
-              "token",
-              "user's token.",
-              {
-                accessToken: "Bearer " + accessToken,
-                refreshToken: refreshToken,
-                success: true,
-              },
-              "login_admin"
-            );
+            // `Bearer ${accessToken}`
+            res.cookie("jwt", accessToken, {
+              httpOnly: true,
+              secure: false, // set to true on product.
+            }).status(200).json({success: true,user: {
+              gmail:isAdminExist.data?.admin?.gmail,
+              firstname: isAdminExist.data?.admin?.firstname,
+              lastname: isAdminExist.data?.admin?.lastname,
+              imageUrl: isAdminExist.data?.admin?.imageUrl,
+            }})
           }
         } else {
           responseUtil.generateServerErrorCode(

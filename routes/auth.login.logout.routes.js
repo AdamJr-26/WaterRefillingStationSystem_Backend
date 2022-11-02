@@ -5,6 +5,9 @@ const validationUtil = require("../utils/validation.util");
 router.post("/login-admin", validationUtil.loginValidation, authController.loginAdmin);
 
 
+const {authenticate} = require("../middlewares/passport.authenticate.middleware")
+
+router.use("/logout-admin",authenticate ,authController.logoutAdmin)
 module.exports = {
     router
 }

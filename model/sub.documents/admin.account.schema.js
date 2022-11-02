@@ -18,7 +18,7 @@ module.exports = new mongoose.Schema({
     province: { type: String },
     city: { type: String },
     barangay: { type: String },
-    street_building_house_no: { type: String },
+    street_building: { type: String },
   },
 })
 //  validation

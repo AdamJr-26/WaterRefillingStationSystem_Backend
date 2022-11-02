@@ -3,7 +3,6 @@ module.exports = (mutation, query, responseUtil) => {
     verifyAdmin: async (req, res) => {
       const { id } = req.query;
       const isVerified = await query.checkAdminIfNotVerified(id);
-
       //   error
       console.log(isVerified?.data?.verify)
       if (isVerified?.error) {
@@ -28,7 +27,6 @@ module.exports = (mutation, query, responseUtil) => {
       } else {
               //  if not verified ye, verify now
         const {data, error} = await mutation.verifyAdmin(id);
-        console.log("data",data, "error", error)
         if(data && !error){
           // verified
           responseUtil.generateServerResponse(
