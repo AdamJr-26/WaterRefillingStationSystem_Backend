@@ -28,7 +28,7 @@ const registerValidation = [
     check("password")
       .exists()
       .withMessage(PASSWORD_IS_EMPTY)
-      .isLength({ min: 8 })
+      .isLength({ min: 6 })
       .withMessage(PASSWORD_LENGTH_MUST_BE_MORE_THAN_8),
   ];
 

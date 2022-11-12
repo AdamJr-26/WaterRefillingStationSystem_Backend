@@ -9,6 +9,10 @@ router.post(
   authController.updateAdminPassword
 );
 
+// forgot password for admin
+router.post("/reset-password/request", authController.sendResetVerifyLink);
+// set new password for admin
+router.post("/reset-password/set-new-password", authController.setNewPassWordAdmin)
 module.exports = {
   router,
 };

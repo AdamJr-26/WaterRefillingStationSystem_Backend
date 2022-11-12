@@ -1,23 +1,25 @@
 const Schema = require("mongoose").Schema;
 
 
-const userToken= Schema({
+const otp = Schema({
     userId: {
         type:Schema.Types.ObjectId,
         require: true,
     },
-    token: {
+    gmail: {
+        type: String,
+        required: true,
+    },
+    token:{
         type: String,
         required: true,
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 30 * 8600, //30 days
+        expires: 500
     },
     
 });
 
-// stationsSchema.plugin(passportLocalMongoose)
-
-module.exports = userToken ;
+module.exports = otp  ;

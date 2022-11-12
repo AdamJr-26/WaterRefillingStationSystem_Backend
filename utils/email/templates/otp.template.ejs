@@ -1,0 +1,38 @@
+<html lang="en">
+<%- include('./partials/head.partials.ejs') %>
+
+    <body style="max-width: 400px;">
+        <div style="display: grid; align-items: start; background-color: rgb(31, 29, 29); padding: 15px;">
+            <h1 style="
+          text-transform: capitalize;
+          font-size: 1.5rem;
+          font-family: 'Inter', sans-serif;
+          margin-bottom: 1.25rem;
+          margin-top: 0;
+          color: white;
+        ">
+                <%= title %>
+            </h1>
+
+            <span style="font-weight: 500; margin-bottom: 0.5rem; font-size: 1.3rem;margin-top: 0;color: white;">
+                Hi <%= firstname %>, </span>
+            <span style="margin-bottom: 1rem;font-size: 1.2rem; margin-top: 0;color: white;">
+                <%= content %>
+            </span>
+            <div style="padding:15px; background-color:black; display: flex; align-items: center; justify-content: center;">
+                <p
+                    style="margin: auto; font-size: 2rem; font-weight: 700; color: rgb(0, 140, 255);text-align: center;">
+                    <%= otp %>
+                </p>
+            </div>
+            <div>
+                <p style="color: white;">From your device use the code to confirm your email.</p>
+                <p style="color: white;">If this wasn't you please ignore this email or contact our customer service
+                    account: 
+                    <a style="color:rgb(0, 140, 255); font-weight: 500;">wrsms_support@gmail.com</a>
+                </p>
+            </div>
+        </div>
+    </body>
+
+</html>

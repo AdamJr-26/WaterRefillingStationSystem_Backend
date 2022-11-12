@@ -4,22 +4,23 @@ const {
 } = require("../../utils/password.util");
 const mutation = require("../../data-access/mutation/index");
 const query = require("../../data-access/query/index");
-const { sendEmail } = require("../../utils/email/mailer");
+const { sendEmail, sendOTP } = require("../../utils/email/mailer");
 const clientCofing = require("../../config/client.config");
 const { validationResult } = require("express-validator");
 const signIn = require("../../utils/jwt.sign");
 // for register.controller
 const responseUtil = require("../../utils/server.responses.util");
 const constantUtils = require("../../utils/constant.util");
+const crypto = require("crypto");
 
 module.exports = {
   ...require("./checking.gmail")(query, responseUtil),
-  ...require("./register.controller")(
-    mutation,
-    sendEmail,
-    clientCofing,
-    encryptPassword
-  ),
+  // ...require("./register.controller")(
+  //   mutation,
+  //   sendEmail,
+  //   clientCofing,
+  //   encryptPassword
+  // ),
   ...require("./verify.controller")(mutation, query, responseUtil),
   ...require("./register.controller")(
     mutation,
@@ -28,7 +29,10 @@ module.exports = {
     responseUtil,
     constantUtils,
     validationResult,
-    encryptPassword
+    encryptPassword,
+    sendOTP,
+    crypto,
+    query,
   ),
   ...require("./login.controller")(
     mutation,
@@ -47,6 +51,30 @@ module.exports = {
     query,
     comparePassword,
     encryptPassword,
+    responseUtil
+  ),
+  ...require("./forgot.password/send.otp")(
+    mutation,
+    query,
+    crypto,
+    clientCofing,
     responseUtil,
+    sendOTP
+  ),
+  ...require("./forgot.password/send.verify.link")(
+    mutation,
+    query,
+    crypto,
+    clientCofing,
+    responseUtil,
+    sendEmail
+  ),
+  ...require("./forgot.password/set.new.password")(
+    mutation,
+    query,
+    responseUtil,
+    encryptPassword,
+    sendOTP,
+    crypto
   ),
 };

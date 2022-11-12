@@ -15,7 +15,7 @@ module.exports = (stationModel) => {
       try {
         const data = await stationModel
           .findOne({ "admin.gmail": gmail, "admin.verify": true })
-          .select(["admin",])
+          .select(["admin"])
           .exec();
         return { data };
       } catch (error) {

@@ -2,21 +2,18 @@ const router = require("express").Router();
 
 const authController = require("../controllers/auth/index");
 const apiController = require("../controllers/api/index");
-const validationUtil = require("../utils/validation.util")
+const validationUtil = require("../utils/validation.util");
 
 router.post(
-  "/register/station",
+  "/register/station", //admin
   apiController.checkAdminEmail,
   authController.registerAdmin,
   validationUtil.registerValidation
 );
 
-
-
-
+router.post("/register/personel", authController.registerPersonel);
 
 module.exports = { router };
-
 
 // const router = require("express").Router();
 // const db_query = require("../data-access/query/index");

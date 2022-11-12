@@ -17,7 +17,7 @@ const createTransporter = async () => {
   const accessToken = await new Promise((resolve, reject) => {
     oauth2Client.getAccessToken((err, token) => {
       if (err) {
-        console.log(err)
+        console.log(err);
         reject("failed to create access Token");
       }
       resolve(token);
@@ -39,10 +39,19 @@ const createTransporter = async () => {
 
 // =======================
 
-const sendEmail = async (receiver, link, subject, title, content, description) => {
+const sendEmail = async (
+  receiver,
+  firstname,
+  link,
+  subject,
+  title,
+  content,
+  description,
+  buttonLabel
+) => {
   ejs.renderFile(
     __dirname + "/templates/verification.template.ejs",
-    { receiver,link, title, content, description },
+    { receiver, firstname, link, title, content, description,buttonLabel },
     async (err, data) => {
       if (err) {
         console.log("error", err);
@@ -64,5 +73,36 @@ const sendEmail = async (receiver, link, subject, title, content, description) =
     }
   );
 };
-
-module.exports = { createTransporter, sendEmail };
+const sendOTP = async (
+{  receiver,
+  firstname,
+  subject,
+  title,
+  content,
+  otp}
+) => {
+  ejs.renderFile(
+    __dirname + "/templates/otp.template.ejs",
+    { receiver, firstname,title, content, otp },
+    async (err, data) => {
+      if (err) {
+        console.log("error", err);
+      } else {
+        var emailOptions = {
+          from: "wrss_devs@gmail.com",
+          to: receiver,
+          subject: subject,
+          html: data,
+        };
+        let emailTransporter = await createTransporter();
+        emailTransporter.sendMail(emailOptions, (err, info) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("Message sent:", info.messageId);
+        });
+      }
+    }
+  );
+};
+module.exports = { createTransporter, sendEmail,sendOTP };

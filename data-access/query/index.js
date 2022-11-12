@@ -1,9 +1,9 @@
-
-const {stationModel} = require("../../model/index")
-module.exports ={
-    ...require("./station.collection.query")(stationModel)
-}
-
+const { stationModel, OTP, Personel } = require("../../model/index");
+module.exports = {
+  ...require("./station.collection.query")(stationModel),
+  ...require("./otp.collection.query")(OTP),
+  ...require("./personel.collection")(Personel),
+};
 
 // checkAdminEmail: async (req, res, next) => {
 //     const { gmail } = req.body;

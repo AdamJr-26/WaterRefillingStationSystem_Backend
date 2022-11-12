@@ -86,6 +86,36 @@ module.exports = (
         }
       }
     },
+    loginPersonel:async(req, res)=>{
+      const {gmail, password} = req.body;
+      console.log(req.body)
+      const {personelData,personel_error } =await checkIfPersonelExistingAndVerified({gmail})
+      // check if the user is existing and verified.
+      // hashd the password compare password from db password.
+      // if matched send cookie.
+      if(personelData?.gmail && personelData?.verified && !personel_error ){
+        const isPasswordMatched = await comparePassword(
+          password,
+          personelData.password
+        );
+        if(isPasswordMatched){
+          const payload = {
+            gmail:personelData?.gmail, 
+            _id: "",
+          }
+          const accessToken = await signIn.accessToken(payload);
+          if(accessToken){
+            // sent to user the cookie
+          }else{
+            // someting went wrong
+          }
+        }else{
+          // password did not matched
+        }
+      }else{
+        // user do not exists, or error
+      }
+    }
   };
 };
 
