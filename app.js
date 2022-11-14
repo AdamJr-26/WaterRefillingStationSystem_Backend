@@ -21,6 +21,7 @@ app.use(cookieParser())
 
 // passport, jwt, authenticating middlewares
 require('./utils/passport.admin.jwt');
+require('./utils/passport.personel.jwt');
 app.use(passport.initialize());
 
 

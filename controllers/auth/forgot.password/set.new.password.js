@@ -68,5 +68,44 @@ module.exports = (mutation, query, responseUtil, encryptPassword) => {
         );
       }
     },
+    setNewPasswordPersonel: async (req, res) => {
+      const { gmail, token, new_password, confirm_new_password } = req.body;
+      console.log(req.body);
+      const { getEmailAndTokenData, getEmailAndTokenError } =
+        await query.getEmailAndToken({ gmail, token });
+      if (getEmailAndTokenData && !getEmailAndTokenError) {
+        const hashed_password = await encryptPassword(new_password, 10);
+        const { personel, error } = await mutation.updatePersonelPassword({
+          gmail,
+          hashed_password,
+        });
+        if (personel && !error) {
+          responseUtil.generateServerResponse(
+            res,
+            200,
+            "Set New Password Successfully",
+            "You just change your password",
+            { success: true },
+            "set_new_password"
+          );
+        } else {
+          responseUtil.generateServerErrorCode(
+            res,
+            400,
+            "Oops",
+            "Session expired",
+            "set_new_password"
+          );
+        }
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Oops",
+          "Session expired",
+          "set_new_password"
+        );
+      }
+    },
   };
 };

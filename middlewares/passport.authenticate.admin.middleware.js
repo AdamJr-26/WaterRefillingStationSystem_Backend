@@ -1,8 +1,8 @@
 const passport = require("passport");
 const responseUtil = require("../utils/server.responses.util");
 
-const authenticate = (req, res, next) => {
-  passport.authenticate("jwt-personel", { session: false }, (err, user, info) => {
+const authenticateAdmin = (req, res, next) => {
+  passport.authenticate("jwt-admin", { session: false }, (err, user, info) => {
     if (err || !user) {
       return responseUtil.generateServerResponse(
         res,
@@ -19,7 +19,7 @@ const authenticate = (req, res, next) => {
 };
 
 module.exports = {
-  authenticate,
+  authenticateAdmin,
 };
 
 /* POST login. */

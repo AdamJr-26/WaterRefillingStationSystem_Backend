@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const passport = require("passport");
+// const passport = require("passport");
 //passport.authenticate('jwt', {session: false})
-const {authenticate} = require("../middlewares/passport.authenticate.middleware")
-router.get("/authorize-me",authenticate)
 
+const {authenticateAdmin} = require("../middlewares/passport.authenticate.admin.middleware")
+router.get("/authorize-me", authenticateAdmin);
 
 module.exports = { router };

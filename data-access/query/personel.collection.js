@@ -20,11 +20,21 @@ module.exports = (Personel) => {
           verified: true,
         };
         const personelData = await Personel.findOne(filter)
-          .select(["gmail", "verified", "password", "_id"])
           .exec();
         return { personelData };
       } catch (personel_error) {
         return { personel_error };
+      }
+    },
+    getProfile: async (payload) => {
+      try {
+        const filter = payload;
+        const data = await Personel.findOne(filter)
+          .select(["-password"])
+          .exec();
+        return { data };
+      } catch (error) {
+        return { error };
       }
     },
   };

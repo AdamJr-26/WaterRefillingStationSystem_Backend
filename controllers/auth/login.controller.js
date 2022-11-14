@@ -1,4 +1,3 @@
-
 module.exports = (
   mutation,
   query,
@@ -22,8 +21,11 @@ module.exports = (
           "login-admin"
         );
       }
-      const isAdminExist = await query.isAdminExistAndVerified({ gmail, password });
-      console.log("isAdminExist",isAdminExist)
+      const isAdminExist = await query.isAdminExistAndVerified({
+        gmail,
+        password,
+      });
+      console.log("isAdminExist", isAdminExist);
       // if error when finding admin
       if (isAdminExist?.error) {
         responseUtil.generateServerErrorCode(
@@ -65,15 +67,21 @@ module.exports = (
           const accessToken = await signIn.accessToken(payload);
           if (accessToken) {
             // `Bearer ${accessToken}`
-            res.cookie("jwt", accessToken, {
-              httpOnly: true,
-              secure: false, // set to true on product.
-            }).status(200).json({success: true,user: {
-              gmail:isAdminExist.data?.admin?.gmail,
-              firstname: isAdminExist.data?.admin?.firstname,
-              lastname: isAdminExist.data?.admin?.lastname,
-              imageUrl: isAdminExist.data?.admin?.imageUrl,
-            }})
+            res
+              .cookie("jwt", accessToken, {
+                httpOnly: true,
+                secure: false, // set to true on product.
+              })
+              .status(200)
+              .json({
+                success: true,
+                user: {
+                  gmail: isAdminExist.data?.admin?.gmail,
+                  firstname: isAdminExist.data?.admin?.firstname,
+                  lastname: isAdminExist.data?.admin?.lastname,
+                  imageUrl: isAdminExist.data?.admin?.imageUrl,
+                },
+              });
           }
         } else {
           responseUtil.generateServerErrorCode(
@@ -86,36 +94,69 @@ module.exports = (
         }
       }
     },
-    loginPersonel:async(req, res)=>{
-      const {gmail, password} = req.body;
-      console.log(req.body)
-      const {personelData,personel_error } =await checkIfPersonelExistingAndVerified({gmail})
+    // ===============================================
+
+    loginPersonel: async (req, res) => {
+      const { gmail, password } = req.body;
+      const { personelData, personel_error } =
+        await query.checkIfPersonelExistingAndVerified({ gmail });
       // check if the user is existing and verified.
-      // hashd the password compare password from db password.
+      // hashed the password compare password from db password.
       // if matched send cookie.
-      if(personelData?.gmail && personelData?.verified && !personel_error ){
+      if (personelData?.gmail && personelData?.verified && !personel_error) {
         const isPasswordMatched = await comparePassword(
           password,
           personelData.password
         );
-        if(isPasswordMatched){
+        if (isPasswordMatched) {
           const payload = {
-            gmail:personelData?.gmail, 
-            _id: "",
-          }
+            gmail: personelData?.gmail,
+            _id: personelData?._id,
+          };
           const accessToken = await signIn.accessToken(payload);
-          if(accessToken){
+          if (accessToken) {
+            delete personelData.password;
+            res
+              .cookie("jwt", accessToken, {
+                httpOnly: false,
+                secure: false, // set to true on production.
+              })
+              .status(200)
+              .json({ success: true, user: personelData, token: accessToken });
             // sent to user the cookie
-          }else{
+          } else {
+            responseUtil.generateServerErrorCode(
+              res,
+              400,
+              "Oopss!",
+              "Something went wrong",
+              "login_personel"
+            );
             // someting went wrong
           }
-        }else{
+        } else {
           // password did not matched
+          console.log("error password did not matched");
+          responseUtil.generateServerErrorCode(
+            res,
+            400,
+            "Wrong Email or password",
+            "Wrong Email or password",
+            "login_personel"
+          );
         }
-      }else{
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Wrong Email or password",
+          "Wrong Email or password",
+          "login_personel"
+        );
+        console.log("error user do not exists, or error");
         // user do not exists, or error
       }
-    }
+    },
   };
 };
 

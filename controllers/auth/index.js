@@ -61,6 +61,10 @@ module.exports = {
     responseUtil,
     sendOTP
   ),
+  ...require("./forgot.password/verify.otp")(
+    query,
+    responseUtil,
+  ),
   ...require("./forgot.password/send.verify.link")(
     mutation,
     query,
