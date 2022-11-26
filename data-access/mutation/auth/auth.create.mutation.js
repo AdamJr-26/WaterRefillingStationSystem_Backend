@@ -3,12 +3,6 @@ module.exports = (OTP) => {
     createOtp: async (data) => {
       const { gmail, token, userId } = data;
       try {
-        // await OTP.createIndexes (
-        //   { createdAt: 1},
-        //   {
-        //     expireAfterSeconds: 500,
-        //   }
-        // );
         await OTP.create({
           userId,
           gmail,

@@ -48,9 +48,10 @@ module.exports = (
       }
       // else no error or admin exists.
       else {
+        console.log("isAdminExist", isAdminExist);
         const isPasswordMatched = await comparePassword(
           password,
-          isAdminExist.data?.admin?.password
+          isAdminExist.data?.password
         );
 
         if (isPasswordMatched) {
@@ -59,8 +60,9 @@ module.exports = (
 
           // get token and get back to the user
           const payload = {
-            gmail: isAdminExist.data?.admin?.gmail,
-            _id: isAdminExist.data?.admin?._id,
+            gmail: isAdminExist?.data?.gmail,
+            _id: isAdminExist?.data?._id,
+            role: isAdminExist?.data?.role,
           };
           // generate refresh token.
 
@@ -76,10 +78,11 @@ module.exports = (
               .json({
                 success: true,
                 user: {
-                  gmail: isAdminExist.data?.admin?.gmail,
-                  firstname: isAdminExist.data?.admin?.firstname,
-                  lastname: isAdminExist.data?.admin?.lastname,
-                  imageUrl: isAdminExist.data?.admin?.imageUrl,
+                  gmail: isAdminExist.data?.gmail,
+                  firstname: isAdminExist.data?.firstname,
+                  lastname: isAdminExist.data?.lastname,
+                  imageUrl: isAdminExist.data?.imageUrl,
+                  docID: isAdminExist.data?._id,
                 },
               });
           }
@@ -112,6 +115,8 @@ module.exports = (
           const payload = {
             gmail: personelData?.gmail,
             _id: personelData?._id,
+            role: personelData?.role,
+            admin: personelData?.admin,
           };
           const accessToken = await signIn.accessToken(payload);
           if (accessToken) {

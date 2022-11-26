@@ -11,3 +11,6 @@ passport-local-mongoose
 jsonwebtoken
 mongoose
 express-session
+
+issue:
+I used "user" cookie from react-cookie to use as id of a user to have access to database.

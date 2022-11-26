@@ -1,18 +1,17 @@
-module.exports = (stationModel, Personel) => {
+module.exports = (Admin, Personel) => {
   return {
     updateAdminPassword: async (payload) => {
       try {
         const filter = {
-          "admin.gmail": payload.gmail,
+          "gmail": payload.gmail,
         };
         const update = {
-          "admin.password": payload.hashed_password,
+          "password": payload.hashed_password,
         };
-        const admin = await stationModel
+        const admin = await Admin
           .findOneAndUpdate(filter, { $set: update }, { returnOriginal: false })
-          .select(["admin"])
           .exec();
-        return { data: admin.admin };
+        return { data: admin };
       } catch (error) {
         return { error };
       }

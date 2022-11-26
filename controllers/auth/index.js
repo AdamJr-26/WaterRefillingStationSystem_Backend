@@ -15,12 +15,7 @@ const crypto = require("crypto");
 
 module.exports = {
   ...require("./checking.gmail")(query, responseUtil),
-  // ...require("./register.controller")(
-  //   mutation,
-  //   sendEmail,
-  //   clientCofing,
-  //   encryptPassword
-  // ),
+  ...require("./authorize.controller")(responseUtil),
   ...require("./verify.controller")(mutation, query, responseUtil),
   ...require("./register.controller")(
     mutation,

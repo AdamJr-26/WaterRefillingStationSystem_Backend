@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-module.exports = new mongoose.Schema({
+const admin = new mongoose.Schema({
+  role: { type: String, default: "Admin" },
   wrs_name: { type: String },
   gmail: { type: String },
   contact_number: { type: String },
@@ -8,17 +9,18 @@ module.exports = new mongoose.Schema({
   gender: { type: String },
   age: { type: String },
   password: { type: String },
-  verify: {type:Boolean, default: false},
-  geolocation: {
-    lat:{type: String},
-    lng:{type: String},
-  },
-  address: {
+  verify: { type: Boolean, default: false },
+  address:{
     region: { type: String },
     province: { type: String },
     city: { type: String },
     barangay: { type: String },
     street_building: { type: String },
   },
-})
-//  validation
+  geolocation: {
+    lat: { type: String },
+    lng: { type: String },
+  },
+});
+admin.set("timestamps", true)
+module.exports = admin;

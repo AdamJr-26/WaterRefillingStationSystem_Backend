@@ -1,18 +1,18 @@
-module.exports = (stationModel, Personel) => {
+module.exports = (Admin, Personel) => {
   return {
     verifyAdmin: async (id) => {
       try {
         const filter = {
-          "admin._id": id,
+          "_id": id,
         };
         const update = {
-          "admin.verify": true,
+          "verify": true,
         };
-        const admin = await stationModel
+        const admin = await Admin
           .findOneAndUpdate(filter, { $set: update }, { returnOriginal: false })
-          .select(["admin"])
+          .select(["gmail"])
           .exec();
-        return { data: admin.admin };
+        return { data: admin };
       } catch (error) {
         return { error };
       }

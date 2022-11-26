@@ -48,7 +48,7 @@ module.exports = (
         console.log(req.body);
         const isPasswordMatched = await comparePassword(
           current_password,
-          data?.admin?.password
+          data?.password
         );
         if (isPasswordMatched) {
           console.log("updating user......");

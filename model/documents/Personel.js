@@ -1,7 +1,7 @@
-const Schema = require("mongoose").Schema;
+const mongoose = require("mongoose");
 
-module.exports = Schema({
-  wrs_id: { type: String },
+module.exports = mongoose.Schema({
+  admin: {type:mongoose.Types.ObjectId, ref: "admin"},
   gmail: { type: String, require: true },
   nickname: { type: String },
   firstname: { type: String },
@@ -14,4 +14,5 @@ module.exports = Schema({
   password: { type: String },
   agreedToPrivacyAndPolicy: { type: Boolean },
   verified: { type: Boolean, default: false },
-});
+  role: {type: String,default: "Personel"}
+}).set("timestamps", true)

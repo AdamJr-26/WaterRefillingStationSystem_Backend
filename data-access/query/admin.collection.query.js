@@ -1,21 +1,20 @@
-module.exports = (stationModel) => {
+module.exports = (Admin) => {
   return {
     checkAdminIfNotVerified: async (id) => {
       try {
-        const admin = await stationModel
-          .findOne({ "admin._id": id, "admin.verified": true })
-          .select(["admin"])
+        const admin = await Admin
+          .findOne({ _id: id, verified: true })
+          .select(["gmail", "verify"])
           .exec();
-        return { data: admin.admin };
+        return { data: admin };
       } catch (error) {
         return { error };
       }
     },
     isAdminExistAndVerified: async ({ gmail, password }) => {
       try {
-        const data = await stationModel
-          .findOne({ "admin.gmail": gmail, "admin.verify": true })
-          .select(["admin"])
+        const data = await Admin
+          .findOne({ "gmail": gmail, "verify": true })
           .exec();
         return { data };
       } catch (error) {
@@ -24,9 +23,9 @@ module.exports = (stationModel) => {
     },
     getAdminGmailIfExisting: async (gmail) => {
       try {
-        const email = await stationModel
-          .findOne({ "admin.gmail": gmail })
-          .select(["admin.gmail"])
+        const email = await Admin
+          .findOne({ "gmail": gmail })
+          .select(["gmail"])
           .exec();
 
         return { email };
@@ -37,7 +36,7 @@ module.exports = (stationModel) => {
     },
     getStationByID: async (id) => {
       try {
-        const station = await stationModel
+        const station = await Admin
           .findOne({ "stations.admin.station_id": id })
           .exec();
 

@@ -1,8 +1,18 @@
-const { stationModel, OTP, Personel } = require("../../model/index");
+const {
+  Admin,
+  OTP,
+  Personel,
+  Address,
+  Inven,
+  Gallon,
+  Vehicle,
+} = require("../../model/index");
 module.exports = {
-  ...require("./station.collection.query")(stationModel),
-  ...require("./otp.collection.query")(OTP),
-  ...require("./personel.collection")(Personel),
+  ...require("./admin.collection.query")(Admin),
+  ...require("./inventory.query")(Gallon, Vehicle),
+  ...require("./otp.query")(OTP),
+  ...require("./personel.query")(Personel),
+  ...require("./address.collection.query")(Address),
 };
 
 // checkAdminEmail: async (req, res, next) => {

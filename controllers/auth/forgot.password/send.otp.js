@@ -30,6 +30,7 @@ module.exports = (
         const {personelData, personelError} = await query.checkIfPersonelExistingAndVerified({
           gmail,
         });
+        console.log("personelData",personelData)
         if (personelError) {
           responseUtil.generateServerErrorCode(
             res,
