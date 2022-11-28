@@ -24,5 +24,6 @@ module.exports = (OTP) => {
         return { getEmailAndTokenError };
       }
     },
+
   };
 };

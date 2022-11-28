@@ -139,7 +139,11 @@ module.exports = (query, mutation, responseUtil, uploadImage) => {
 
     // get gallons
     getGallons: async (req, res) => {
-      const adminId = req.user?._id.toString();
+      const adminId =
+        req.user?.role === "Admin"
+          ? req.user?._id?.toString()
+          : req.user?.admin?.toString();
+
       const { data, error } = await query.getGallons({
         adminId,
       });

@@ -15,7 +15,11 @@ router.use("/api", require("./restricted.routes/restricted.routes.sample").route
 // inventory
 router.use("/api", require("./api/api.inventory.routes").router)
 
+// employee
+router.use("/api", require("./api/api.employee.routes").router)
 
+// personel
+router.use("/api", require("./api/api.personel.routes").router)
 module.exports = {
     router
 }

@@ -1,4 +1,4 @@
-const { Admin, Gallon,OTP, Personel, Vehicle } = require("../../model/index");
+const { Admin, Gallon, OTP, Personel, Vehicle } = require("../../model/index");
 const db = require("../../db/conn");
 module.exports = {
   ...require("./auth/auth.register.mutation")(Admin, Personel),
@@ -6,5 +6,8 @@ module.exports = {
   ...require("./auth/auth.update.mutation")(Admin, Personel),
   ...require("./auth/auth.create.mutation")(OTP),
   ...require("./auth/auth.delete.mutation")(OTP),
-  ...require("./admin/inventory.mutation")(Gallon, Vehicle),
+  ...require("./gallon.vehicle/inventory.mutation")(Gallon, Vehicle),
+  ...require("./otp/admin.create.applyid.mutation")(OTP),
+  ...require("./otp/personel.get.applyid.mutation")(OTP),
+  ...require("./personel/update.personel.info.mutation")(Personel)
 };

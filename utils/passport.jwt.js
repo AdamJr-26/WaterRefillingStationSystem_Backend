@@ -11,7 +11,7 @@ const cookieExtractor = (req) => {
   if (req && req.cookies) {
     jwt = req.cookies["jwt"];
   }
-
+console.log("req.headers",req.headers)
   return jwt;
 };
 opts.jwtFromRequest = cookieExtractor;
@@ -32,6 +32,7 @@ passport.use(
         return false
       }
     };
+    
     if (roleModal(roles, role)) {
       roleModal(roles, role)
         ?.findOne({ gmail: payload.gmail }, function (err, user) {
@@ -44,8 +45,9 @@ passport.use(
             return done(null, false);
           }
         })
-        .select(["gmail", "_id"]);
+        .select(["gmail", "_id", "admin", "role"]);
     }else{
+      console.log("no role found")
       done(null, false) // no role found.
     }
   })

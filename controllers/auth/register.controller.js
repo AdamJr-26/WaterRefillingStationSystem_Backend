@@ -50,8 +50,9 @@ module.exports = (
       });
       //   receiver, link, subject, title, content, description
       console.log("mutationResponse", mutationResponse);
-      const id = mutationResponse.id.toString();
-      const link = `${req.protocol}://${req.hostname}:${clientCofing.port}/redirect-verify?id=${id}`;
+      const id = mutationResponse?.id?.toString();
+      const referer = req?.headers?.referer
+      const link = `${referer}redirect-verify?id=${id}`;
       if (mutationResponse.success) {
         try {
           await sendEmail(
