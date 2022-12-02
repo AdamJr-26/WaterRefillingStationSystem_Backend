@@ -69,14 +69,13 @@ module.exports = (
           const accessToken = await signIn.accessToken(payload);
           if (accessToken) {
             // `Bearer ${accessToken}`
-            res
-              .cookie("jwt", accessToken, {
-                httpOnly: true,
-                secure: false, // set to true on product.
-              })
-              .status(200)
-              .json({
-                success: true,
+            responseUtil.generateServerResponse(
+              res,
+              201,
+              "Login Admin",
+              "You just logged in.",
+              {
+                token: `Bearer ${accessToken}`,
                 user: {
                   gmail: isAdminExist.data?.gmail,
                   firstname: isAdminExist.data?.firstname,
@@ -84,7 +83,25 @@ module.exports = (
                   imageUrl: isAdminExist.data?.imageUrl,
                   docID: isAdminExist.data?._id,
                 },
-              });
+              },
+              "login_admin"
+            );
+            // res
+            //   .cookie("jwt", accessToken, {
+            //     httpOnly: true,
+            //     secure: false, // set to true on product.
+            //   })
+            //   .status(200)
+            //   .json({
+            //     success: true,
+            //     user: {
+            //       gmail: isAdminExist.data?.gmail,
+            //       firstname: isAdminExist.data?.firstname,
+            //       lastname: isAdminExist.data?.lastname,
+            //       imageUrl: isAdminExist.data?.imageUrl,
+            //       docID: isAdminExist.data?._id,
+            //     },
+            //   });
           }
         } else {
           responseUtil.generateServerErrorCode(
@@ -121,13 +138,32 @@ module.exports = (
           const accessToken = await signIn.accessToken(payload);
           if (accessToken) {
             delete personelData.password;
-            res
-              .cookie("jwt", accessToken, {
-                httpOnly: false,
-                secure: false, // set to true on production.
-              })
-              .status(200)
-              .json({ success: true, user: personelData, token: accessToken });
+            // res
+            //   .cookie("jwt", accessToken, {
+            //     httpOnly: false,
+            //     secure: false, // set to true on production.
+            //   })
+            //   .status(200)
+            //   .json({ success: true, user: personelData, token: accessToken });
+            responseUtil.generateServerResponse(
+              res,
+              201,
+              "Login Admin",
+              "You just logged in.",
+              {
+                token: `Bearer ${accessToken}`,
+                user: personelData,
+                //  {
+                //   personelData,
+                // gmail: isAdminExist.data?.gmail,
+                // firstname: isAdminExist.data?.firstname,
+                // lastname: isAdminExist.data?.lastname,
+                // imageUrl: isAdminExist.data?.imageUrl,
+                // docID: isAdminExist.data?._id,
+                // },
+              },
+              "login_admin"
+            );
             // sent to user the cookie
           } else {
             responseUtil.generateServerErrorCode(

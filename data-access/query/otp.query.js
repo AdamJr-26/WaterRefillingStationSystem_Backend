@@ -4,7 +4,9 @@ module.exports = (OTP) => {
       try {
         const OTPDoc = await OTP.findOne({ gmail: gmail }).exec();
         return { OTPDoc };
+        console.log("OTPDoc",OTPDoc)
       } catch (OTPError) {
+        console.log("OTPError",OTPError)
         return { OTPError };
       }
     },

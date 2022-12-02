@@ -6,13 +6,16 @@ const roles = require("../config/authorize.roles.config");
 
 var opts = {};
 const cookieExtractor = (req) => {
+  console.log("req.headers",req.headers)
   let jwt = null;
-
-  if (req && req.cookies) {
-    jwt = req.cookies["jwt"];
+  if (req && req?.headers?.authorization) {
+    jwt = req?.headers?.authorization.split(" ")[1];
+    return jwt;
   }
-console.log("req.headers",req.headers)
-  return jwt;
+  // if (req && req.cookies) {
+  //   jwt = req.cookies["jwt"];
+  // }
+
 };
 opts.jwtFromRequest = cookieExtractor;
 // ExtractJwt.fromAuthHeaderAsBearerToken();
@@ -28,11 +31,11 @@ passport.use(
         return Admin;
       } else if (foundRole(r) === "Personel") {
         return Personel;
-      }else{
-        return false
+      } else {
+        return false;
       }
     };
-    
+
     if (roleModal(roles, role)) {
       roleModal(roles, role)
         ?.findOne({ gmail: payload.gmail }, function (err, user) {
@@ -46,9 +49,9 @@ passport.use(
           }
         })
         .select(["gmail", "_id", "admin", "role"]);
-    }else{
-      console.log("no role found")
-      done(null, false) // no role found.
+    } else {
+      console.log("no role found");
+      done(null, false); // no role found.
     }
   })
 );

@@ -27,4 +27,5 @@ module.exports = {
     signIn
   ),
   ...require("./admin/personels.controller")(query, responseUtil),
+  ...require("./admin/admin.profile.controller")(query, responseUtil),
 };

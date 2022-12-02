@@ -6,6 +6,6 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 
-router.get("/authorize-me", authenticate, authController.authorizeAdmin);
+router.get("/authorize-me", authenticate, authController.authorizeAdmin); // no use
 
 module.exports = { router };

@@ -45,7 +45,7 @@ module.exports = (
         else if (data && !error) {
           // create random string
           const token = crypto.randomBytes(64).toString("hex");
-          const userId = data.admin._id;
+          const userId = data._id;
 
           //   before storing new to db, server will check the otp collection if that gmail is already existing in that otp collection.
           const { OTPDoc, OTPError } = await query.checkIfGmailIsExistingInOTP(
@@ -69,11 +69,12 @@ module.exports = (
               token,
               userId,
             });
-            const receiver = data?.admin.gmail;
-            const firstname = data.admin.firstname;
-            const userOtp = otp.token;
+            const receiver = data?.gmail;
+            const firstname = data.firstname;
+            const userOtp = otp?.token;
             if (otp && !error) {
-              const link = `${req.protocol}://${req.hostname}:${clientCofing.port}/forgot-password/set-new-password/?id=${userId}&token=${token}`;
+              const referer = req.headers?.referer;
+              const link = `${referer}forgot-password/set-new-password/?id=${userId}&token=${token}`;
               await sendEmail(
                 receiver, //gmail
                 firstname,

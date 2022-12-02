@@ -4,6 +4,8 @@ const {
 } = require("../../middlewares/passport.authenticate.middleware");
 const apiController = require("../../controllers/api");
 
+router.get("/admin/profile", authenticate, apiController.getAdminProfile);
+
 router.get(
   "/delivery-personel/profile",
   authenticate,
