@@ -6,7 +6,6 @@ const roles = require("../config/authorize.roles.config");
 
 var opts = {};
 const cookieExtractor = (req) => {
-  console.log("req.headers",req.headers)
   let jwt = null;
   if (req && req?.headers?.authorization) {
     jwt = req?.headers?.authorization.split(" ")[1];

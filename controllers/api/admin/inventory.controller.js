@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-module.exports = (query, mutation, responseUtil, uploadImage) => {
+module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
   return {
     addGallon: async (req, res) => {
       var { name, liter, price, total } = JSON.parse(req.body.data);
@@ -139,11 +139,7 @@ module.exports = (query, mutation, responseUtil, uploadImage) => {
 
     // get gallons
     getGallons: async (req, res) => {
-      const adminId =
-        req.user?.role === "Admin"
-          ? req.user?._id?.toString()
-          : req.user?.admin?.toString();
-
+      const adminId = getAdminId(req);
       const { data, error } = await query.getGallons({
         adminId,
       });
@@ -167,8 +163,9 @@ module.exports = (query, mutation, responseUtil, uploadImage) => {
       }
     },
     getVehicles: async (req, res) => {
-      const adminId = req.user?._id.toString();
+      const adminId = getAdminId(req);
       const { data, error } = await query.getVehicles({ adminId });
+
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -207,6 +204,29 @@ module.exports = (query, mutation, responseUtil, uploadImage) => {
           400,
           "Error",
           "get gallon failed, please try again",
+          "inventory"
+        );
+      }
+    },
+    getAvailableVehicles: async (req, res) => {
+      const adminId = getAdminId(req);
+      console.log("adminIdadminId",adminId)
+      const { data, error } = await query.getAvailableVehicles({ adminId });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "fetching availble vehicle",
+          data,
+          "inventory"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "get vehicle failed, please try again",
           "inventory"
         );
       }

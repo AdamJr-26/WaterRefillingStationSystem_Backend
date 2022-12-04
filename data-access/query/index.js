@@ -3,9 +3,9 @@ const {
   OTP,
   Personel,
   Address,
-  Inven,
   Gallon,
   Vehicle,
+  Delivery,
 } = require("../../model/index");
 module.exports = {
   ...require("./admin.collection.query")(Admin),
@@ -13,6 +13,7 @@ module.exports = {
   ...require("./otp.query")(OTP),
   ...require("./personel.query")(Personel),
   ...require("./address.collection.query")(Address),
+  ...require("./delivery.query")(Delivery)
 };
 
 // checkAdminEmail: async (req, res, next) => {

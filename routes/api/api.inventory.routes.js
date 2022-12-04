@@ -22,7 +22,8 @@ router.post(
 
 // GET
 router.get("/gallons", authenticate, apiController.getGallons);
-router.get("/vehicles",authenticate,apiController.getVehicles)
+router.get("/vehicles",authenticate,apiController.getVehicles);
+router.get("/vehicles/available", authenticate, apiController.getAvailableVehicles);
 
 router.get("/gallon/:id/:admin", authenticate, apiController.getGallon)
 

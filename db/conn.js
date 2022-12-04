@@ -5,10 +5,12 @@ mongoose.connect(connectionLink, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   // autoIndex: false  set to false if in production to prevent significant performance impact.
+}).catch((error)=>{
+  console.log(`Mongoose are failed to connect ${error}`)
 });
 
 const db = mongoose.connection;
 
-db.on("error", console.error.bind(console, "connection error:"))
+db.on("error", console.error.bind(console, "connection error:"));
 
 module.exports = db;

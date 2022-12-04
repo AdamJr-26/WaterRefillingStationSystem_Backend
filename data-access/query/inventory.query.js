@@ -24,6 +24,18 @@ module.exports = (Gallon, Vehicle) => {
         return { error };
       }
     },
+    getAvailableVehicles: async ({ adminId }) => {
+      try {
+        const filter = {
+          admin: adminId,
+          available: true,
+        };
+        const data = await Vehicle.find(filter).exec();
+        return { data };
+      } catch (error) {
+        return { error };
+      }
+    },
     getVehicles: async ({ adminId }) => {
       try {
         const filter = {

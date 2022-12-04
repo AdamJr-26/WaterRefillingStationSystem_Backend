@@ -4,7 +4,6 @@ const http = require("http");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
-var fileupload = require("express-fileupload");
 const socketFunction = require("./socket/socket");
 const clientConfig = require("./config/client.config");
 

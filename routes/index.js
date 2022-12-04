@@ -20,6 +20,10 @@ router.use("/api", require("./api/api.employee.routes").router)
 
 // personel
 router.use("/api", require("./api/api.personel.routes").router)
+
+// delivery
+router.use("/api", require("./api/api.delivery.routes").router)
+
 module.exports = {
     router
 }

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 module.exports = mongoose
   .Schema({
-    admin: { type: mongoose.Types.ObjectId, ref: "admin" },
+    admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
     gmail: { type: String, require: true },
     nickname: { type: String },
     firstname: { type: String },
