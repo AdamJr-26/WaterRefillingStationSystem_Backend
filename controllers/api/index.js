@@ -44,4 +44,14 @@ module.exports = {
     responseUtil,
     getAdminId
   ),
+  ...require("./general/customer.controller")(
+    query,
+    mutation,
+    responseUtil,
+    uploadImage,
+    getAdminId,
+    transaction
+  ),
+  ...require("./general/gallons.available")(query, getAdminId, responseUtil),
+  ...require("./personel/get.admin.basic.profile")(query, responseUtil)
 };

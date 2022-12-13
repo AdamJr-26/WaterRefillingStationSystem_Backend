@@ -17,6 +17,7 @@ module.exports = mongoose
     verified: { type: Boolean, default: false },
     role: { type: String, default: "Personel" },
     applyId: { type: String },
+    apply_date: { type: Date },
     status: { type: String, default: "available" },
   })
   .set("timestamps", true);

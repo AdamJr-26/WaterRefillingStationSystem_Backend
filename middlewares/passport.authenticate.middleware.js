@@ -9,6 +9,7 @@ const authenticate = (req, res, next) => {
       })
 
     } else {
+      console.log('user',user)
       req.user = user;
       next()
     }

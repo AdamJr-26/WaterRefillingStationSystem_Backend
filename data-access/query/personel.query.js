@@ -6,13 +6,13 @@ module.exports = (Personel) => {
           gmail: payload.gmail,
         };
         const personel = await Personel.findOne(filter)
-          .select(["gmail", "verified"])
           .exec();
         return { personel };
       } catch (personel_error) {
         return { personel_error };
       }
     },
+
     checkIfPersonelExistingAndVerified: async (payload) => {
       try {
         const filter = {
@@ -25,6 +25,7 @@ module.exports = (Personel) => {
         return { personel_error };
       }
     },
+
     getProfile: async (payload) => {
       try {
         const filter = payload;
@@ -36,6 +37,7 @@ module.exports = (Personel) => {
         return { error };
       }
     },
+    
     getPersonelsByAdminId: async (payload) => {
       try {
         const filter = {

@@ -12,7 +12,18 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         vehicle,
         delivery_items: items,
       };
-      //   check if the delivery personel has already delivery;
+
+      // before everything, first, we need to check if all gallons are still available.
+      const ArrayOfId = [];
+      const ArrayOfTotal = [];
+      for (let i = 0; i < items?.length; i++) {
+        if (items[i]?.gallon && items[i]?.total) {
+          ArrayOfId.push(items[i].gallon);
+          ArrayOfTotal.push(items[i].total);
+        }
+      }
+      // it means all gallons are available
+      // now  check if the delivery personel has already delivery;
       const isDeliveryExists = await query.getPersonelDelivery(
         {
           delivery_personel: delivery_personel,
@@ -48,6 +59,34 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
             "delivery"
           );
         }
+      }
+    },
+    getPersonelDelivery: async (req, res) => {
+      const admin = getAdminId(req);
+      const isApproved = true;
+      const delivery_personel = req?.user?._id?.toString();
+      const { data, error } = await query.getPopulatedDeliveriesByPersonel({
+        admin,
+        isApproved,
+        delivery_personel,
+      });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "fetch delivery",
+          data,
+          "delivery"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "fetch delivery Failed",
+          "delivery"
+        );
       }
     },
   };

@@ -70,7 +70,8 @@ module.exports = (mutation, query, responseUtil, encryptPassword) => {
     },
     setNewPasswordPersonel: async (req, res) => {
       const { gmail, token, new_password, confirm_new_password } = req.body;
-      console.log(req.body);
+      console.log("req.body", gmail, token,);
+
       const { getEmailAndTokenData, getEmailAndTokenError } =
         await query.getEmailAndToken({ gmail, token });
       if (getEmailAndTokenData && !getEmailAndTokenError) {

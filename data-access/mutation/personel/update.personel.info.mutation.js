@@ -8,12 +8,14 @@ module.exports = (Personel) => {
         const update = {
           $set: { admin: payload.adminId },
         };
-        const data = await Personel.findOneAndUpdate(filter, update)
-          .select(["-password"])
+        const data = await Personel.findOneAndUpdate(filter, update, {
+          returnOriginal: false,
+        })
+          .select(["gmail admin _id"])
           .exec();
         return { data };
       } catch (error) {
-        console.log("error",error)
+        console.log("errorrr", error);
         return { error };
       }
     },

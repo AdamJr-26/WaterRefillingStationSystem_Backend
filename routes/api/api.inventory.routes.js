@@ -21,7 +21,8 @@ router.post(
 );
 
 // GET
-router.get("/gallons", authenticate, apiController.getGallons);
+router.get("/gallons", authenticate, apiController.getAllGallons);
+router.get("/gallons/availables", authenticate, apiController.getAvailableGallons);
 router.get("/vehicles",authenticate,apiController.getVehicles);
 router.get("/vehicles/available", authenticate, apiController.getAvailableVehicles);
 

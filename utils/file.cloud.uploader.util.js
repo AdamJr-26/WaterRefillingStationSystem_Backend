@@ -14,8 +14,8 @@ const uploadImage = async (desitination, files) => {
       let uploadPromises = [];
       files.forEach((file) => {
         const datauri = parser.format(
-          path.extname(file.originalname).toString(),
-          file.buffer
+          path.extname(file.originalname ? file.originalname : file?.uri).toString(),
+          file.buffer ? file.buffer : file?.buffer // JSON.parse are custom buffer that from body. file.buffer is common in image from req.files.
         );
         uploadPromises.push(
           cloudinary.uploader

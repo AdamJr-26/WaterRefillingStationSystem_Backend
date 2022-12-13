@@ -40,18 +40,18 @@ const createTransporter = async () => {
 // =======================
 
 const sendEmail = async (
-  receiver,
+  {receiver,
   firstname,
   link,
   subject,
   title,
   content,
   description,
-  buttonLabel
+  buttonLabel}
 ) => {
   ejs.renderFile(
     __dirname + "/templates/verification.template.ejs",
-    { receiver, firstname, link, title, content, description,buttonLabel },
+    { receiver, firstname, link, title, content, description, buttonLabel },
     async (err, data) => {
       if (err) {
         console.log("error", err);
@@ -73,17 +73,17 @@ const sendEmail = async (
     }
   );
 };
-const sendOTP = async (
-{  receiver,
+const sendOTP = async ({
+  receiver,
   firstname,
   subject,
   title,
   content,
-  otp}
-) => {
+  otp,
+}) => {
   ejs.renderFile(
     __dirname + "/templates/otp.template.ejs",
-    { receiver, firstname,title, content, otp },
+    { receiver, firstname, title, content, otp },
     async (err, data) => {
       if (err) {
         console.log("error", err);
@@ -105,4 +105,4 @@ const sendOTP = async (
     }
   );
 };
-module.exports = { createTransporter, sendEmail,sendOTP };
+module.exports = { createTransporter, sendEmail, sendOTP };

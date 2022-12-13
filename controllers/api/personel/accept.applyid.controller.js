@@ -8,57 +8,44 @@ module.exports = (query, mutation, responseUtil, signIn) => {
           gmail: user?.gmail,
           token: applyId,
         });
-
+        console.log("otpotpotp", otp);
         if (otp?.getEmailAndTokenData && !otp?.getEmailAndTokenError) {
           const payload = {
             gmail: otp?.getEmailAndTokenData?.gmail,
             adminId: otp?.getEmailAndTokenData?.userId?.toString(), // this is admin id
           };
-          const personel = await mutation.updatePersonelAdminId(payload);
-
-          console.log("personel",personel)
-          if (personel?.data?.admin && !personel?.error) {
-            const tokenPayload = {
-              gmail: personel?.data?.gmail,
-              _id: personel?.data?._id,
-              role: personel?.data?.role,
-              admin: personel?.data?.admin,
-            };
-
-            const accessToken = await signIn.accessToken(tokenPayload);
-            // renew jwt token.
-            if (accessToken) {
-              // if access token has successed.
-              // response new jwt
-              responseUtil.renewJWT(res, 200, accessToken, {
-                success: true,
-                userToken: accessToken,
-              });
-            } else {
-                console.log("error personel/accept.applyid")
-              // something went wrong token cannot be created.
-              responseUtil.generateServerErrorCode(
-                res,
-                400,
-                "Accepting apply ID error",
-                "Something went wrong, please try again.",
-                "personel_apply_adminId"
-              );
-            }
+          const { data, error } = await mutation.updatePersonelAdminId(payload);
+          console.log("datadata", data);
+          if (data && !error) {
+            responseUtil.generateServerResponse(
+              res,
+              201,
+              "success",
+              "Apply as delivery personel",
+              data,
+              "personel_apply_adminId"
+            );
+          } else {
+            console.log("something went wrong token cannot be created.");
+            // something went wrong token cannot be created.
+            responseUtil.generateServerErrorCode(
+              res,
+              400,
+              "Accepting apply ID error",
+              "Something went wrong, please try again.",
+              "personel_apply_adminId"
+            );
           }
-        } else {
-            console.log("error personel/accept.applyid")
-          // error getting otp
+        }else{
           responseUtil.generateServerErrorCode(
             res,
-            400,
+            409,
             "Accepting apply ID error",
-            "Something went wrong, please try again.",
+            "Sorry we cannot find that apply ID",
             "personel_apply_adminId"
           );
         }
       } else {
-        console.log("error personel/accept.applyid")
         // all field are required.
         responseUtil.generateServerErrorCode(
           res,

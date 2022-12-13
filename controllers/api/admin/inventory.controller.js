@@ -138,7 +138,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
     },
 
     // get gallons
-    getGallons: async (req, res) => {
+    getAllGallons: async (req, res) => {
       const adminId = getAdminId(req);
       const { data, error } = await query.getGallons({
         adminId,

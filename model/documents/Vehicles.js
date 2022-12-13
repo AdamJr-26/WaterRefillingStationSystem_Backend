@@ -13,7 +13,7 @@ const vehicles = new mongoose.Schema({
     url: { type: String },
     mimetype: { type: String },
   },
-});
+}).set("timestamps", true);
 vehicles.plugin(mongoosePaginate);
 
 module.exports = vehicles;

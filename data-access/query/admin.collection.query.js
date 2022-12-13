@@ -50,5 +50,18 @@ module.exports = (Admin) => {
         return { error };
       }
     },
+    getAdminBasicInfo: async (adminId) => {
+      console.log("adminId",adminId)
+      try {
+        const data = await Admin.findOne({id: adminId})
+          .select(["admin", "wrs_name", "address"])
+          .exec();
+        return { data };
+      } catch (error) {
+        return { error };
+      }
+    },
   };
 };
+
+

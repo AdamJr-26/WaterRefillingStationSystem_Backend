@@ -48,7 +48,7 @@ module.exports = {
     encryptPassword,
     responseUtil
   ),
-  ...require("./forgot.password/send.otp")(
+  ...require("./verification/send.otp")(
     mutation,
     query,
     crypto,
@@ -56,11 +56,11 @@ module.exports = {
     responseUtil,
     sendOTP
   ),
-  ...require("./forgot.password/verify.otp")(
+  ...require("./verification/verify.otp")(
     query,
     responseUtil,
   ),
-  ...require("./forgot.password/send.verify.link")(
+  ...require("./verification/send.verify.link")(
     mutation,
     query,
     crypto,
@@ -68,7 +68,7 @@ module.exports = {
     responseUtil,
     sendEmail
   ),
-  ...require("./forgot.password/set.new.password")(
+  ...require("./verification/set.new.password")(
     mutation,
     query,
     responseUtil,

@@ -2,8 +2,10 @@ module.exports = (query, responseUtil) => {
   return {
     verifyOTP: async (req, res) => {
       const { gmail, otp } = req.body;
+      console.log("req.body", req.body)
       const { getEmailAndTokenData, getEmailAndTokenError } =
         await query.getEmailAndToken({ gmail, token: otp });
+        console.log("getEmailAndTokenError",getEmailAndTokenError)
       if (getEmailAndTokenData && !getEmailAndTokenError) {
         if (getEmailAndTokenData.gmail && getEmailAndTokenData.token) {
           responseUtil.generateServerResponse(
@@ -23,7 +25,16 @@ module.exports = (query, responseUtil) => {
             "verify_otp"
           );
         }
-      } else if (!getEmailAndTokenData && getEmailAndTokenError) {
+      }else if(!getEmailAndTokenData && !getEmailAndTokenError){
+        responseUtil.generateServerErrorCode(
+          res,
+          409,
+          "Error",
+          "Please enter a valid OTP",
+          "verify_otp"
+        );
+      }
+      else {
         responseUtil.generateServerErrorCode(
           res,
           400,

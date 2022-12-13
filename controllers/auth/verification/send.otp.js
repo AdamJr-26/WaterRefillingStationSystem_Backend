@@ -27,21 +27,22 @@ module.exports = (
         // create randome string using token
         // send to the user with _id, token,gmail
         // link - localhost:3000/set-new-password/:id/
-        const {personelData, personelError} = await query.checkIfPersonelExistingAndVerified({
-          gmail,
-        });
-        console.log("personelData",personelData)
-        if (personelError) {
+        const { personel, personel_error } =
+          await query.checkIfPersonelIsExisting({
+            gmail,
+          });
+        console.log("personel", personel);
+        if (personel_error) {
           responseUtil.generateServerErrorCode(
             res,
             400,
-            personelError,
+            personel_error,
             "SOMETHING WENT WRONG",
             "forgot_password"
           );
-        } else if (personelData && !personelError) {
+        } else if (personel && !personel_error) {
           const token = crypto.randomBytes(3).toString("hex");
-          const userId = personelData?._id;
+          const userId = personel?._id;
 
           //   store it to db
           const { otp, error } = await mutation.createOtp({
@@ -50,8 +51,8 @@ module.exports = (
             userId,
           });
           console.log("error creaetOtp", error);
-          const receiver = personelData?.gmail;
-          const firstname = personelData?.firstname;
+          const receiver = personel?.gmail;
+          const firstname = personel?.firstname;
           const userOtp = otp.token;
           if (otp && !error) {
             // const link = `${req.protocol}://${req.hostname}:${clientCofing.port}/set-new-password/?id=${userId}&token=${token}`;
@@ -70,7 +71,7 @@ module.exports = (
               201,
               "Forgot password has been sent to your email",
               "Please do have a check in your email",
-              {success: true},
+              { success: true },
               "forgot_password"
             );
           } else {
@@ -82,6 +83,14 @@ module.exports = (
               "forgot_password"
             );
           }
+        } else if (!personel && !personel_error) {
+          responseUtil.generateServerErrorCode(
+            res,
+            409,
+            "Error",
+            "We can't find a user with that email address.",
+            "forgot_password"
+          );
         } else {
           responseUtil.generateServerErrorCode(
             res,

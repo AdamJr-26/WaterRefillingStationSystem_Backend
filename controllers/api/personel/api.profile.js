@@ -2,7 +2,8 @@ module.exports = (query, responseUtil) => {
   return {
     getPersonelProfile: async (req, res) => {
       console.log("get profile p[ersonel req.user",req.user )
-      const personel = await query.getProfile({gmail: "Adamcompiomarcaida@gmail.com"});
+      const userGmail = req.user?.gmail
+      const personel = await query.getProfile({gmail: userGmail});
       if (personel?.data && !personel.error) {
         responseUtil.generateServerResponse(
           res,

@@ -6,9 +6,10 @@ const {
   Gallon,
   Vehicle,
   Delivery,
+  Customer,
 } = require("../../model/index");
 const db = require("../../db/conn");
-
+const { uploadImage } = require("../../utils/file.cloud.uploader.util");
 module.exports = {
   ...require("./accept.delivery.transaction")(
     db,
@@ -17,4 +18,5 @@ module.exports = {
     Vehicle,
     Personel
   ),
+  ...require("./create.customer.transaction")(db, Customer, uploadImage),
 };

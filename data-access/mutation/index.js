@@ -8,7 +8,6 @@ module.exports = {
   ...require("./auth/auth.delete.mutation")(OTP),
   ...require("./gallon.vehicle/inventory.mutation")(Gallon, Vehicle),
   ...require("./otp/admin.create.applyid.mutation")(OTP),
-  ...require("./otp/personel.get.applyid.mutation")(OTP),
-  ...require("./personel/update.personel.info.mutation")(Personel),
-  ...require("./delivery/delivery.mutation")(Delivery, db),
+  ...require("./personel/update.personel.info.mutation")(Personel, Admin, db),
+  ...require("./delivery/delivery.mutation")(Delivery,Gallon, db),
 };

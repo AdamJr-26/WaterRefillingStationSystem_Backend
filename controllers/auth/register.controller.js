@@ -28,7 +28,7 @@ module.exports = (
         firstname,
         lastname,
         gender,
-        age,
+        birthday,
         password,
       } = req.body;
       const { geolocation } = req.body;
@@ -43,7 +43,7 @@ module.exports = (
         firstname,
         lastname,
         gender,
-        age,
+        birthday: Math.floor(new Date(birthday).getTime() / 1000),
         password: hashed_password,
         geolocation,
         address: { region, province, city, barangay, street_building },
@@ -51,19 +51,21 @@ module.exports = (
       //   receiver, link, subject, title, content, description
       console.log("mutationResponse", mutationResponse);
       const id = mutationResponse?.id?.toString();
-      const referer = req?.headers?.referer
+      const referer = req?.headers?.referer;
       const link = `${referer}redirect-verify?id=${id}`;
       if (mutationResponse.success) {
         try {
-          await sendEmail(
-            gmail,
-            firstname,
-            link,
-            "Verify Account",
-            "Thank you for registering!",
-            "By clicking verify now button below your account will be verified.",
-            "Verify Now"
-          );
+          await sendEmail({
+            receiver: gmail,
+            firstname: firstname,
+            link: link,
+            subject: "Verify Account",
+            title: "Thank you for registering!",
+            content:
+              "By clicking verify now button below your account will be verified.",
+            description: "",
+            buttonLabel: "Verify Now",
+          });
           responseUtil.generateServerResponse(
             res,
             200,
@@ -103,7 +105,7 @@ module.exports = (
         nickname,
         firstname,
         lastname,
-        age,
+        birthday,
         gender,
         contact_number,
         address,
@@ -127,8 +129,7 @@ module.exports = (
           { isExist: true, verified: true, success: false },
           "register_personel"
         );
-      } 
-      else if (personel?.verified === false && !personel_error) {
+      } else if (personel?.verified === false && !personel_error) {
         // not verified
         // redirect to enter otp or verification page.
         responseUtil.generateServerResponse(
@@ -136,7 +137,7 @@ module.exports = (
           200,
           "register as a personel failed",
           `We are sent you a OTP to verify your account.`,
-          { isExist: true, verified: false, success: false },
+          { isExist: true, verified: false, success: false, gmail },
           "register_personel"
         );
 
@@ -176,8 +177,7 @@ module.exports = (
         //     );
         //   }
         // }
-      } 
-      else if (!personel?.gmail && !personel_error) {
+      } else if (!personel?.gmail && !personel_error) {
         // if gmail is not existing
         // then register the user then send otp
         const hashed_password = await encryptPassword(password, 10);
@@ -187,7 +187,7 @@ module.exports = (
           nickname,
           firstname,
           lastname,
-          age,
+          birthday,
           gender,
           contact_number,
           address,
@@ -216,11 +216,15 @@ module.exports = (
                 200,
                 "register as a personel success",
                 `We are sent you a OTP to verify your account.`,
-                { isExist: false, verified: false, success: true, gmail:gmail },
+                {
+                  isExist: false,
+                  verified: false,
+                  success: true,
+                  gmail: gmail,
+                },
                 "register_personel"
               );
             } catch (err) {
-
               responseUtil.generateServerErrorCode(
                 res,
                 400,
@@ -231,7 +235,6 @@ module.exports = (
             }
           }
         } else {
-
           responseUtil.generateServerErrorCode(
             res,
             400,
@@ -241,9 +244,8 @@ module.exports = (
           );
           // register error
         }
-      }
-       else {
-        console.log("errrrrrrrrrrrrr")
+      } else {
+        console.log("errrrrrrrrrrrrr");
         responseUtil.generateServerErrorCode(
           res,
           400,

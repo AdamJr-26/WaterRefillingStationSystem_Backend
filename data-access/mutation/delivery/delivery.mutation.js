@@ -1,8 +1,9 @@
-module.exports = (Delivery, db) => {
+module.exports = (Delivery, Gallon,db) => {
   // create delivery, update vehicle to occupied/in-use,
   return {
     createDelivery: async ({ payload }) => {
       try {
+        // first check if all gallons are still available.
         const data = new Delivery(payload);
         await data.save((error) => {
           if (error) {

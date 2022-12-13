@@ -4,8 +4,13 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 
+// post
 router.post("/delivery", authenticate, apiController.createDelivery); //
-router.get("/deliveries", authenticate, apiController.getPopulatedDeliveries);
+
+// get
+router.get("/deliveries/pending", authenticate, apiController.getPopulatedDeliveries);
+router.get("/delivery/by-personel", authenticate, apiController.getPersonelDelivery)
+//update
 router.put("/delivery", apiController.acceptDelivery);
 module.exports = {
   router,
