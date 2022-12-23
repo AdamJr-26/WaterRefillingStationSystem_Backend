@@ -9,4 +9,8 @@ const {
 
 router.post("/customer/wrs", authenticate,  upload.array("image"),apiController.createCustomer)
 
+router.get("/customer/by-firstname/:search", authenticate, apiController.getCustomerByFirstname)
+
+router.get("/customer/distinct/places", authenticate, apiController.getCustomersPlaces)
+
 module.exports = { router };

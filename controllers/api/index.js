@@ -44,7 +44,7 @@ module.exports = {
     responseUtil,
     getAdminId
   ),
-  ...require("./general/customer.controller")(
+  ...require("./general/create.customer.controller")(
     query,
     mutation,
     responseUtil,
@@ -52,6 +52,12 @@ module.exports = {
     getAdminId,
     transaction
   ),
-  ...require("./general/gallons.available")(query, getAdminId, responseUtil),
-  ...require("./personel/get.admin.basic.profile")(query, responseUtil)
+  ...require("./general/get.gallons.available.controller")(
+    query,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./personel/get.admin.basic.profile")(query, responseUtil),
+  ...require("./general/get.customer.controller")(query, responseUtil,getAdminId),
+  ...require("./general/schedule.controller")(query, mutation, responseUtil, getAdminId)
 };

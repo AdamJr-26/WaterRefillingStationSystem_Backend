@@ -19,7 +19,7 @@ module.exports = new mongoose.Schema({
   gmail: { type: String },
   password: { type: String },
   date_created: {
-    type: Date,
+    type: Number,
     default: () => Math.floor(new Date().valueOf() / 1000),
   },
 });

@@ -16,6 +16,7 @@ module.exports = (
         admin,
         ...JSON.parse(object),
       };
+      console.log("objectobjectobject",object)
       const file = JSON.parse(image);
       if (object) {
         const { data, error } = await transaction.createCustomer(

@@ -32,6 +32,7 @@ module.exports = (query, mutation, transaction, responseUtil, getAdminId) => {
       const admin = getAdminId(req);
       const payload = req.body;
       const { success, error } = await transaction.acceptDelivery(payload);
+      console.log("error", error)
       if (success && !error) {
         responseUtil.generateServerResponse(
           res,

@@ -8,7 +8,8 @@ const vehicle = require("./documents/Vehicles");
 const delivery = require("./documents/Delivery");
 const customer = require("./documents/Customers");
 const gallon_borrowed = require("./documents/Gallon.Borrowed");
-const gallon_credited = require("./documents/Gallon.Credited")
+const gallon_credited = require("./documents/Gallon.Credited");
+const schedule = require("./documents/Schedule");
 
 const Gallon = db.model("Gallon", gallon);
 const Vehicle = db.model("Vehicle", vehicle);
@@ -18,7 +19,9 @@ const Admin = db.model("Admin", admin);
 const Customer = db.model("Customer", customer);
 const Delivery = db.model("Delivery", delivery);
 const BorrowedGallon = db.model("BorrowedGallon", gallon_borrowed);
-const CreditedGallon = db.model("CreditedGallon", gallon_credited)
+const CreditedGallon = db.model("CreditedGallon", gallon_credited);
+const Schedule = db.model("Schedule", schedule);
+
 module.exports = {
   OTP,
   Personel,
@@ -29,4 +32,5 @@ module.exports = {
   Customer,
   BorrowedGallon,
   CreditedGallon,
+  Schedule,
 };

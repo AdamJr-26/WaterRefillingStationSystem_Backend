@@ -19,7 +19,7 @@ const delivery = new mongoose.Schema({
       total_item: { type: Number },
       price_per_item: { type: Number },
       date: {
-        type: Date,
+        type: Number,
         default: () => Math.floor(new Date().valueOf() / 1000),
         min: "2021-12-30",
         max: "2050-12-30",
@@ -32,13 +32,13 @@ const delivery = new mongoose.Schema({
       total: { type: Number },
     }),
   ],
-  date_of_creation: { type: Date, default: () => Math.floor(new Date().valueOf() / 1000)},
+  date_of_creation: { type: Number, default: () => Math.floor(new Date().valueOf() / 1000)},
   approved: { type: Boolean, default: false },
-  approved_date: { type: Date },
+  approved_date: { type: Number },
   returned: { type: Boolean, default: false },
-  returned_date: { type: Date },
+  returned_date: { type: Number },
   canceled: { type: Boolean, default: false },
-  canceld_date: { type: Date },
+  canceled_date: { type: Number },
 });
 
 module.exports = delivery;

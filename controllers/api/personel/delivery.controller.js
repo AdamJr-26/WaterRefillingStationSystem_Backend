@@ -63,12 +63,14 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
     },
     getPersonelDelivery: async (req, res) => {
       const admin = getAdminId(req);
-      const isApproved = true;
+      const isReturned = false;
+      const isCanceled = false;
       const delivery_personel = req?.user?._id?.toString();
       const { data, error } = await query.getPopulatedDeliveriesByPersonel({
         admin,
-        isApproved,
         delivery_personel,
+        isReturned,
+        isCanceled
       });
       if (data && !error) {
         responseUtil.generateServerResponse(

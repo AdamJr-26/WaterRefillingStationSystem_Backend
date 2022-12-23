@@ -24,7 +24,7 @@ passport.use(
   "jwt",
   new JwtStrategy(opts, function (payload, done) {
     const role = payload?.role;
-    const roleModal = (roles, r) => {
+    const roleModel = (roles, r) => {
       const foundRole = (r) => roles.find((role) => role === r);
       if (foundRole(r) === "Admin") {
         return Admin;
@@ -35,8 +35,8 @@ passport.use(
       }
     };
 
-    if (roleModal(roles, role)) {
-      roleModal(roles, role)
+    if (roleModel(roles, role)) {
+      roleModel(roles, role)
         ?.findOne({ gmail: payload.gmail }, function (err, user) {
           if (err) {
             return done(err, false);

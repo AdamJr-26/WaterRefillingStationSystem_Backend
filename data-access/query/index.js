@@ -6,40 +6,19 @@ const {
   Gallon,
   Vehicle,
   Delivery,
+  Customer,
+  Schedule,
 } = require("../../model/index");
+const endOfDay = require("date-fns/endOfDay");
+const startOfDay = require("date-fns/startOfDay");
+
 module.exports = {
-  ...require("./admin.collection.query")(Admin),
+  ...require("./admin.query")(Admin),
   ...require("./inventory.query")(Gallon, Vehicle),
   ...require("./otp.query")(OTP),
   ...require("./personel.query")(Personel),
-  ...require("./address.collection.query")(Address),
-  ...require("./delivery.query")(Delivery)
+  ...require("./address.query")(Address),
+  ...require("./delivery.query")(Delivery),
+  ...require("./customer.query")(Customer),
+  ...require("./schedule.query")(Schedule, endOfDay, startOfDay),
 };
-
-// checkAdminEmail: async (req, res, next) => {
-//     const { gmail } = req.body;
-//     const email = await query.getAdminGmailIfExisting(gmail);
-//     // if err send response 409
-//     // if email true send response 200
-//     // if both null next()
-//     if (email?.err) {
-//       responseUtil.generateServerErrorCode(
-//         res,
-//         400,
-//         err,
-//         "Something went wrong.",
-//         "register"
-//       );
-//     } else if (email?.email) {
-//       responseUtil.generateServerResponse(
-//         res,
-//         201,
-//         "Login Granted",
-//         "You have successfully logged in.",
-//         "data is confidential",
-//         "login-admin"
-//       );
-//     } else {
-//       next();
-//     }
-//   },

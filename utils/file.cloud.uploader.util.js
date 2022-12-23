@@ -14,7 +14,7 @@ const uploadImage = async (desitination, files) => {
       let uploadPromises = [];
       files.forEach((file) => {
         const datauri = parser.format(
-          path.extname(file.originalname ? file.originalname : file?.uri).toString(),
+          path.extname(file.originalname ? file.originalname : "image").toString(),
           file.buffer ? file.buffer : file?.buffer // JSON.parse are custom buffer that from body. file.buffer is common in image from req.files.
         );
         uploadPromises.push(

@@ -1,10 +1,10 @@
 const config = {
-    secretKey: "12345-67890-09876-54321",
-    mongoUrl: `mongodb+srv://admin:${process.env.PASSWORD}@cluster0.8jghjix.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
-}
-const underscoreId = '_id';
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET,
+  access_token_secret_expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRY,
+  refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
+  refresh_token_secret_expiresIn: process.env.REFRESH_TOKEN_SECRET_EXPIRY,
+};
 
 module.exports = {
-    config,
-    underscoreId,
-}
+  config,
+};

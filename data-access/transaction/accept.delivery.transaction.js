@@ -26,7 +26,7 @@ module.exports = (db, Delivery, Gallon, Vehicle, Personel) => {
           }
         ).exec();
 
-        const bulkOpsForGallon = gallons.map((gallon) => {
+        const bulkOpsForGallon = gallons?.map((gallon) => {
           return {
             updateOne: {
               filter: { _id: gallon._id },
@@ -38,8 +38,15 @@ module.exports = (db, Delivery, Gallon, Vehicle, Personel) => {
             },
           };
         });
-        
+
         await Gallon.bulkWrite(bulkOpsForGallon);
+        await Delivery.findOneAndUpdate(
+          { _id: delivery_id },
+          { $set: { approved_date: Math.floor(new Date().valueOf() / 1000) } },
+          { returnOriginal: false }
+        )
+          .select(["approved_data"])
+          .exec();
         const delivery = await Delivery.findOneAndUpdate(
           { _id: delivery_id },
           {

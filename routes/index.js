@@ -31,6 +31,10 @@ router.use("/api", require("./api/api.customer.routes").router);
 
 // admin
 router.use("/api", require("./api/api.admin.routes").router);
+
+// schedule
+router.use("/api", require("./api/api.schedule.routes").router);
+
 module.exports = {
   router,
 };

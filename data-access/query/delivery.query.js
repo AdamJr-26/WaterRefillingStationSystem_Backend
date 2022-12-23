@@ -47,8 +47,9 @@ module.exports = (Delivery) => {
       try {
         const filter = {
           admin: payload?.admin,
-          approved: payload?.isApproved,
           delivery_personel: payload?.delivery_personel,
+          returned: payload?.isReturned,
+          canceled : payload?.isCanceled,
         };
         const data = await Delivery.findOne(filter)
           .populate([
