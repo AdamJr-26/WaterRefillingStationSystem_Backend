@@ -39,7 +39,7 @@ module.exports = (Gallon, Vehicle) => {
           admin: adminId,
           total: { $gt: 0 },
         };
-        const data = await Gallon.find(filter).exec();
+        const data = await Gallon.find(filter).select(["-borrowed"]).exec();
         return { data };
       } catch (error) {
         return { error };

@@ -11,6 +11,61 @@ module.exports = (Delivery) => {
         return { error };
       }
     },
+
+    getApprovedDelivery: async (payload, selected) => {
+      //am not gonna use it again? fuck
+      try {
+        const filter = {
+          delivery_personel: payload?.delivery_personel,
+          approved: true,
+        };
+        const data = await Delivery.findOne(filter).select(selected).exec();
+        return { data };
+      } catch (error) {
+        return { error };
+      }
+    },
+    // not been used. violation: (do not create future feature)
+    getAllItemsGreaterThanEqualOrderedItem: async ({
+      purchase_item,
+      delivery_id,
+    }) => {
+      try {
+        const pipelines = [
+          {
+            $match: {
+              _id: delivery_id,
+            },
+          },
+          {
+            $project: {
+              // _id: delivery_id,
+              delivery_items: {
+                $filter: {
+                  input: "$delivery_items",
+                  as: "item",
+                  cond: {
+                    $and: [
+                      { $gte: ["$$item.total", purchase_item.total] },
+                      {
+                        $eq: [
+                          "$$item.gallon",
+                          { $toObjectId: purchase_item.gallon },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        ];
+        const data = await Delivery.aggregate(pipelines);
+        return { data };
+      } catch (error) {
+        return { error };
+      }
+    },
     // this the not approved yet delivery
     getPopulatedDeliveries: async (payload) => {
       try {
@@ -49,7 +104,7 @@ module.exports = (Delivery) => {
           admin: payload?.admin,
           delivery_personel: payload?.delivery_personel,
           returned: payload?.isReturned,
-          canceled : payload?.isCanceled,
+          canceled: payload?.isCanceled,
         };
         const data = await Delivery.findOne(filter)
           .populate([

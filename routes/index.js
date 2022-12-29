@@ -35,6 +35,12 @@ router.use("/api", require("./api/api.admin.routes").router);
 // schedule
 router.use("/api", require("./api/api.schedule.routes").router);
 
+// discount
+router.use("/api", require("./api/api.discounts.routes").router);
+
+// transactions
+router.use("/api", require("./api/api.transactions.routes").router);
+
 module.exports = {
   router,
 };

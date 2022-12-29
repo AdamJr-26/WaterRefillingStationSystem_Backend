@@ -33,7 +33,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
             {
               path: "items.gallon",
               model: "Gallon",
-              select: "name liter gallon_image",
+              select: " admin _id name liter gallon_image price ",
             },
           ])
           .exec();

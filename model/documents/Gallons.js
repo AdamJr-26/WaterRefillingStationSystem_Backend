@@ -8,11 +8,6 @@ const gallon = new mongoose.Schema({
   liter: { type: Number },
   price: { type: Number },
   total: { type: Number },
-  borrowed: [
-    new mongoose.Schema({
-      gallon:  { type: mongoose.Types.ObjectId, ref: "BorrowedGallon"}
-    })
-  ],
   cloudinary: {
     userFolder: { type: String },
     publicId: { type: String },

@@ -8,10 +8,19 @@ const {
 router.post("/delivery", authenticate, apiController.createDelivery); //
 
 // get
-router.get("/deliveries/pending", authenticate, apiController.getPopulatedDeliveries);
-router.get("/delivery/by-personel", authenticate, apiController.getPersonelDelivery)
+router.get(
+  "/deliveries/pending",
+  authenticate,
+  apiController.getPopulatedDeliveries
+);
+router.get(
+  "/delivery/by-personel",
+  authenticate,
+  apiController.getPersonelDelivery
+);
 //update
-router.put("/delivery", apiController.acceptDelivery);
+router.put("/delivery", authenticate, apiController.acceptDelivery);
+
 module.exports = {
   router,
 };

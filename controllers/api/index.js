@@ -58,6 +58,28 @@ module.exports = {
     responseUtil
   ),
   ...require("./personel/get.admin.basic.profile")(query, responseUtil),
-  ...require("./general/get.customer.controller")(query, responseUtil,getAdminId),
-  ...require("./general/schedule.controller")(query, mutation, responseUtil, getAdminId)
+  ...require("./general/get.customer.controller")(
+    query,
+    responseUtil,
+    getAdminId
+  ),
+  ...require("./general/schedule.controller")(
+    query,
+    mutation,
+    responseUtil,
+    getAdminId
+  ),
+  ...require("./general/discount.controller")(
+    query,
+    mutation,
+    responseUtil,
+    getAdminId
+  ),
+  ...require("./general/deliver.order.controller")(
+    query,
+    mutation,
+    transaction,
+    getAdminId,
+    responseUtil
+  ),
 };
