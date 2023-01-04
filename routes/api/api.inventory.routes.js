@@ -33,8 +33,6 @@ router.put("/gallon/price/:id/:admin",authenticate, apiController.updateGallonPr
 router.put("/gallon/add/:id/:admin",authenticate, apiController.updateAddCountGallon)
 router.put("/gallon/reduce/:id/:admin",authenticate, apiController.updateReduceCountGallon)
 
-// router.put("/vehicle/price/:id/:admin",authenticate, apiController.updatevehicle)
-
 
 module.exports = {
   router,

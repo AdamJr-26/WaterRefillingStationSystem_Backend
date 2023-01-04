@@ -27,9 +27,12 @@ module.exports = (Delivery) => {
     },
     // not been used. violation: (do not create future feature)
     getAllItemsGreaterThanEqualOrderedItem: async ({
-      purchase_item,
       delivery_id,
+      purchase_item,
     }) => {
+      const total_orders =
+        Number(purchase_item.orders) + Number(purchase_item.free);
+      console.log("total_orders", total_orders);
       try {
         const pipelines = [
           {
@@ -46,7 +49,7 @@ module.exports = (Delivery) => {
                   as: "item",
                   cond: {
                     $and: [
-                      { $gte: ["$$item.total", purchase_item.total] },
+                      { $gte: ["$$item.total", total_orders] },
                       {
                         $eq: [
                           "$$item.gallon",
@@ -61,7 +64,7 @@ module.exports = (Delivery) => {
           },
         ];
         const data = await Delivery.aggregate(pipelines);
-        return { data };
+        return { data: data[0] };
       } catch (error) {
         return { error };
       }

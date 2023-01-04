@@ -4,10 +4,8 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 
-// deliver order with schedule payload.
-router.post("/deliver/orders/by-schedule", authenticate, apiController.deliverOrder)
+router.get("/credits/params/:customer", authenticate, apiController.getTotalDebt);
 
+router.get("/all/credits/:customer_id",authenticate, apiController.getCustomerCredits)
 
-module.exports = {
-  router,
-};
+module.exports = { router };

@@ -21,6 +21,11 @@ router.get(
 //update
 router.put("/delivery", authenticate, apiController.acceptDelivery);
 
+router.put(
+  "/delivery/cancel/:delivery_id",
+  authenticate,
+  apiController.cancelDelivery
+);
 module.exports = {
   router,
 };

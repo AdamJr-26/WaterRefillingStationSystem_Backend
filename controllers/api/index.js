@@ -82,4 +82,28 @@ module.exports = {
     getAdminId,
     responseUtil
   ),
+  ...require("./general/credits.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./general/borrow.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./general/delivery.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./personel/schedule.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
 };

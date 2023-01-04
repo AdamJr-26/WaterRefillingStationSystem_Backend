@@ -8,7 +8,9 @@ const {
   Delivery,
   Customer,
   Schedule,
-  Discount
+  Discount,
+  Credit,
+  Borrow,
 } = require("../../model/index");
 const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
@@ -22,5 +24,7 @@ module.exports = {
   ...require("./delivery.query")(Delivery),
   ...require("./customer.query")(Customer),
   ...require("./schedule.query")(Schedule, endOfDay, startOfDay),
-  ...require("./discount.query")(Discount)
+  ...require("./discount.query")(Discount),
+  ...require("./credits.query")(Credit),
+  ...require("./borrow.query")(Borrow),
 };

@@ -10,7 +10,7 @@ module.exports = {
   ...require("./otp/admin.create.applyid.mutation")(OTP),
   ...require("./personel/update.personel.info.mutation")(Personel, Admin, db),
   ...require("./delivery/delivery.mutation")(Delivery,Gallon, db),
-  ...require("./schedule/schedule.mutation")(Schedule),
+  ...require("./schedule/schedule.mutation")(db, Schedule),
   ...require('./discount/discount.mutation')(Discount),
   
 

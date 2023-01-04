@@ -15,4 +15,10 @@ router.put("/schedule/assign", authenticate, apiController.assignSchedule)
 
 router.get("/schedule-assigned/by-personel", authenticate, apiController.getAssignedScheduleByPersonel )
 
+router.post("/re-schedule", authenticate, apiController.reSchedule)
+
+router.put("/schedule/remove/assigned/:schedule_id", authenticate, apiController.removeAssignedSchedule)
+
+router.delete("/schedule/:schedule_id", authenticate, apiController.deleteSchedule)
+
 module.exports = { router };

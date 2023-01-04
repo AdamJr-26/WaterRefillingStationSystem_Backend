@@ -59,6 +59,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
           },
           {
             // para mahanap niya lang yung specific customer na may same address ->place
+            //
             $lookup: {
               from: "customers",
               localField: "customer",
@@ -69,7 +70,11 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
               as: "customer",
             },
           },
-
+          {
+            $match: {
+              $expr: { $ne: ["$customer", []] },
+            },
+          },
           {
             // para ipopulate yung items
             $lookup: {
@@ -92,19 +97,10 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
         ];
         const docs = await Schedule.aggregate(pipelines);
         for await (const doc of docs) {
-          if (doc.customer.length) {
-            // if customer not empty then proceed. its because of places filtering.
-            for (let i = 0; i < doc?.fromItems.length; i++) {
-              doc.fromItems[i]["total"] = doc.items[i].total;
-            }
-          } else {
-            docs.splice(
-              docs.indexOf(doc.findIndex((obj) => obj._id === doc._id)),
-              1
-            );
+          for (let i = 0; i < doc?.fromItems.length; i++) {
+            doc.fromItems[i]["total"] = doc.items[i].total;
           }
         }
-        console.log("docsd", JSON.stringify(docs));
         return { data: docs };
       } catch (error) {
         return { error };
