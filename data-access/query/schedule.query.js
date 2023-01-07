@@ -3,15 +3,15 @@ const mongoose = require("mongoose");
 module.exports = (Schedule, endOfDay, startOfDay) => {
   return {
     checkIfcustomerHasSchedule: async (payload) => {
+  
       try {
         const filter = {
           customer: payload?.customer?.toString(),
           admin: payload?.admin?.toString(),
         };
         const data = await Schedule.find(filter)
-          .select(["_id", "schedule"])
           .exec();
-        console.log("datadatadatadata", data);
+        console.log("schedules dataaaaaaaa", data);
         return { data };
       } catch (error) {
         return { error };

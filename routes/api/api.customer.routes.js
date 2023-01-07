@@ -13,4 +13,6 @@ router.get("/customer/by-firstname/:search", authenticate, apiController.getCust
 
 router.get("/customer/distinct/places", authenticate, apiController.getCustomersPlaces)
 
+router.get("/search/customers/:search_text", authenticate, apiController.searchCustomerByFirstnamePlace)
+
 module.exports = { router };

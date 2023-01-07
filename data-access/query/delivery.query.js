@@ -129,5 +129,12 @@ module.exports = (Delivery) => {
         return { error };
       }
     },
+    getSummaryOfDeliveryFromPurchases: async (delivery_id) => {
+      try {
+        
+      } catch (error) {
+        return { error };
+      }
+    },
   };
 };

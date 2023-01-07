@@ -26,6 +26,13 @@ router.put(
   authenticate,
   apiController.cancelDelivery
 );
+
+router.get(
+  "/delivery/summary/:delivery_id",
+  authenticate,
+  apiController.getSummaryOfDeliveryFromPurchases
+);
+
 module.exports = {
   router,
 };

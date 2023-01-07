@@ -11,15 +11,17 @@ const purchase = new mongoose.Schema({
       orders: { type: Number },
       free: { type: Number },
       price: { type: Number },
-      date: {
-        unix_timestamp: {
-          type: Number,
-          default: () => Math.floor(new Date().valueOf() / 1000),
-        },
-        utc_date: { type: Date, default: () => new Date() },
-      },
+      return: { type: Number },
+      borrow: { type: Number },
     }),
   ],
+  date: {
+    unix_timestamp: {
+      type: Number,
+      default: () => Math.floor(new Date().valueOf() / 1000),
+    },
+    utc_date: { type: Date, default: () => new Date() },
+  },
   total_payment: { type: Number },
   order_to_pay: { type: Number },
   debt_payment: { type: Number },

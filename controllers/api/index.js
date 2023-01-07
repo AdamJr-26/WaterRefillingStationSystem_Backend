@@ -106,4 +106,11 @@ module.exports = {
     getAdminId,
     responseUtil
   ),
+
+  ...require("./general/customer.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
 };

@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 module.exports = (Customer) => {
   return {
     getCustomerByFirstname: async (payload) => {
@@ -18,6 +20,36 @@ module.exports = (Customer) => {
         const data = await Customer.distinct(field, query);
         return { data };
       } catch (error) {
+        return { error };
+      }
+    },
+    searchCustomerByNameAndPlace: async ({ search_text, admin }) => {
+      try {
+        const stages = [
+          {
+            $search: {
+              index: "customer",
+              text: {
+                query: search_text,
+                path: {
+                  wildcard: "*",
+                },
+              },
+            },
+          },
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+            },
+          },
+          {
+            $limit: 10
+          }
+        ];
+        const data = await Customer.aggregate(stages);
+        return { data };
+      } catch (error) {
+        console.log("sdfsdfsdf", error);
         return { error };
       }
     },

@@ -6,7 +6,7 @@ const apiController = require("../../controllers/api");
 
 router.post("/new/schedule", authenticate, apiController.createSchedule);
 
-// check if customer has schedule -> true or false;
+
 router.get("/schedule/customer/:id", authenticate, apiController.checkIfcustomerHasSchedule)
 
 router.get("/schedule/:date/:place", authenticate, apiController.getSchedulesByDate)
