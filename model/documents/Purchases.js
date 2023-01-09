@@ -13,6 +13,7 @@ const purchase = new mongoose.Schema({
       price: { type: Number },
       return: { type: Number },
       borrow: { type: Number },
+      credit: { type: Number },
     }),
   ],
   date: {

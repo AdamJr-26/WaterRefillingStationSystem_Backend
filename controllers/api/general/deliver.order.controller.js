@@ -7,7 +7,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
       const debt_payment = body?.total_payment - body.order_to_pay;
       const schedule_id = body?.schedule_id;
       const purchase_items = body.items;
-      
+
       console.log("purchase_items", purchase_items);
       // first get verified delivery' id
 
@@ -88,7 +88,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
           res,
           400,
           "No delivery",
-          "Deliver order failed",
+          "No delivery was found; please create one.",
           "delivery_order"
         );
       }

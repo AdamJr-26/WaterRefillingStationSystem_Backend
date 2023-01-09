@@ -1,4 +1,4 @@
-module.exports = (query, mutation, getAdminId, responseUtil) => {
+module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
   return {
     getTotalOfBorrowedGallon: async (req, res) => {
       const { customer_id } = req.params;
@@ -52,6 +52,34 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
           "Error",
           "Oops something went wrong, please try again",
           "get_borrowed_by_customer"
+        );
+      }
+    },
+    returnGallon: async (req, res) => {
+      const admin = getAdminId(req);
+      const { borrow_id } = req.params;
+      const payload = req.body;
+      const { data, error } = await transaction.returnBorrowedGallon({
+        admin,
+        borrow_id,
+        payload,
+      });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "customer's returned gallons",
+          data,
+          "return_gallon"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Sorry; something went wrong, please try again",
+          "return_gallon"
         );
       }
     },

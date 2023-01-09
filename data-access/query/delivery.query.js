@@ -1,9 +1,12 @@
+const { Purchase } = require("../../model");
+
 module.exports = (Delivery) => {
   return {
     getPersonelDelivery: async (payload, selected) => {
       try {
         const filter = {
           delivery_personel: payload?.delivery_personel,
+          returned :false,
         };
         const data = await Delivery.findOne(filter).select(selected).exec();
         return { data };
@@ -18,6 +21,7 @@ module.exports = (Delivery) => {
         const filter = {
           delivery_personel: payload?.delivery_personel,
           approved: true,
+          returned : false,
         };
         const data = await Delivery.findOne(filter).select(selected).exec();
         return { data };
@@ -75,6 +79,7 @@ module.exports = (Delivery) => {
         const filter = {
           admin: payload?.admin,
           approved: payload?.isApproved,
+          returned : false,
         };
         const data = await Delivery.find(filter)
           .populate([
@@ -107,7 +112,6 @@ module.exports = (Delivery) => {
           admin: payload?.admin,
           delivery_personel: payload?.delivery_personel,
           returned: payload?.isReturned,
-          canceled: payload?.isCanceled,
         };
         const data = await Delivery.findOne(filter)
           .populate([
@@ -129,12 +133,6 @@ module.exports = (Delivery) => {
         return { error };
       }
     },
-    getSummaryOfDeliveryFromPurchases: async (delivery_id) => {
-      try {
-        
-      } catch (error) {
-        return { error };
-      }
-    },
+
   };
 };

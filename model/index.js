@@ -12,6 +12,9 @@ const gallon_credited = require("./documents/Credited");
 const schedule = require("./documents/Schedule");
 const discount = require("./documents/Discounts");
 const purchase = require("./documents/Purchases");
+const pay_credit_receipt = require("./documents/PayCreditReceipt.js");
+const return_gallon_receipt = require("./documents/ReturnGallonReceipt");
+
 
 const Gallon = db.model("Gallon", gallon);
 const Vehicle = db.model("Vehicle", vehicle);
@@ -25,6 +28,9 @@ const Credit = db.model("Credit", gallon_credited);
 const Schedule = db.model("Schedule", schedule);
 const Discount = db.model("Discount", discount);
 const Purchase = db.model("Purchase", purchase);
+const PayCreditReceipt = db.model("PayCreditReceipt", pay_credit_receipt);
+const ReturnGallonReceipt = db.model("ReturnGallonReceipt", return_gallon_receipt);
+
 
 module.exports = {
   OTP,
@@ -39,4 +45,6 @@ module.exports = {
   Schedule,
   Discount,
   Purchase,
+  PayCreditReceipt,
+  ReturnGallonReceipt
 };

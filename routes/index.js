@@ -47,6 +47,9 @@ router.use("/api", require("./api/api.credits.routes").router);
 // borrow
 router.use("/api", require("./api/api.borrow.routes").router);
 
+//purchase
+router.use("/api", require("./api/api.purchase.routes").router);
+
 module.exports = {
   router,
 };

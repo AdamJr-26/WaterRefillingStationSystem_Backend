@@ -49,9 +49,6 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         );
       }
     },
-    getSummaryOfDeliveryFromPurchases: async (req, res) => {
-      const { delivery_id } = req.params;
-      const admin = getAdminId(req);
-    },
+
   };
 };

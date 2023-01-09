@@ -21,7 +21,7 @@ module.exports = (Borrow) => {
         console.log("[DATA]", data);
         return { data };
       } catch (error) {
-        console.log("[ERROR000000000000]", error);
+        console.log("[ERROR000000000000 -BORROW.QUERY.JS]", error);
         return { error };
       }
     },

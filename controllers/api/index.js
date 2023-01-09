@@ -85,18 +85,21 @@ module.exports = {
   ...require("./general/credits.controller")(
     query,
     mutation,
+    transaction,
     getAdminId,
     responseUtil
   ),
   ...require("./general/borrow.controller")(
     query,
     mutation,
+    transaction,
     getAdminId,
     responseUtil
   ),
   ...require("./general/delivery.controller")(
     query,
     mutation,
+    transaction,
     getAdminId,
     responseUtil
   ),
@@ -108,6 +111,12 @@ module.exports = {
   ),
 
   ...require("./general/customer.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./general/purchase.controller")(
     query,
     mutation,
     getAdminId,

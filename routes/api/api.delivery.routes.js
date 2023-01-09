@@ -27,10 +27,10 @@ router.put(
   apiController.cancelDelivery
 );
 
-router.get(
-  "/delivery/summary/:delivery_id",
+router.put(
+  "/delivery/finish/:delivery_id",
   authenticate,
-  apiController.getSummaryOfDeliveryFromPurchases
+  apiController.finishDelivery
 );
 
 module.exports = {

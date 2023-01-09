@@ -11,6 +11,7 @@ const {
   Discount,
   Credit,
   Borrow,
+  Purchase,
 } = require("../../model/index");
 const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
@@ -27,4 +28,5 @@ module.exports = {
   ...require("./discount.query")(Discount),
   ...require("./credits.query")(Credit),
   ...require("./borrow.query")(Borrow),
+  ...require("./purchase.query")(Purchase),
 };

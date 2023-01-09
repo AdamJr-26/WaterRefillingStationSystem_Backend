@@ -11,6 +11,8 @@ const {
   Borrow,
   Credit,
   Purchase,
+  PayCreditReceipt,
+  ReturnGallonReceipt,
 } = require("../../model/index");
 const db = require("../../db/conn");
 const { uploadImage } = require("../../utils/file.cloud.uploader.util");
@@ -33,4 +35,7 @@ module.exports = {
     Gallon,
     Schedule
   ),
+  ...require("./delivery.transaction")(db, Delivery, Gallon, Vehicle),
+  ...require("./pay.credits.transaction")(db, Credit, PayCreditReceipt),
+  ...require("./return.gallon.transaction")(db, Borrow, ReturnGallonReceipt),
 };

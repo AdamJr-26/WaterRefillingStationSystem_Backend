@@ -16,4 +16,6 @@ router.get(
   apiController.getBorrowedGallonsByCustomer
 );
 
+router.put("/borrow/return/:borrow_id", authenticate,apiController.returnGallon)
+
 module.exports = { router };

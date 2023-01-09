@@ -16,8 +16,6 @@ const delivery = new mongoose.Schema({
   approved_date: { type: Number },
   returned: { type: Boolean, default: false },
   returned_date: { type: Number },
-  canceled: { type: Boolean, default: false },
-  canceled_date: { type: Number },
 });
 
 module.exports = delivery;

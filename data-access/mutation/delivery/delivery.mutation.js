@@ -27,5 +27,6 @@ module.exports = (Delivery, Gallon, db) => {
         return { error };
       }
     },
+
   };
 };
