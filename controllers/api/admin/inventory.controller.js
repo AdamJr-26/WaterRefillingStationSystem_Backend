@@ -6,7 +6,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
       var gallon_image = req.body?.image; // from static link from frontend
       const files = req.files;
       const user = req.user;
-
+      console.log("files",files)
       const serverResponse = (doc) => {
         if (doc.data && !doc.error) {
           responseUtil.generateServerResponse(

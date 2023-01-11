@@ -4,18 +4,23 @@ const DatauriParser = require("datauri/parser");
 const path = require("path");
 const parser = new DatauriParser();
 cloudinary.config(cloudinaryConfig);
-
+const { Buffer } = require("buffer");
 // upload image for inventory: vehicle
 //destinition: user-storage / inventory / vehicles / userEmail / vehicle_id%filename
 const uploadImage = async (desitination, files) => {
+  // console.log("files[0].buffer", Buffer.from(files[0].buffer, "base64"));
+  // console.log("files[0].buffer", files[0].buffer);
+
   try {
     if (files?.length) {
       let uploadResults = [];
       let uploadPromises = [];
+
       files.forEach((file) => {
         const datauri = parser.format(
-          path.extname(file.originalname ? file.originalname : "image").toString(),
-          file.buffer ? file.buffer : file?.buffer // JSON.parse are custom buffer that from body. file.buffer is common in image from req.files.
+          path.extname(file.originalname).toString(),
+          file.buffer
+          // Buffer.from(file.buffer, "base64")
         );
         uploadPromises.push(
           cloudinary.uploader

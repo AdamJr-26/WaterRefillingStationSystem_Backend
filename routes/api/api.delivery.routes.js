@@ -33,6 +33,12 @@ router.put(
   apiController.finishDelivery
 );
 
+router.get(
+  "/deliveries/recent",
+  authenticate,
+  apiController.getRecentDeliveries
+);
+
 module.exports = {
   router,
 };

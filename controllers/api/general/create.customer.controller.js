@@ -8,7 +8,6 @@ module.exports = (
 ) => {
   return {
     createCustomer: async (req, res) => {
-      console.log("create customer files", req.files);
       var { data: object, image } = req.body;
       const user = req.user;
       const admin = getAdminId(req);
@@ -16,11 +15,11 @@ module.exports = (
         admin,
         ...JSON.parse(object),
       };
-      console.log("objectobjectobject",object)
-      const file = JSON.parse(image);
+
+      const files = JSON.parse(image);
       if (object) {
         const { data, error } = await transaction.createCustomer(
-          file,
+          files,
           payload,
           user
         );

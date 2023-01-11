@@ -69,7 +69,6 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         admin,
         delivery_personel,
         isReturned,
-
       });
       if (data && !error) {
         responseUtil.generateServerResponse(
@@ -87,6 +86,29 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
           "Error",
           "fetch delivery Failed",
           "delivery"
+        );
+      }
+    },
+    getRecentDeliveries: async (req, res) => {
+      const personel_id = req.user?._id;
+      const admin = getAdminId(req);
+      const { data, error } = await query.getRecentDeliveries({ personel_id ,admin});
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "fetch recent deliveries",
+          data,
+          "recent_deliveries"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "fetch deliveries Failed",
+          "recent_deliveries"
         );
       }
     },

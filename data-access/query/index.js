@@ -22,7 +22,7 @@ module.exports = {
   ...require("./otp.query")(OTP),
   ...require("./personel.query")(Personel),
   ...require("./address.query")(Address),
-  ...require("./delivery.query")(Delivery),
+  ...require("./delivery.query")(Delivery, Purchase, endOfDay, startOfDay),
   ...require("./customer.query")(Customer),
   ...require("./schedule.query")(Schedule, endOfDay, startOfDay),
   ...require("./discount.query")(Discount),

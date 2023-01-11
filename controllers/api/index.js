@@ -9,7 +9,12 @@ const getAdminId = require("../../utils/getAdminId");
 
 module.exports = {
   ...require("../auth/checking.gmail")(query),
-  ...require("./personel/api.profile")(query, responseUtil),
+  ...require("./personel/api.profile")(
+    query,
+    mutation,
+    responseUtil,
+    uploadImage
+  ),
   ...require("./admin/inventory.controller")(
     query,
     mutation,

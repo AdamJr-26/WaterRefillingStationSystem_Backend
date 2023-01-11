@@ -9,12 +9,7 @@ module.exports = new mongoose.Schema({
     default:
       "https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png",
   },
-  cloudinary: {
-    userFolder: { type: String },
-    publicId: { type: String },
-    url: { type: String },
-    mimetype: { type: String },
-  },
+
   firstname: { type: String, required: true, index: true },
   lastname: { type: String, index: true },
   gender: { type: String },
@@ -31,12 +26,11 @@ module.exports = new mongoose.Schema({
     type: Number,
     default: () => Math.floor(new Date().valueOf() / 1000),
   },
+  cloudinary: {
+    userFolder: { type: String },
+    publicId: { type: String },
+    url: { type: String },
+    mimetype: { type: String },
+  },
 
-  last_delivery: { type: Date },
-  uncovered_discount: [
-    mongoose.Schema({
-      gallon: { type: mongoose.Types.ObjectId, ref: "Gallon" },
-      count: { type: Number },
-    }),
-  ],
 });

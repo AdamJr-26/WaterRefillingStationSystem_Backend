@@ -11,7 +11,13 @@ const delivery = new mongoose.Schema({
     }),
   ],
 
-  date_of_creation: { type: Number, default: () => Math.floor(new Date().valueOf() / 1000)},
+  date_of_creation: {
+    unix_timestamp: {
+      type: Number,
+      default: () => Math.floor(new Date().valueOf() / 1000),
+    },
+    utc_date: { type: Date, default: () => new Date() },
+  },
   approved: { type: Boolean, default: false },
   approved_date: { type: Number },
   returned: { type: Boolean, default: false },

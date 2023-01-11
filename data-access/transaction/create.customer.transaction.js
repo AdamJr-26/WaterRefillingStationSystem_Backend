@@ -9,10 +9,12 @@ module.exports = (db, Customer, uploadImage) => {
           const cloudinary = await uploadImage(
             {
               root: "user-storage/profile/customers",
-              userFolder: user?.gmail,
+              userFolder: "sample",
             },
             [file]
           );
+          console.log("cloudinary", cloudinary)
+          
           const display_photo = cloudinary?.uploadResults[0]?.url;
           if (cloudinary?.error && !display_photo) {
             new Error("Error creating customer");

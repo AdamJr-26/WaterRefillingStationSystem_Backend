@@ -4,12 +4,13 @@ const responseUtil = require("../utils/server.responses.util");
 function attachmentsUpload() {
   const acceptedMimetypes = ["image/jpeg", "image/png"];
   const upload = multer({
+    // limits: { fileSize: 20 * 1080 * 1080 * 1080 },
     fileFilter: (req, file, cb) => {
       if (acceptedMimetypes.includes(file.mimetype)) {
         return cb(null, true);
       } else {
-        cb(null,false);
-      }
+        cb(null, false);
+    }
     },
   });
   return upload;

@@ -1,12 +1,10 @@
-const { Purchase } = require("../../model");
-
-module.exports = (Delivery) => {
+module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
   return {
     getPersonelDelivery: async (payload, selected) => {
       try {
         const filter = {
           delivery_personel: payload?.delivery_personel,
-          returned :false,
+          returned: false,
         };
         const data = await Delivery.findOne(filter).select(selected).exec();
         return { data };
@@ -16,12 +14,12 @@ module.exports = (Delivery) => {
     },
 
     getApprovedDelivery: async (payload, selected) => {
-      //am not gonna use it again? fuck
+      //am not gonna use it again?
       try {
         const filter = {
           delivery_personel: payload?.delivery_personel,
           approved: true,
-          returned : false,
+          returned: false,
         };
         const data = await Delivery.findOne(filter).select(selected).exec();
         return { data };
@@ -79,7 +77,7 @@ module.exports = (Delivery) => {
         const filter = {
           admin: payload?.admin,
           approved: payload?.isApproved,
-          returned : false,
+          returned: false,
         };
         const data = await Delivery.find(filter)
           .populate([
@@ -133,6 +131,70 @@ module.exports = (Delivery) => {
         return { error };
       }
     },
-
+    // its querying the Purchase collection but using delivery id
+    // the purpose of this is all about recent deliveries.
+    getRecentDeliveries: async ({ personel_id, admin }) => {
+      try {
+        const deliveries = await Delivery.find({
+          returned: true,
+          delivery_personel: personel_id,
+          admin: admin,
+          "date_of_creation.utc_date": {
+            $gte: startOfDay(new Date()),
+            $lte: endOfDay(new Date()),
+          },
+        })
+          .select(["_id"])
+          .exec();
+        console.log("deliveries", deliveries);
+        const stages = [
+          {
+            $match: {
+              personel: personel_id,
+              delivery: { $in: deliveries?.map((delivery) => delivery._id) },
+              "date.utc_date": {
+                $gte: startOfDay(new Date()),
+                $lte: endOfDay(new Date()),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "$delivery",
+              total_orders: {
+                $sum: { $sum: "$items.orders" },
+              },
+              total_free: {
+                $sum: { $sum: "$items.free" },
+              },
+              total_returned_gallon: {
+                $sum: { $sum: "$items.return" },
+              },
+              total_borrowed_gallon: {
+                $sum: { $sum: "$items.borrow" },
+              },
+              total_credited_gallon: {
+                $sum: { $sum: "$items.credit" },
+              },
+              total_of_all_debt_payment: {
+                $sum: "$debt_payment",
+              },
+              total_of_all_payment: {
+                $sum: "$total_payment",
+              },
+              total_of_all_order_to_pay: {
+                $sum: "$order_to_pay",
+              },
+            },
+          },
+        ];
+        const data = await Purchase.aggregate(stages);
+        console.log("[RECENTSSSSS]", data);
+        return { data };
+      } catch (error) {
+        console.log("[error]", error);
+        return { error };
+      }
+    },
   };
 };
