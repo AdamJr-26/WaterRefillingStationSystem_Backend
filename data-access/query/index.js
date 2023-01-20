@@ -12,6 +12,7 @@ const {
   Credit,
   Borrow,
   Purchase,
+  PayCreditReceipt,
 } = require("../../model/index");
 const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
@@ -29,4 +30,5 @@ module.exports = {
   ...require("./credits.query")(Credit),
   ...require("./borrow.query")(Borrow),
   ...require("./purchase.query")(Purchase),
+  ...require("./credits.receipt.query")(PayCreditReceipt),
 };

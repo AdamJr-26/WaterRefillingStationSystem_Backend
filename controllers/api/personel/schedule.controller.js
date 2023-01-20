@@ -24,5 +24,29 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         );
       }
     },
+    getOutdatedSchedules: async (req, res) => {
+      const admin = getAdminId(req);
+      const { data, error } = await query.getOutdatedSchedules({
+        admin,
+      });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get outdaetd schedules",
+          data,
+          "outdated_schedules"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Oops something went wrong, please try again",
+          "outdated_schedules"
+        );
+      }
+    },
   };
 };

@@ -4,6 +4,7 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 const attachmentsUpload = require("../../middlewares/multer.middleware");
+
 const upload = attachmentsUpload();
 // POST
 router.post(
@@ -32,7 +33,6 @@ router.get("/gallon/:id/:admin", authenticate, apiController.getGallon)
 router.put("/gallon/price/:id/:admin",authenticate, apiController.updateGallonPrice)
 router.put("/gallon/add/:id/:admin",authenticate, apiController.updateAddCountGallon)
 router.put("/gallon/reduce/:id/:admin",authenticate, apiController.updateReduceCountGallon)
-
 
 module.exports = {
   router,

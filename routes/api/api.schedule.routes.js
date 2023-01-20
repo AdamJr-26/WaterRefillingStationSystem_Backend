@@ -21,4 +21,7 @@ router.put("/schedule/remove/assigned/:schedule_id", authenticate, apiController
 
 router.delete("/schedule/:schedule_id", authenticate, apiController.deleteSchedule)
 
+router.get("/schedules/outdated", authenticate, apiController.getOutdatedSchedules)
+
+
 module.exports = { router };

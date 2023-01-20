@@ -30,9 +30,10 @@ module.exports = (Personel) => {
             _id: personel_id,
           },
           {
-            $set: { display_photo: display_photo },
+            $set: { display_photo: display_photo, cloudinary: cloudinary },
           }
         ).exec();
+        console.log("data", data);
         return { data };
       } catch (error) {
         return { error };

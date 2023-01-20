@@ -89,7 +89,7 @@ module.exports = (db, Delivery, Borrow, Credit, Purchase, Gallon, Schedule) => {
         const bulksOpsForReturn = items?.map((item) => {
           return {
             updateOne: {
-              filter: { admin, customer, gallon: item?.gallon },
+              filter: { admin, customer, gallon: item?.gallon, },
               update: {
                 $inc: { total: -item?.return || 0 },
               },

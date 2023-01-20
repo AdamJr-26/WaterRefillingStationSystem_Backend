@@ -5,8 +5,7 @@ module.exports = (Personel) => {
         const filter = {
           gmail: payload.gmail,
         };
-        const personel = await Personel.findOne(filter)
-          .exec();
+        const personel = await Personel.findOne(filter).exec();
         return { personel };
       } catch (personel_error) {
         return { personel_error };
@@ -28,16 +27,51 @@ module.exports = (Personel) => {
 
     getProfile: async (payload) => {
       try {
-        const filter = payload;
-        const data = await Personel.findOne(filter)
-          .select(["-password"])
-          .exec();
-        return { data };
+
+        const pipeline = [
+          {
+            $match: {
+              _id: payload?.userId,
+              gmail: payload?.gmail,
+            },
+          },
+          // issue: information ng admin at wrs ay magkasama, pwedeng mafetch pati admin info like password.
+          {
+            $lookup: {
+              from: "admins",
+              localField: "admin",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    address: 1,
+                    wrs_name: 1,
+                    dispay_photo: 1,
+                  },
+                },
+              ],
+              as: "adminInfo",
+            },
+          },
+          {
+            $project: {
+              password: 0,
+              cloudinary: 0,
+              createdAt: 0,
+              updatedAt: 0,
+              status: 0,
+              verified: 0,
+            },
+          },
+        ];
+        const data = await Personel.aggregate(pipeline);
+        console.log("datadatadata", JSON.stringify(data));
+        return { data: data[0] };
       } catch (error) {
         return { error };
       }
     },
-    
+
     getPersonelsByAdminId: async (payload) => {
       try {
         const filter = {

@@ -2,7 +2,10 @@ const query = require("../../data-access/query/index");
 const mutation = require("../../data-access/mutation/index");
 const transaction = require("../../data-access/transaction/index");
 const responseUtil = require("../../utils/server.responses.util");
-const { uploadImage } = require("../../utils/file.cloud.uploader.util");
+const {
+  uploadImage,
+  deleteFiles,
+} = require("../../utils/file.cloud.uploader.util");
 const crypto = require("crypto");
 const signIn = require("../../utils/jwt.sign");
 const getAdminId = require("../../utils/getAdminId");
@@ -13,7 +16,8 @@ module.exports = {
     query,
     mutation,
     responseUtil,
-    uploadImage
+    uploadImage,
+    deleteFiles
   ),
   ...require("./admin/inventory.controller")(
     query,
@@ -122,6 +126,12 @@ module.exports = {
     responseUtil
   ),
   ...require("./general/purchase.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./general/credits.receipts.controller")(
     query,
     mutation,
     getAdminId,

@@ -79,5 +79,88 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
         );
       }
     },
+    getAllCreditsAccountReceivable: async (req, res) => {
+      const admin = getAdminId(req);
+
+      const { data, error } = await query.getAllCreditsAccountReceivable({
+        admin,
+      });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get all customers account receivable",
+          data,
+          "get_account_receivable"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Oops something went wrong, please try again",
+          "get_account_receivable"
+        );
+      }
+    },
+    getCreditsByPaginationAndDate: async (req, res) => {
+      const admin = getAdminId(req);
+      const { limit, skip, from, to } = req.params;
+      const { data, error } = await query.getCreditsByPaginationAndDate({
+        admin,
+        limit,
+        skip,
+        from,
+        to,
+      });
+      console.log("from to", from, to);
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get all customers account receivable",
+          data,
+          "get_account_receivable"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Oops something went wrong, please try again",
+          "get_account_receivable"
+        );
+      }
+    },
+    getCreditInfo: async (req, res) => {
+      const admin = getAdminId(req);
+      const { customer_id, credit_id } = req.params;
+      console.log("customer_id, credit_id ", customer_id, credit_id);
+      const { data, error } = await query.getCreditInfo({
+        admin,
+        customer_id,
+        credit_id,
+      });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get credit info",
+          data,
+          "get_credit_info"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Oops something went wrong, please try again",
+          "get_credit_info"
+        );
+      }
+    },
   };
 };

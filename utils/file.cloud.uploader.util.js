@@ -49,6 +49,34 @@ const uploadImage = async (desitination, files) => {
     return { error };
   }
 };
+async function deleteFiles(files) {
+  try {
+    let deleteResults = null;
+    let deletePromises = [];
+
+    files.forEach((file) => {
+      deletePromises.push(
+        cloudinary.uploader
+          .destroy(file.publicId, "image") // it destroys specific mimetypes which is "image"
+          .then((result) => {
+            deleteResults = result;
+          })
+          .catch((error) => {
+            throw error;
+          })
+      );
+    });
+
+    return await Promise.all(deletePromises).then(() => {
+      return deleteResults;
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 module.exports = {
   uploadImage,
+  deleteFiles,
 };

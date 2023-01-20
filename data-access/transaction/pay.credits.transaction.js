@@ -7,15 +7,20 @@ module.exports = (db, Credit, PayCreditReceipt) => {
         const credit = await Credit.findOneAndUpdate(
           {
             _id: credit_id,
+            total: { $gte: Math.floor(payload?.totalGallonToPay) },
           },
+
           {
-            $inc: { total: -Number(payload?.totalGallonToPay) },
+            $inc: { total: -Math.floor(Number(payload?.totalGallonToPay)) },
+            $set: {
+              "date.unix_timestamp": Math.floor(new Date().valueOf() / 1000),
+              "date.utc_date": new Date(),
+            },
           },
           { returnOriginal: false }
         )
           .select(["customer", "_id", "gallon"])
           .exec();
-        console.log("credit", credit);
         if (!credit) {
           throw new Error("Cannot find customer's credit, please try again.");
         } else {

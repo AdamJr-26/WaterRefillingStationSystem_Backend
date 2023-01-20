@@ -4,7 +4,6 @@ module.exports =(query, responseUtil)=>{
            console.log("res.user getting admin profile", req.user)
            const gmail = req.user?.gmail;
             const admin = await query.getAdminProfile(gmail);
-            console.log("admin",admin)
             if (admin?.data && !admin.error) {
               responseUtil.generateServerResponse(
                 res,

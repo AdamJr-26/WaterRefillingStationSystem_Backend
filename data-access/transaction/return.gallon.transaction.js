@@ -8,9 +8,10 @@ module.exports = (db, Borrow, ReturnGallonReceipt) => {
         const borrow = await Borrow.findOneAndUpdate(
           {
             _id: borrow_id,
+            total: { $gte: Math.floor(payload?.gallonToReturn) },
           },
           {
-            $inc: { total: -Number(payload?.gallonToReturn) },
+            $inc: { total: -Math.floor(Number(payload?.gallonToReturn)) },
           },
           { returnOriginal: false }
         )

@@ -1,9 +1,10 @@
-module.exports = (query, mutation, responseUtil, uploadImage) => {
+module.exports = (query, mutation, responseUtil, uploadImage, deleteFiles) => {
   return {
     getPersonelProfile: async (req, res) => {
       console.log("get profile p[ersonel req.user", req.user);
       const userGmail = req.user?.gmail;
-      const personel = await query.getProfile({ gmail: userGmail });
+      const userId = req.user?._id;
+      const personel = await query.getProfile({ gmail: userGmail, userId, });
       if (personel?.data && !personel.error) {
         responseUtil.generateServerResponse(
           res,
@@ -35,7 +36,7 @@ module.exports = (query, mutation, responseUtil, uploadImage) => {
         const cloudinary = await uploadImage(
           {
             root: "user-storage/profile/personels",
-            userFolder: personel_id,
+            userFolder: personel_id.toString(),
           },
           [file]
         );
@@ -50,7 +51,11 @@ module.exports = (query, mutation, responseUtil, uploadImage) => {
             cloudinary: cloudinary.uploadResults[0],
           });
           // console.log("data", data);
+
           if (data && !error) {
+            // delete the old image from cloudinary.
+            const deleted_files = await deleteFiles([data?.cloudinary]);
+            console.log("deleted_files", deleted_files);
             responseUtil.generateServerResponse(
               res,
               200,

@@ -14,14 +14,14 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       };
 
       // before everything, first, we need to check if all gallons are still available.
-      const ArrayOfId = [];
-      const ArrayOfTotal = [];
-      for (let i = 0; i < items?.length; i++) {
-        if (items[i]?.gallon && items[i]?.total) {
-          ArrayOfId.push(items[i].gallon);
-          ArrayOfTotal.push(items[i].total);
-        }
-      }
+      // const ArrayOfId = [];
+      // const ArrayOfTotal = [];
+      // for (let i = 0; i < items?.length; i++) {
+      //   if (items[i]?.gallon && items[i]?.total) {
+      //     ArrayOfId.push(items[i].gallon);
+      //     ArrayOfTotal.push(items[i].total);
+      //   }
+      // }
       // it means all gallons are available
       // now  check if the delivery personel has already delivery;
       const isDeliveryExists = await query.getPersonelDelivery(

@@ -3,14 +3,12 @@ const mongoose = require("mongoose");
 module.exports = (Schedule, endOfDay, startOfDay) => {
   return {
     checkIfcustomerHasSchedule: async (payload) => {
-  
       try {
         const filter = {
           customer: payload?.customer?.toString(),
           admin: payload?.admin?.toString(),
         };
-        const data = await Schedule.find(filter)
-          .exec();
+        const data = await Schedule.find(filter).exec();
         console.log("schedules dataaaaaaaa", data);
         return { data };
       } catch (error) {
@@ -58,8 +56,6 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
             },
           },
           {
-            // para mahanap niya lang yung specific customer na may same address ->place
-            //
             $lookup: {
               from: "customers",
               localField: "customer",
@@ -97,12 +93,65 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
         ];
         const docs = await Schedule.aggregate(pipelines);
         for await (const doc of docs) {
-          for (let i = 0; i < doc?.fromItems.length; i++) {
-            doc.fromItems[i]["total"] = doc.items[i].total;
-          }
+          doc.fromItems.forEach((item, index) => {
+            item["total"] = doc.items[index].total;
+          });
         }
         return { data: docs };
       } catch (error) {
+        return { error };
+      }
+    },
+    getOutdatedSchedules: async ({ admin }) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+              assigned: false,
+              "schedule.utc_date": {
+                $lt: startOfDay(new Date()), // get a date from the user
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "customer",
+              foreignField: "_id",
+              as: "customer",
+            },
+          },
+          {
+            // para ipopulate yung items
+            $lookup: {
+              from: "gallons",
+              localField: "items.gallon",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    liter: 0,
+                    total: 0,
+                    borrowed: 0,
+                    price: 0,
+                  },
+                },
+              ],
+              as: "fromItems",
+            },
+          },
+        ];
+        const docs = await Schedule.aggregate(pipeline);
+        for await (const doc of docs) {
+          doc.fromItems.forEach((item, index) => {
+            item["total"] = doc.items[index].total;
+          });
+        }
+
+        return { data: docs };
+      } catch (error) {
+        console.log("errorerror", error);
         return { error };
       }
     },
