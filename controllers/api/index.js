@@ -137,4 +137,10 @@ module.exports = {
     getAdminId,
     responseUtil
   ),
+  ...require("./general/expenses.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
 };

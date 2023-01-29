@@ -15,6 +15,4 @@ const gallon = new mongoose.Schema({
     mimetype: { type: String },
   },
 });
-gallon.plugin(mongoosePaginate);
 module.exports = gallon;
-

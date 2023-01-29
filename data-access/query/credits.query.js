@@ -75,10 +75,6 @@ module.exports = (Credit) => {
       }
     },
     getCreditsByPaginationAndDate: async ({ admin, limit, skip, from, to }) => {
-      console.log(
-        "Math.floor(new Date(to).valueOf() / 1000)",
-        Math.floor(new Date(to).valueOf() / 1000)
-      );
       try {
         const match =
           from !== "null" && to !== "null"

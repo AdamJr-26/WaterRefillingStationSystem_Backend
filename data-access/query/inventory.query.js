@@ -1,33 +1,46 @@
+const mongoose = require("mongoose");
+
 module.exports = (Gallon, Vehicle) => {
   return {
     getGallons: async ({ adminId }) => {
-      // use population
-      // get borrowed_gallons and get gallon:objectId ref
-      // populate the gallon with object id from borrowed_gallon
-      //  get borrowed count per gallon
-      //
-      // try {
-      //   const filter = {
-      //     admin: adminId,
-      //   };
-      //   const data = await Gallon.find(filter)
-      //     .populate([
-      //       {
-      //         path: "borrowed.gallon",
-      //         model: "BorrowedGallon", // o rGallonBorrowed?
-      //         select: "total_item price_per_item ",
-      //       },
-      //     ])
-      //     .exec();
-      //   console.log("data", data);
-
-      //   return { data };
-      // } catch (error) {}
       try {
-        const filter = {
-          admin: adminId,
-        };
-        const data = await Gallon.find(filter).exec();
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(adminId),
+            },
+          },
+          {
+            $lookup: {
+              from: "borrows",
+              localField: "_id",
+              foreignField: "gallon",
+              pipeline: [
+                {
+                  $match: {
+                    total: { $gt: 0 },
+                  },
+                },
+                {
+                  $project: {
+                    total: 1,
+                    gallon: 1,
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$gallon",
+                    total_borrowed: {
+                      $sum: { $sum: "$total" },
+                    },
+                  },
+                },
+              ],
+              as: "borrowed",
+            },
+          },
+        ];
+        const data = await Gallon.aggregate(pipeline);
         return { data };
       } catch (error) {
         return { error };
@@ -80,7 +93,8 @@ module.exports = (Gallon, Vehicle) => {
         return { error };
       }
     },
-    checkIfAllGallonsAreAvailable: async ({ // not used/ still have bug
+    checkIfAllGallonsAreAvailable: async ({
+      // not used/ still have bug
       admin,
       ArrayOfId,
       selected,
@@ -93,9 +107,9 @@ module.exports = (Gallon, Vehicle) => {
         const filter = {
           admin: admin,
           _id: ArrayOfId,
-          total: {$gte: ArrayOfTotal},
+          total: { $gte: ArrayOfTotal },
         };
-        
+
         const data = await Gallon.find(filter).select(selected).exec();
         return { data };
       } catch (error) {

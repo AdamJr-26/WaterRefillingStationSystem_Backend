@@ -4,5 +4,5 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 
-router.post("/expense", authenticate, apiController)
-module.exports = {router}
+router.post("/expense", authenticate, apiController.createNewReportExpense);
+module.exports = { router };

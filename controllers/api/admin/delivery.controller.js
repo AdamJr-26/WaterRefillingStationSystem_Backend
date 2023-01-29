@@ -2,10 +2,10 @@ module.exports = (query, mutation, transaction, responseUtil, getAdminId) => {
   return {
     getPopulatedDeliveries: async (req, res) => {
       const admin = getAdminId(req);
-      const isApproved = false
+      const isApproved = false;
       const { data, error } = await query.getPopulatedDeliveries({
         admin: admin,
-        isApproved
+        isApproved,
       });
 
       if (data && !error) {
@@ -32,7 +32,7 @@ module.exports = (query, mutation, transaction, responseUtil, getAdminId) => {
       const admin = getAdminId(req);
       const payload = req.body;
       const { success, error } = await transaction.acceptDelivery(payload);
-      console.log("error", error)
+      console.log("error", error);
       if (success && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -49,6 +49,59 @@ module.exports = (query, mutation, transaction, responseUtil, getAdminId) => {
           "Error",
           error,
           "accept delivery"
+        );
+      }
+    },
+    getOngoingDeliveries: async (req, res) => {
+      const admin = getAdminId(req);
+      const { data, error } = await query.getOngoingDeliveries({ admin });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "ge all ongoing deliveries",
+          data,
+          "ongoing_delivery"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          error,
+          "ongoing_delivery"
+        );
+      }
+    },
+    getFinishedDeliveries: async (req, res) => {
+      const admin = getAdminId(req);
+      const { from, to, skip, limit } = req.params;
+
+      const { data, error } = await query.getFinishedDeliveries({
+        admin,
+        from,
+        to,
+        limit,
+        skip,
+      });
+      console.log("error:", error);
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get finished deliveries",
+          data,
+          "finished_delivery"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          error,
+          "finished_delivery"
         );
       }
     },

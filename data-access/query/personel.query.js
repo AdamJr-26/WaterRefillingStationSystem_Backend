@@ -27,7 +27,6 @@ module.exports = (Personel) => {
 
     getProfile: async (payload) => {
       try {
-
         const pipeline = [
           {
             $match: {
@@ -88,6 +87,7 @@ module.exports = (Personel) => {
             "status",
             "gmail",
             "nickname",
+            "display_photo",
           ])
           .exec();
         return { data };

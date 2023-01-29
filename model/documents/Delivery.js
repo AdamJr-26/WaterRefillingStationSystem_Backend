@@ -18,6 +18,12 @@ const delivery = new mongoose.Schema({
     },
     utc_date: { type: Date, default: () => new Date() },
   },
+  finished_date: {
+    unix_timestamp: {
+      type: Number,
+    },
+    utc_date: { type: Date },
+  },
   approved: { type: Boolean, default: false },
   approved_date: { type: Number },
   returned: { type: Boolean, default: false },

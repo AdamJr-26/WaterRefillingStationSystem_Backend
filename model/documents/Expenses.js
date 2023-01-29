@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 
 const expense = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "admin" },
-  delivery_personel: { type: mongoose.Types.ObjectId, ref: "Personel" },
-  expense_name: { type: String },
+  delivery_personnel: { type: mongoose.Types.ObjectId, ref: "Personel" },
+  expense_title: { type: String },
   amount: { type: Number },
+  description: { type: String },
   date: {
     unix_timestamp: {
       type: Number,

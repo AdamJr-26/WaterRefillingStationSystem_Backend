@@ -27,5 +27,35 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         );
       }
     },
+    getCustomersStatus: async (req, res) => {
+      const admin = getAdminId(req);
+      const { limit, skip, search, sort, exists_only } = req.params;
+      const { data, error } = await query.getCustomersStatus({
+        admin,
+        limit,
+        skip,
+        search,
+        sort,
+        exists_only,
+      });
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get customers",
+          data,
+          "get_customers"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "get customers failed, please try again",
+          "get_customers"
+        );
+      }
+    },
   };
 };

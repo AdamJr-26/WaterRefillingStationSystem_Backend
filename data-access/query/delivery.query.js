@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
   return {
     getPersonelDelivery: async (payload, selected) => {
@@ -193,6 +195,162 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
         return { data };
       } catch (error) {
         console.log("[error]", error);
+        return { error };
+      }
+    },
+    getOngoingDeliveries: async ({ admin }) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+              approved: true,
+              returned: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "vehicles",
+              localField: "vehicle",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    vehicle_name: 1,
+                    vehicle_image: 1,
+                    vehicle_id: 1,
+                  },
+                },
+              ],
+              as: "vehicle",
+            },
+          },
+          {
+            $lookup: {
+              from: "personels", // personnels
+              localField: "delivery_personel",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    firstname: 1,
+                    lastname: 1,
+                    gender: 1,
+                    contact_number: 1,
+                    display_photo: 1,
+                  },
+                },
+              ],
+              as: "delivery_personnel",
+            },
+          },
+          {
+            $project: {
+              delivery_items: 0,
+            },
+          },
+        ];
+        const data = await Delivery.aggregate(pipeline);
+        return { data };
+      } catch (error) {
+        return { error };
+      }
+    },
+    getFinishedDeliveries: async ({ admin, from, to , skip, limit}) => {
+      try {
+        const match =
+          from != "null" && to != "null"
+            ? {
+                $match: {
+                  admin: mongoose.Types.ObjectId(admin),
+                  returned: true,
+                  approved: true,
+                  $expr: {
+                    $and: [
+                      {
+                        $gte: [
+                          "$finished_date.unix_timestamp",
+                          Math.floor(new Date(from).valueOf() / 1000),
+                        ],
+                      },
+                      {
+                        $lte: [
+                          "$finished_date.unix_timestamp",
+                          Math.floor(new Date(to).valueOf() / 1000),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              }
+            : {
+                $match: {
+                  admin: mongoose.Types.ObjectId(admin),
+                  returned: true,
+                  approved: true,
+                  "finished_date.utc_date": {
+                    $gte: startOfDay(new Date()),
+                    $lte: endOfDay(new Date()),
+                  },
+                },
+              };
+        const pipeline = [
+          match,
+          {
+            $sort: { "finished_date.unix_timestamp": 1 },
+          },
+          {
+            $skip: Number(skip),
+          },
+          {
+            $limit: Number(limit),
+          },
+          {
+            $lookup: {
+              from: "vehicles",
+              localField: "vehicle",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    vehicle_name: 1,
+                    vehicle_image: 1,
+                    vehicle_id: 1,
+                  },
+                },
+              ],
+              as: "vehicle",
+            },
+          },
+          {
+            $lookup: {
+              from: "personels", // personnels
+              localField: "delivery_personel",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    firstname: 1,
+                    lastname: 1,
+                    gender: 1,
+                    contact_number: 1,
+                    display_photo: 1,
+                  },
+                },
+              ],
+              as: "delivery_personnel",
+            },
+          },
+          {
+            $project: {
+              delivery_items: 0,
+            },
+          },
+        ];
+        const data = await Delivery.aggregate(pipeline);
+        console.log("data---", data);
+        return { data };
+      } catch (error) {
         return { error };
       }
     },

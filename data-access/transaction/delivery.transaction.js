@@ -9,7 +9,13 @@ module.exports = (db, Delivery, Gallon, Vehicle) => {
           _id: delivery_id,
         };
         const update = {
-          $set: { returned: true },
+          $set: {
+            returned: true,
+            finished_date: {
+              unix_timestamp: Math.floor(new Date().valueOf() / 1000),
+              utc_date: new Date(),
+            },
+          },
         };
         const data = await Delivery.findOneAndUpdate(filter, update, {
           returnOriginal: false,

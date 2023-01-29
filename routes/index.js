@@ -52,6 +52,8 @@ router.use("/api", require("./api/api.purchase.routes").router);
 
 router.use("/api", require("./api/api.credits.receipt.routes").router);
 
+// expenses
+router.use("/api", require("./api/api.expense.routes").router);
 module.exports = {
   router,
 };

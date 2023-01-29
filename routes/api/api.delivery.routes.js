@@ -38,7 +38,17 @@ router.get(
   authenticate,
   apiController.getRecentDeliveries
 );
+router.get(
+  "/deliveries/ongoing",
+  authenticate,
+  apiController.getOngoingDeliveries
+);
 
+router.get(
+  "/deliveries/finished/:from/:to/:limit/:skip",
+  authenticate,
+  apiController.getFinishedDeliveries
+);
 module.exports = {
   router,
 };
