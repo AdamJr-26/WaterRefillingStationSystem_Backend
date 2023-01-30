@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
-module.exports = (db, Delivery, Borrow, Credit, Purchase, Gallon, Schedule) => {
+module.exports = (
+  db,
+  Delivery,
+  Borrow,
+  Credit,
+  Purchase,
+  Gallon,
+  Schedule,
+  PayCreditReceipt
+) => {
   return {
     deliverOrderByScheduleTransaction: async ({ purchase }) => {
       // includes transaction, session
@@ -29,10 +38,15 @@ module.exports = (db, Delivery, Borrow, Credit, Purchase, Gallon, Schedule) => {
           },
           {
             $group: {
-              _id: "$customer",
+              _id: "$customer", // should I use $items.gallon?
               total_debt: { $sum: { $multiply: ["$price", "$total"] } },
               all_gallons: {
-                $push: { gallon_id: "$gallon" },
+                $push: {
+                  gallon_id: "$gallon",
+                  price: "$price",
+                  total: "$total",
+                  credit_id: "$_id",
+                },
               },
             },
           },
@@ -42,6 +56,7 @@ module.exports = (db, Delivery, Borrow, Credit, Purchase, Gallon, Schedule) => {
         // if order to pay is equal to total_payment just paying for "order to pay"
         // if total_payment is equal to order_to_pay + total_debt then create payment.
         // else throw error "cannot accept payment"
+        console.log("gallons", gallons);
         if (
           total_payment != order_to_pay &&
           total_payment ==
@@ -59,6 +74,20 @@ module.exports = (db, Delivery, Borrow, Credit, Purchase, Gallon, Schedule) => {
             };
           });
           await Credit.bulkWrite(bulkOpsForPayCreditPerGallon);
+          // create credit receipt.
+          gallons.forEach(async (gallon) => {
+            const receipt = new PayCreditReceipt({
+              admin: admin,
+              customer: customer,
+              credit: gallon.credit_id,
+              amount_paid: gallon.total * gallon.price,
+              gallon_count: gallon?.total,
+            });
+            await receipt.save((error) => {
+              if (error)
+                new Error("Something went wrong, please try again.");
+            });
+          });
         } else if (
           total_payment < order_to_pay ||
           (total_payment > order_to_pay &&
@@ -89,7 +118,7 @@ module.exports = (db, Delivery, Borrow, Credit, Purchase, Gallon, Schedule) => {
         const bulksOpsForReturn = items?.map((item) => {
           return {
             updateOne: {
-              filter: { admin, customer, gallon: item?.gallon, },
+              filter: { admin, customer, gallon: item?.gallon },
               update: {
                 $inc: { total: -item?.return || 0 },
               },

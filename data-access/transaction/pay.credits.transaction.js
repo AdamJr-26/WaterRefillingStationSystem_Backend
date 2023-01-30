@@ -22,8 +22,9 @@ module.exports = (db, Credit, PayCreditReceipt) => {
           .select(["customer", "_id", "gallon"])
           .exec();
         if (!credit) {
-          throw new Error("Cannot find customer's credit, please try again.");
+          new Error("Cannot find customer's credit, please try again.");
         } else {
+          console.log("paying credits.....");
           const receipt = new PayCreditReceipt({
             admin: admin,
             customer: credit?.customer,
@@ -31,10 +32,11 @@ module.exports = (db, Credit, PayCreditReceipt) => {
             amount_paid: payload?.totalAmountToPay,
             gallon_count: payload?.totalGallonToPay,
           });
+          // add personnel id
           await receipt.save((error) => {
-            if (error)
-              throw new Error("Something went wrong, please try again.");
+            if (error) new Error("Something went wrong, please try again.");
           });
+          console.log("receipt", receipt);
           session.endSession();
           return { data: receipt };
         }

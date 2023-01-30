@@ -38,8 +38,15 @@ module.exports = {
     responseUtil,
     signIn
   ),
-  ...require("./admin/personels.controller")(query, responseUtil),
+  ...require("./admin/personnels.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
   ...require("./admin/admin.profile.controller")(query, responseUtil),
+
+  
   ...require("./personel/delivery.controller")(
     query,
     mutation,
@@ -138,6 +145,14 @@ module.exports = {
     responseUtil
   ),
   ...require("./general/expenses.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+
+  // reports
+  ...require("./admin/reports.controller")(
     query,
     mutation,
     getAdminId,

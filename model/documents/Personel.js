@@ -17,7 +17,7 @@ module.exports = mongoose.Schema({
   role: { type: String, default: "Personel" },
   applyId: { type: String },
   apply_date: { type: Date },
-  status: { type: String, default: "available" },
+  on_delivery: { type: Boolean, default: true },
   display_photo: {
     type: String,
     default:

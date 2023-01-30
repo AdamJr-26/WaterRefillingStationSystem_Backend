@@ -57,7 +57,7 @@ const sendEmail = async (
         console.log("error", err);
       } else {
         var emailOptions = {
-          from: "wrss_devs@gmail.com",
+          from: "adamcompiomarcaida@gmail.com",
           to: receiver,
           subject: subject,
           html: data,

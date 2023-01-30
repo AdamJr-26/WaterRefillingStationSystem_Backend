@@ -20,8 +20,8 @@ router.use("/api", require("./api/api.inventory.routes").router);
 // employee
 router.use("/api", require("./api/api.employee.routes").router);
 
-// personel
-router.use("/api", require("./api/api.personel.routes").router);
+// personnel
+router.use("/api", require("./api/api.personnel.routes").router);
 
 // delivery
 router.use("/api", require("./api/api.delivery.routes").router);
@@ -54,6 +54,10 @@ router.use("/api", require("./api/api.credits.receipt.routes").router);
 
 // expenses
 router.use("/api", require("./api/api.expense.routes").router);
+
+// reports
+router.use("/api", require("./api/api.reports.routes").router);
+
 module.exports = {
   router,
 };

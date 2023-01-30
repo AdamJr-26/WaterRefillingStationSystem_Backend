@@ -23,4 +23,5 @@ module.exports = {
   ...require("./schedule/schedule.mutation")(db, Schedule),
   ...require("./discount/discount.mutation")(Discount),
   ...require("./expenses/expenses.mutation")(Expense),
+  
 };

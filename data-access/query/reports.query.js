@@ -1,0 +1,269 @@
+const mongoose = require("mongoose");
+module.exports = (
+  Admin,
+  Purchase,
+  PayCreditReceipt,
+  startOfMonth,
+  endOfMonth
+) => {
+  return {
+    getPurchasesReport: async ({ date, admin }) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              _id: mongoose.Types.ObjectId(admin),
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+            },
+          },
+
+          {
+            $lookup: {
+              from: "purchases",
+              localField: "_id",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $gte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              startOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                        {
+                          $lte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              endOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+                // group by day
+                {
+                  $group: {
+                    _id: { $dayOfMonth: "$date.utc_date" },
+                    purchases: {
+                      $sum: {
+                        $sum: "$items.orders",
+                      },
+                    },
+                    total_orders_paid_unpaid_amount: {
+                      $sum: {
+                        $multiply: [
+                          { $sum: "$items.orders" },
+                          {
+                            $sum: "$items.price",
+                          },
+                        ],
+                      },
+                    },
+                    paid_orders: {
+                      $sum: {
+                        $subtract: [
+                          { $sum: "$items.orders" },
+                          { $sum: "$items.credit" },
+                        ],
+                      },
+                    },
+                    paid_orders_amount: {
+                      $sum: {
+                        $multiply: [
+                          {
+                            $subtract: [
+                              { $sum: "$items.orders" },
+                              { $sum: "$items.credit" },
+                            ],
+                          },
+                          {
+                            $sum: "$items.price",
+                          },
+                        ],
+                      },
+                    },
+                    credited_gallon: {
+                      $sum: {
+                        $sum: "$items.credit",
+                      },
+                    },
+                    credited_amount: {
+                      $sum: {
+                        $multiply: [
+                          { $sum: "$items.credit" },
+                          { $sum: "$items.price" },
+                        ],
+                      },
+                    },
+                  },
+                },
+                // group by month
+                {
+                  $sort: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "purchases",
+            },
+          },
+
+          //   expenses
+          {
+            $lookup: {
+              from: "expenses",
+              localField: "_id",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $gte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              startOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                        {
+                          $lte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              endOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: { $dayOfMonth: "$date.utc_date" },
+                    amount: {
+                      $sum: { $sum: "$amount" },
+                    },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "expenses",
+            },
+          },
+          //   pay credits receipts
+          {
+            $lookup: {
+              from: "paycreditreceipts",
+              localField: "_id",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $gte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              startOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                        {
+                          $lte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              endOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: { $dayOfMonth: "$date.utc_date" },
+                    amount_paid: {
+                      $sum: "$amount_paid",
+                    },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "paid_credits",
+            },
+          },
+          {
+            $project: {
+              purchases: 1,
+              expenses: 1,
+              paid_credits: 1,
+              sales: 1,
+              total_purchased_product: {
+                $sum: "$purchases.purchases",
+              },
+              total_paid_product: {
+                $sum: "$purchases.paid_orders",
+              },
+              total_paid_product_amount: {
+                $sum: "$purchases.paid_orders_amount",
+              },
+              total_unpaid_amount: {
+                $sum: "$purchases.credited_amount",
+              },
+              total_sales: {
+                $sum: "$purchases.total_orders_paid_unpaid_amount",
+              },
+              total_expenses: {
+                $sum: "$expenses.amount",
+              },
+              debt_payment_received: {
+                $sum: "$paid_credits.amount_paid",
+              },
+              profit: {
+                $subtract: [
+                  {
+                    $sum: [
+                      { $sum: "$purchases.paid_orders_amount" },
+                      { $sum: "$paid_credits.amount_paid" },
+                    ],
+                  },
+                  { $sum: "$expenses.amount" },
+                ],
+              },
+            },
+          },
+        ];
+
+        const data = await Admin.aggregate(pipeline);
+        // console.log("data", JSON.stringify(data));
+        return { data };
+      } catch (error) {
+        // console.log("errrrrrrrrrr", error);
+        return { error };
+      }
+    },
+  };
+};

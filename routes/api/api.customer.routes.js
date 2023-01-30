@@ -37,4 +37,5 @@ router.get(
   authenticate,
   apiController.getCustomersStatus
 );
+
 module.exports = { router };

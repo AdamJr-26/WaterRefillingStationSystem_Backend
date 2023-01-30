@@ -14,14 +14,14 @@ const {
   Purchase,
   PayCreditReceipt,
 } = require("../../model/index");
-const endOfDay = require("date-fns/endOfDay");
-const startOfDay = require("date-fns/startOfDay");
+
+const { startOfMonth, endOfMonth, startOfDay, endOfDay } = require("date-fns");
 
 module.exports = {
   ...require("./admin.query")(Admin),
   ...require("./inventory.query")(Gallon, Vehicle),
   ...require("./otp.query")(OTP),
-  ...require("./personel.query")(Personel),
+  ...require("./personnel.query")(Personel),
   ...require("./address.query")(Address),
   ...require("./delivery.query")(Delivery, Purchase, endOfDay, startOfDay),
   ...require("./customer.query")(Customer),
@@ -31,4 +31,16 @@ module.exports = {
   ...require("./borrow.query")(Borrow),
   ...require("./purchase.query")(Purchase),
   ...require("./credits.receipt.query")(PayCreditReceipt),
+  ...require("./reports.query")(
+    Admin,
+    Purchase,
+    PayCreditReceipt,
+    startOfMonth,
+    endOfMonth
+  ),
+  ...require("./statistics/personnel.query")(
+    Personel,
+    startOfMonth,
+    endOfMonth
+  ),
 };

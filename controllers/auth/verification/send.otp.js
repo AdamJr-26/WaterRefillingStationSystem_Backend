@@ -60,7 +60,7 @@ module.exports = (
             await sendOTP({
               receiver: receiver,
               firstname: firstname,
-              subject: "Forgot Passwort OTP",
+              subject: "Verify Account",
               title: "One Time Password",
               content:
                 "This is your one time password, it will be expired in 3 minutes.",

@@ -13,7 +13,19 @@ router.put(
   apiController.personelAcceptApplyId
 );
 
-router.put("/personel/display-photo", authenticate, upload.array("image"), apiController.updatePersonelProfilePicture);
+router.put(
+  "/personel/display-photo",
+  authenticate,
+  upload.array("image"),
+  apiController.updatePersonelProfilePicture
+);
+
+router.get(
+  "/personnel/sales/achievements/:date/:top",
+  authenticate,
+  apiController.getPersonnelsSalesAchievements
+);
+
 module.exports = {
   router,
 };
