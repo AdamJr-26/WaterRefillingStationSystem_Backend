@@ -5,15 +5,9 @@ const {
 } = require("../../middlewares/passport.authenticate.middleware");
 
 router.get(
-  "/delivery/summary/:delivery_id",
+  "/return/history/:limit/:skip/:from/:to/:customer",
   authenticate,
-  apiController.getSummaryOfDeliveryFromPurchases
-);
-
-router.get(
-  "/purchase/history/:limit/:skip/:from/:to/:customer",
-  authenticate,
-  apiController.getPurchasesHistoryByCustomerId
+  apiController.getReturnReceipts
 );
 
 module.exports = {

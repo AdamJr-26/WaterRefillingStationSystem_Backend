@@ -4,11 +4,12 @@ module.exports = (Personnel, startOfMonth, endOfMonth) => {
   return {
     getPersonnelsSalesAchievements: async ({ admin, date, top }) => {
       try {
+        console.log(" admin, date, top ",  admin, date, top )
         const pipeline = [
           {
             $match: {
               admin: monogoose.Types.ObjectId(admin),
-              position: "Delivery Personel",
+              position: "Delivery Personel", //Delivery Personnel
             },
           },
           {
@@ -138,7 +139,6 @@ module.exports = (Personnel, startOfMonth, endOfMonth) => {
           },
           {
             $match: {
-              "deliveries.total_deliveries": { $gt: 0 },
               "purchases.sales": { $gt: 0 },
             },
           },
@@ -152,7 +152,7 @@ module.exports = (Personnel, startOfMonth, endOfMonth) => {
           },
         ];
         const data = await Personnel.aggregate(pipeline);
-        console.log("data", JSON.stringify(data));
+        console.log("data-----------------", JSON.stringify(data));
         return { data };
       } catch (error) {
         console.log("error", error);

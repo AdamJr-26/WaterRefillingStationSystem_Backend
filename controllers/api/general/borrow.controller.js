@@ -57,12 +57,13 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
     },
     returnGallon: async (req, res) => {
       const admin = getAdminId(req);
-      const { borrow_id } = req.params;
+      const { borrow_id, gallon_id } = req.params;
       const payload = req.body;
       const { data, error } = await transaction.returnBorrowedGallon({
         admin,
         borrow_id,
         payload,
+        gallon_id,
       });
       if (data && !error) {
         responseUtil.generateServerResponse(

@@ -49,5 +49,93 @@ module.exports = (Purchase) => {
         return { error };
       }
     },
+    getPurchasesHistoryByCustomerId: async ({
+      admin,
+      customer,
+      from,
+      to,
+      skip,
+      limit,
+    }) => {
+      try {
+        const match =
+          from !== "null" && to !== "null"
+            ? {
+                $match: {
+                  admin: mongoose.Types.ObjectId(admin),
+                  customer: mongoose.Types.ObjectId(customer),
+                  $expr: {
+                    $and: [
+                      {
+                        $gte: [
+                          "$date.unix_timestamp",
+                          Math.floor(new Date(from).valueOf() / 1000),
+                        ],
+                      },
+                      {
+                        $lte: [
+                          "$date.unix_timestamp",
+                          Math.floor(new Date(to).valueOf() / 1000),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              }
+            : {
+                $match: {
+                  admin: mongoose.Types.ObjectId(admin),
+                  customer: mongoose.Types.ObjectId(customer),
+                },
+              };
+
+        const pipeline = [
+          match,
+          {
+            $sort: { "date.unix_timestamp": 1 },
+          },
+          {
+            $skip: Number(skip),
+          },
+          {
+            $limit: Number(limit),
+          },
+          // {
+          //   $lookup: {
+          //     from: "gallons",
+          //     localField: "items.gallon",
+          //     foreignField: "_id",
+          //     pipeline: [
+          //       {
+          //         $project: {
+          //           name: 1,
+          //           gallon_image: 1,
+          //         },
+          //       },
+          //     ],
+          //     as: "items.gallon",
+          //   },
+          // },
+          {
+            $project: {
+              items: 1,
+              total_orders: {
+                $sum: "$items.orders",
+              },
+              total_payment: 1,
+              order_to_pay: 1,
+              debt_payment: 1,
+              date: 1,
+            },
+          },
+        ];
+        const data = await Purchase.aggregate(pipeline);
+        console.log("[data-purchase-history]", data);
+        return { data };
+      } catch (error) {
+        console.log("[data-purchase-history]", error);
+        return { error };
+      }
+    },
   };
 };

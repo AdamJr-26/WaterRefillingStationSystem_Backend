@@ -1,7 +1,8 @@
 module.exports = (db, Borrow, ReturnGallonReceipt) => {
   return {
-    returnBorrowedGallon: async ({ admin, borrow_id, payload }) => {
+    returnBorrowedGallon: async ({ admin, borrow_id, payload , gallon_id}) => {
       const session = await db.startSession();
+      console.log("gallon_id", gallon_id)
       try {
         session.startTransaction();
 
@@ -19,17 +20,18 @@ module.exports = (db, Borrow, ReturnGallonReceipt) => {
           .exec();
 
         if (!borrow) {
-          throw new Error("Borrow gallons was not found; please try again.");
+           new Error("Borrow gallons was not found; please try again.");
         } else {
           const receipt = new ReturnGallonReceipt({
             admin: admin,
             customer: borrow?.customer,
             borrow: borrow?._id,
             total_returned: payload?.gallonToReturn,
+            gallon: gallon_id,
           });
           await receipt.save((error) => {
             if (error)
-              throw new Error("Something went wrong, please try again.");
+               new Error("Something went wrong, please try again.");
           });
           session.endSession();
           return { data: receipt };

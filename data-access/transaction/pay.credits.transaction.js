@@ -23,12 +23,15 @@ module.exports = (db, Credit, PayCreditReceipt) => {
           .exec();
         if (!credit) {
           new Error("Cannot find customer's credit, please try again.");
+          session.endSession();
+          return { data: null };
         } else {
           console.log("paying credits.....");
           const receipt = new PayCreditReceipt({
             admin: admin,
             customer: credit?.customer,
             credit: credit?._id,
+            gallon: payload?.gallon_id,
             amount_paid: payload?.totalAmountToPay,
             gallon_count: payload?.totalGallonToPay,
           });

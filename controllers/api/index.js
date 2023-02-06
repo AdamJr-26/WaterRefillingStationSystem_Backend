@@ -46,7 +46,6 @@ module.exports = {
   ),
   ...require("./admin/admin.profile.controller")(query, responseUtil),
 
-  
   ...require("./personel/delivery.controller")(
     query,
     mutation,
@@ -153,6 +152,12 @@ module.exports = {
 
   // reports
   ...require("./admin/reports.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  ...require("./general/return.controller")(
     query,
     mutation,
     getAdminId,

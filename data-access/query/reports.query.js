@@ -216,11 +216,45 @@ module.exports = (
             },
           },
           {
+            $lookup: {
+              from: "credits",
+              localField: "_id",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    total: { $gt: 0 },
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$customer",
+                    unpaid_credits_amount: {
+                      $sum: {
+                        $sum: {
+                          $multiply: ["$price", "$total"],
+                        },
+                      },
+                    },
+                    credits_gallon_count: {
+                      $sum: "$total",
+                    },
+                    credits_people: {
+                      $sum: 1,
+                    },
+                  },
+                },
+              ],
+              as: "credits",
+            },
+          },
+          {
             $project: {
               purchases: 1,
               expenses: 1,
               paid_credits: 1,
               sales: 1,
+              credits: 1,
               total_purchased_product: {
                 $sum: "$purchases.purchases",
               },
@@ -233,6 +267,9 @@ module.exports = (
               total_unpaid_amount: {
                 $sum: "$purchases.credited_amount",
               },
+              total_credited_gallons_count: {
+                $sum: "$purchases.credited_gallon",
+              },
               total_sales: {
                 $sum: "$purchases.total_orders_paid_unpaid_amount",
               },
@@ -242,15 +279,19 @@ module.exports = (
               debt_payment_received: {
                 $sum: "$paid_credits.amount_paid",
               },
-              profit: {
-                $subtract: [
-                  {
-                    $sum: [
-                      { $sum: "$purchases.paid_orders_amount" },
-                      { $sum: "$paid_credits.amount_paid" },
-                    ],
-                  },
-                  { $sum: "$expenses.amount" },
+              total_credits_gallon_count : {
+                $sum : "$credits.credits_gallon_count"
+              },
+              total_credits_amount: {
+                $sum: "$credits.unpaid_credits_amount",
+              },
+              total_customers_with_credit: {
+                $sum: "$credits.credits_people",
+              },
+              paidProducts: {
+                $sum: [
+                  { $sum: "$purchases.paid_orders_amount" },
+                  { $sum: "$paid_credits.amount_paid" },
                 ],
               },
             },
@@ -258,10 +299,10 @@ module.exports = (
         ];
 
         const data = await Admin.aggregate(pipeline);
-        // console.log("data", JSON.stringify(data));
+        console.log("data", JSON.stringify(data));
         return { data };
       } catch (error) {
-        // console.log("errrrrrrrrrr", error);
+        console.log("errrrrrrrrrr", error);
         return { error };
       }
     },

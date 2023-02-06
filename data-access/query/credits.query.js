@@ -133,7 +133,7 @@ module.exports = (Credit) => {
                   },
                 },
               ],
-              as: "customer",
+              as: "customer_info",
             },
           },
         ];
@@ -172,10 +172,26 @@ module.exports = (Credit) => {
             },
           },
           {
+            $lookup: {
+              from: "customers",
+              localField: "customer",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    firstname: 1,
+                    lastname: 1,
+                    address: 1,
+                  },
+                },
+              ],
+              as: "customer",
+            },
+          },
+          {
             $project: {
               date: 0,
               delivery: 0,
-              customer: 0,
               admin: 0,
             },
           },

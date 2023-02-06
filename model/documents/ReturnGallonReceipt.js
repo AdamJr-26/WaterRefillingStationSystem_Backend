@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const return_gallon_receipt = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   customer: { type: mongoose.Types.ObjectId, ref: "Customer" },
-  borrow: { type: mongoose.Types.ObjectId, ref: "Borrow", index: true },
+  borrow: { type: mongoose.Types.ObjectId, ref: "Borrow" },
+  gallon: { type: mongoose.Types.ObjectId, ref: "Gallon" },
   total_returned: { type: Number },
   date: {
     unix_timestamp: {

@@ -103,6 +103,7 @@ module.exports = (Customer) => {
               lastname: 1,
               mobile_number: 1,
               customer_type: 1,
+              address: 1,
               _id: 1,
             },
           },
