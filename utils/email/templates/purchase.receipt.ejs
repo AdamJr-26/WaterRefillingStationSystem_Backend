@@ -1,0 +1,101 @@
+<html lang="en">
+<%- include('./partials/head.partials.ejs') %>
+    <!-- wrs_name,
+personnel_name,
+address,
+date_of_delivery,
+items,
+amount_paid,
+credited_gallons,
+total_ordered_gallons, -->
+
+    <body>
+        <div>
+            <div style="background-color:#EBECF0; padding:10px;border-radius:10px;">
+                <p style="font-weight: bold; font-size:24px; ">Dear Aaron</p>
+                <p>We hope this email finds you well. We are writing to confirm that your recent order has been
+                    successfully delivered to the following address:</p>
+                <p style="font-weight: 500;">
+                    <%= address %>
+                </p>
+
+            </div>
+            <div style="padding:10px; ">
+                <div style="display:flex; gap:10px;">
+                    <p>Date of delivery: </p>
+                    <p style="font-weight:500; margin-left: 0.5rem;">
+                        <%= date_of_delivery %>
+                    </p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <p>Debt payment</p>
+                    <p style="font-weight:500; margin-left: 0.5rem;">
+                        ₱ <%= debt_payment %>
+                    </p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <p>Total payment</p>
+                    <p style="font-weight:500; margin-left: 0.5rem;">
+                        ₱ <%= total_payment %>
+                    </p>
+                </div>
+                <!-- items -->
+                <div style="background-color: #EBECF0;">
+                    <ul>
+                        <% items.map(function(item, i) { %>
+                            <li style="display: flex;">
+                                <div style="display: flex;">
+                                    <p>Item <%= i %>
+                                    </p>
+                                    <p style="margin-left:0.5rem;">
+                                        <%= item.gallon_name %>
+                                    </p>
+                                    <p style="margin-left:0.5rem; font-weight:600;">
+                                        Orders: <%= item.orders %>
+                                    </p>
+                                    <p style="margin-left:0.5rem; font-weight:600;">
+                                        Price: <%= item.price %>
+                                    </p>
+                                    <p style="margin-left:0.5rem; font-weight:600;">
+                                        Credited: <%= item.credit %>
+                                    </p>
+                                    <p style="margin-left:0.5rem; font-weight:600;">
+                                        Free: <%= item.free %>
+                                    </p>
+                                </div>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <p>
+            Please let us know if there were any issues with the delivery or if anything was missing from your order. We
+            value your feedback and will make every effort to resolve any concerns you may have.
+        </p>
+        <p>
+            Thank you for choosing <span>
+                <%= wrs_name %>
+            </span> for your recent purchase. We hope you are happy with your purchase and
+            look forward to serving you again in the future.
+        </p>
+        <div>
+            <p style="font-weight:500">Best regards</p>
+            <div style="display:flex; gap:10px;">
+                <p>Delivery Personnel: </p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= personnel_name %>
+                </p>
+            </div>
+            <div style="display:flex; gap:10;">
+                <p>WRS Name: </p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= wrs_name %>
+                </p>
+            </div>
+        </div>
+    </body>
+
+
+
+</html>

@@ -36,7 +36,7 @@ module.exports = {
     Schedule,
     PayCreditReceipt
   ),
-  ...require("./delivery.transaction")(db, Delivery, Gallon, Vehicle),
+  ...require("./delivery.transaction")(db, Delivery, Gallon, Vehicle, Personel),
   ...require("./pay.credits.transaction")(db, Credit, PayCreditReceipt),
   ...require("./return.gallon.transaction")(db, Borrow, ReturnGallonReceipt),
 };

@@ -84,8 +84,7 @@ module.exports = (
               gallon_count: gallon?.total,
             });
             await receipt.save((error) => {
-              if (error)
-                new Error("Something went wrong, please try again.");
+              if (error) new Error("Something went wrong, please try again.");
             });
           });
         } else if (
@@ -172,38 +171,39 @@ module.exports = (
         });
 
         // update gallons  in inventory
-        const bulksOpsForGallonBorrow = items?.map((item) => {
-          return {
-            updateOne: {
-              filter: {
-                _id: item?.gallon,
-              },
-              update: {
-                $inc: {
-                  total: -Number(item?.borrow) || 0,
-                },
-              },
-            },
-          };
-        });
-        const bulksOpsForGallonReturn = items?.map((item) => {
-          return {
-            updateOne: {
-              filter: {
-                _id: item?.gallon,
-              },
-              update: {
-                $inc: {
-                  total: item?.return || 0,
-                },
-              },
-            },
-          };
-        });
+        // const bulksOpsForGallonBorrow = items?.map((item) => {
+        //   return {
+        //     updateOne: {
+        //       filter: {
+        //         _id: item?.gallon,
+        //       },
+        //       update: {
+        //         $inc: {
+        //           total: -Number(item?.borrow) || 0,
+        //         },
+        //       },
+        //     },
+        //   };
+        // });
+
+        // const bulksOpsForGallonReturn = items?.map((item) => {
+        //   return {
+        //     updateOne: {
+        //       filter: {
+        //         _id: item?.gallon,
+        //       },
+        //       update: {
+        //         $inc: {
+        //           total: item?.return || 0,
+        //         },
+        //       },
+        //     },
+        //   };
+        // });
         await Borrow.bulkWrite(bulksOpsForBorrow);
         await Borrow.bulkWrite(bulksOpsForReturn);
-        await Gallon.bulkWrite(bulksOpsForGallonBorrow);
-        await Gallon.bulkWrite(bulksOpsForGallonReturn);
+        // await Gallon.bulkWrite(bulksOpsForGallonBorrow);
+        // await Gallon.bulkWrite(bulksOpsForGallonReturn);
         await Credit.bulkWrite(bulksOpsForCredit);
         await Delivery.bulkWrite(bulksOpsForDelivery);
 
@@ -213,7 +213,8 @@ module.exports = (
           if (error) throw new Error(`[ERROR SAVING PURCHASE] ${error}`);
         });
         session.endSession();
-        return { data: { success: true } };
+        console.log("purch", JSON.stringify(purch));
+        return { data: { success: true, purchase: purch } };
       } catch (error) {
         console.log("[ERROR]", error);
         await session.abortTransaction();

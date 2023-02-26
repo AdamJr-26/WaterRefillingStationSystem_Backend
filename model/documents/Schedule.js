@@ -16,4 +16,5 @@ module.exports = new mongoose.Schema({
   order_by: { type: String, default: "schedule" },
   assigned: { type: Boolean, default: false },
   assigned_to: { type: mongoose.Types.ObjectId, ref: "Personel" },
+  notified: { type: Boolean, default: false },
 }).set("timestamps", true);

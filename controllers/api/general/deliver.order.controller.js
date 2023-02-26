@@ -1,4 +1,12 @@
-module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
+module.exports = (
+  query,
+  mutation,
+  transaction,
+  getAdminId,
+  responseUtil,
+  sendReceipt,
+  format
+) => {
   return {
     deliverOrder: async (req, res) => {
       const admin = getAdminId(req);
@@ -57,6 +65,27 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
             });
           if (data?.success && !error) {
             console.log("[data]", data);
+            // send receipt, oops paano kung wala schedule?
+            const { data: receiptData, error: receiptError } =
+              await query.getScheduleDetails({ admin, schedule_id });
+
+            if (receiptData && !receiptError) {
+              await sendReceipt({
+                receiver: receiptData[0]?.customer[0]?.gmail,
+                subject: "Confirmation of Your Recent Order Delivery",
+                wrs_name: receiptData[0]?.admin[0].wrs_name,
+                personnel_name: `${receiptData[0]?.personnel[0].firstname} ${receiptData[0]?.personnel[0]?.lastname}`,
+                address: `${receiptData[0]?.customer[0].address.street} ${receiptData[0]?.customer[0]?.address.barangay} ${data[0]?.customer[0].address.municipal_city}`,
+                date_of_delivery: format(
+                  new Date(),
+                  "MMMM d, yyyy"
+                ),
+                items: data?.purchase?.items,
+                debt_payment: data?.purchase.debt_payment,
+                total_payment: data?.purchase.total_payment,
+              });
+            }
+
             responseUtil.generateServerErrorCode(
               res,
               200,

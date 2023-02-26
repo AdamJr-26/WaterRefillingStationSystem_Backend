@@ -55,16 +55,18 @@ async function deleteFiles(files) {
     let deletePromises = [];
 
     files.forEach((file) => {
-      deletePromises.push(
-        cloudinary.uploader
-          .destroy(file.publicId, "image") // it destroys specific mimetypes which is "image"
-          .then((result) => {
-            deleteResults = result;
-          })
-          .catch((error) => {
-            throw error;
-          })
-      );
+      if (file?.publicId) {
+        deletePromises.push(
+          cloudinary.uploader
+            .destroy(file.publicId, "image") // it destroys specific mimetypes which is "image"
+            .then((result) => {
+              deleteResults = result;
+            })
+            .catch((error) => {
+              console.log("[ERROR]", error);
+            })
+        );
+      }
     });
 
     return await Promise.all(deletePromises).then(() => {

@@ -39,10 +39,18 @@ module.exports = (Gallon, Vehicle) => {
               as: "borrowed",
             },
           },
+
+          // {
+          //   $group: {
+          //     id: "$_id",
+          //   },
+          // },
         ];
         const data = await Gallon.aggregate(pipeline);
+        console.log("data", data);
         return { data };
       } catch (error) {
+        console.log("error", error);
         return { error };
       }
     },

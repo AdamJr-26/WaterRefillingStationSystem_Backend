@@ -1,0 +1,65 @@
+<html lang="en">
+<%- include('./partials/head.partials.ejs') %>
+    <!-- wrs_name, personnel_name, address, order_details, date_of_scheduled, 
+estimated_delivery_date,
+-->
+
+    <body>
+        <div>
+            <div style="background-color:#EBECF0; padding:10px;border-radius:10px;">
+                <p style="font-weight: bold; font-size:24px; ">Dear Aaron</p>
+                <p>We wanted to reach out and let you know that your recent order/schedule with us is now on its way to
+                    you. Your
+                    order will be delivered to the following address:</p>
+                <p style="font-weight: 500;">
+                    <%= address %>
+                </p>
+
+            </div>
+            <div style="padding:10px; ">
+                <div style="display:flex; gap:10px;">
+                    <p>Order Details:</p>
+                    <p style="font-weight:500; margin-left: 0.5rem;">
+                        <%= order_details %> gallons
+                    </p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <p>Date of scheduled: </p>
+                    <p style="font-weight:500; margin-left: 0.5rem;">
+                        <%= date_of_scheduled %>
+                    </p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <p>Estimated Delivery Date: </p>
+                    <p style="font-weight:500; margin-left: 0.5rem;">
+                        <%= estimated_delivery_date %>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <p>
+            We are excited to get your order to you as soon as possible and wanted to provide you with a heads up so you
+            can
+            plan accordingly. If you have any special delivery instructions or concerns, please let us know as soon as
+            possible
+            and we will do our best to accommodate them.
+        </p>
+        <div>
+            <div style="display:flex; gap:10px;">
+                <p>Delivery Personnel: </p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= personnel_name %>
+                </p>
+            </div>
+            <div style="display:flex; gap:10;">
+                <p>WRS Name: </p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= wrs_name %>
+                </p>
+            </div>
+        </div>
+    </body>
+
+
+
+</html>

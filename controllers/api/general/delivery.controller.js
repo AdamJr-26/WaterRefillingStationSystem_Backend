@@ -28,10 +28,12 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
     },
     finishDelivery: async (req, res) => {
       const admin = getAdminId(req);
+      const personnel_id = req.user?._id;
       const { delivery_id } = req.params;
       const { data, error } = await transaction.finishDelivery({
         admin,
         delivery_id,
+        personnel_id,
       });
       if (data && !error) {
         responseUtil.generateServerResponse(

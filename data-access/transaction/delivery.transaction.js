@@ -1,6 +1,6 @@
-module.exports = (db, Delivery, Gallon, Vehicle) => {
+module.exports = (db, Delivery, Gallon, Vehicle, Personel) => {
   return {
-    finishDelivery: async ({ delivery_id, admin }) => {
+    finishDelivery: async ({ delivery_id, admin, personnel_id }) => {
       const session = await db.startSession();
       try {
         session.startTransaction();
@@ -53,6 +53,12 @@ module.exports = (db, Delivery, Gallon, Vehicle) => {
             }
           );
         }
+        await Personel.findOneAndUpdate(
+          { _id: personnel_id },
+          {
+            $set: { on_delivery: false },
+          }
+        ).exec();
         session.endSession();
         return { data: data?._id, success: true };
       } catch (error) {

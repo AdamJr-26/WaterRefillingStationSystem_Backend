@@ -7,9 +7,9 @@ const passport = require("passport");
 const socketFunction = require("./socket/socket");
 const clientConfig = require("./config/client.config");
 
-
 const app = express();
 app.use(cors(clientConfig.corsConfig));
+// app.use(cors(clientConfig.ngrokConfig));
 
 // middlewares ============================================================
 app.use(express.urlencoded({ extended: true }));
@@ -29,8 +29,7 @@ const httpServer = http.createServer(app);
 const socketIo = require("socket.io")(httpServer, {
   cors: clientConfig.corsConfig,
 });
-socketFunction(socketIo)
-
+socketFunction(socketIo);
 
 // SERVER
 let PORT = require("./config/server.config").PORT();

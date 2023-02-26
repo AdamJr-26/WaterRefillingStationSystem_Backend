@@ -39,16 +39,16 @@ const createTransporter = async () => {
 
 // =======================
 
-const sendEmail = async (
-  {receiver,
+const sendEmail = async ({
+  receiver,
   firstname,
   link,
   subject,
   title,
   content,
   description,
-  buttonLabel}
-) => {
+  buttonLabel,
+}) => {
   ejs.renderFile(
     __dirname + "/templates/verification.template.ejs",
     { receiver, firstname, link, title, content, description, buttonLabel },
@@ -105,4 +105,96 @@ const sendOTP = async ({
     }
   );
 };
-module.exports = { createTransporter, sendEmail, sendOTP };
+// wrs_name, personnel_name, address, order_details, date_of_scheduled,
+// estimated_delivery_date,
+const sendNotifyForDelivery = async ({
+  receiver,
+  subject,
+  wrs_name,
+  personnel_name,
+  address,
+  order_details,
+  date_of_scheduled,
+  estimated_delivery_date,
+}) => {
+  ejs.renderFile(
+    __dirname + "/templates/incoming.delivery.ejs",
+    {
+      wrs_name,
+      personnel_name,
+      address,
+      order_details,
+      date_of_scheduled,
+      estimated_delivery_date,
+    },
+    async (err, data) => {
+      if (err) {
+        console.log("[sending delivery email]", err);
+      } else {
+        var emailOptions = {
+          from: "wrsms_devs@gmail.com",
+          to: receiver,
+          subject: subject,
+          html: data,
+        };
+        let emailTransporter = await createTransporter();
+        emailTransporter.sendMail(emailOptions, (err, info) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("Message sent:", info.messageId);
+        });
+      }
+    }
+  );
+};
+const sendReceipt = async ({
+  receiver,
+  subject,
+  wrs_name,
+  personnel_name,
+  address,
+  date_of_delivery,
+  items,
+  debt_payment,
+  total_payment,
+}) => {
+  ejs.renderFile(
+    __dirname + "/templates/purchase.receipt.ejs",
+    {
+      wrs_name,
+      personnel_name,
+      address,
+      date_of_delivery,
+      items,
+      debt_payment,
+      total_payment,
+    },
+    async (err, data) => {
+      if (err) {
+        console.log("[sending delivery email]", err);
+      } else {
+        var emailOptions = {
+          from: "wrsms_devs@gmail.com",
+          to: receiver,
+          subject: subject,
+          html: data,
+        };
+        let emailTransporter = await createTransporter();
+        emailTransporter.sendMail(emailOptions, (err, info) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("Message sent:", info.messageId);
+        });
+      }
+    }
+  );
+};
+module.exports = {
+  createTransporter,
+  sendEmail,
+  sendOTP,
+  sendNotifyForDelivery,
+  sendReceipt
+};

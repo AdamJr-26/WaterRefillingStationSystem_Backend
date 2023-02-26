@@ -3,7 +3,7 @@ const admin = new mongoose.Schema({
   role: { type: String, default: "Admin" },
   wrs_image: { type: String },
   wrs_name: { type: String },
-  gmail: { type: String },
+  gmail: { type: String, unique: true },
   contact_number: { type: String },
   firstname: { type: String },
   lastname: { type: String },
@@ -22,7 +22,10 @@ const admin = new mongoose.Schema({
     lat: { type: String },
     lng: { type: String },
   },
-  date_created: { type: Date, default: () => Math.floor(new Date().valueOf() / 1000) },
+  date_created: {
+    type: Date,
+    default: () => Math.floor(new Date().valueOf() / 1000),
+  },
 });
 admin.set("timestamps", true);
 module.exports = admin;

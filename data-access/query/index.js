@@ -47,6 +47,7 @@ module.exports = {
   ...require("./returns.query")(
     ReturnGallonReceipt,
     startOfMonth,
-    endOfMonth
-  )
+    endOfMonth,
+  ),
+  ...require("./delivery.details.lookup")(Schedule)
 };

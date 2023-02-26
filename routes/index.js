@@ -61,6 +61,11 @@ router.use("/api", require("./api/api.reports.routes").router);
 // return receipts
 router.use("/api", require("./api/api.return.receipt.routes").router);
 
+// sms
+router.use("/api", require("./api/api.sms.routes").router);
+
+// email
+router.use("/api", require("./api/api.notification.routes").router);
 module.exports = {
   router,
 };

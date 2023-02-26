@@ -9,7 +9,12 @@ const {
 const crypto = require("crypto");
 const signIn = require("../../utils/jwt.sign");
 const getAdminId = require("../../utils/getAdminId");
-
+const sendSMS = require("../../utils/send.sms.util");
+const {
+  sendNotifyForDelivery,
+  sendReceipt,
+} = require("../../utils/email/mailer");
+const { format } = require("date-fns");
 module.exports = {
   ...require("../auth/checking.gmail")(query),
   ...require("./personel/api.profile")(
@@ -95,7 +100,9 @@ module.exports = {
     mutation,
     transaction,
     getAdminId,
-    responseUtil
+    responseUtil,
+    sendReceipt,
+    format
   ),
   ...require("./general/credits.controller")(
     query,
@@ -162,5 +169,17 @@ module.exports = {
     mutation,
     getAdminId,
     responseUtil
+  ),
+  // NOT USED.
+  ...require("./general/send.sms.controller")(sendSMS, responseUtil),
+
+  // send email notif.
+  ...require("./general/send.email.controller")(
+    query,
+    mutation,
+    getAdminId,
+    sendNotifyForDelivery,
+    responseUtil,
+    format
   ),
 };

@@ -3,14 +3,15 @@ module.exports = (db, Schedule) => {
   return {
     createSchedule: async (payload) => {
       try {
-        const schedule = new Schedule(payload);
+        const schedule = await new Schedule(payload);
         await schedule.save((error) => {
           if (error) {
-            throw new Error("[create schedule]", error);
+            new Error("[create schedule]", error);
           }
         });
         return { schedule };
       } catch (error) {
+        console.log("errrrrrrrrrror", error);
         return { error };
       }
     },
@@ -115,6 +116,26 @@ module.exports = (db, Schedule) => {
         } else {
           throw new Error("No schedule were find.");
         }
+      } catch (error) {
+        return { error };
+      }
+    },
+    setToNotified: async (schedule_id) => {
+      try {
+        const data = await Schedule.findOneAndUpdate(
+          {
+            _id: schedule_id,
+          },
+          {
+            $set: {
+              notified: true,
+            },
+          },
+          { returnOriginal: false }
+        )
+          .select(["_id"])
+          .exec();
+        return { data };
       } catch (error) {
         return { error };
       }

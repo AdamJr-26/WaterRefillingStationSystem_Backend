@@ -54,7 +54,10 @@ module.exports = (query, mutation, responseUtil, uploadImage, deleteFiles) => {
 
           if (data && !error) {
             // delete the old image from cloudinary.
-            if (data?.cloudinary) await deleteFiles([data?.cloudinary]);
+            console.log("data?.cloudinary", data?.cloudinary);
+            if (data?.cloudinary !== {}) {
+              await deleteFiles([data?.cloudinary]);
+            }
 
             responseUtil.generateServerResponse(
               res,
