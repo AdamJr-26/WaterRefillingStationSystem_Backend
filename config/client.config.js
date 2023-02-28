@@ -1,8 +1,8 @@
 module.exports = {
   port: 3000,
-  baseUrl: "https://neptune-wrms-admin.onrender.com/",
+  baseUrl: "https://neptune-wrms-admin.onrender.com",
   corsConfig: {
-    origin: "https://neptune-wrms-admin.onrender.com/",
+    origin: "https://neptune-wrms-admin.onrender.com",
     credentials: true,
   },
   // ngrokConfig: {
