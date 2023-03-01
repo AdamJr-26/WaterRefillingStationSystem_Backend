@@ -66,6 +66,10 @@ router.use("/api", require("./api/api.sms.routes").router);
 
 // email
 router.use("/api", require("./api/api.notification.routes").router);
+
+// dashboard
+router.use("/api", require("./api/api.dashboard.routes").router);
+
 module.exports = {
   router,
 };

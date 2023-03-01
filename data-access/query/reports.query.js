@@ -279,8 +279,8 @@ module.exports = (
               debt_payment_received: {
                 $sum: "$paid_credits.amount_paid",
               },
-              total_credits_gallon_count : {
-                $sum : "$credits.credits_gallon_count"
+              total_credits_gallon_count: {
+                $sum: "$credits.credits_gallon_count",
               },
               total_credits_amount: {
                 $sum: "$credits.unpaid_credits_amount",

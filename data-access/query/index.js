@@ -13,7 +13,7 @@ const {
   Borrow,
   Purchase,
   PayCreditReceipt,
-  ReturnGallonReceipt
+  ReturnGallonReceipt,
 } = require("../../model/index");
 
 const { startOfMonth, endOfMonth, startOfDay, endOfDay } = require("date-fns");
@@ -44,10 +44,11 @@ module.exports = {
     startOfMonth,
     endOfMonth
   ),
-  ...require("./returns.query")(
-    ReturnGallonReceipt,
-    startOfMonth,
-    endOfMonth,
+  ...require("./statistics/todays.transactions.query")(
+    Admin,
+    startOfDay,
+    endOfDay
   ),
-  ...require("./delivery.details.lookup")(Schedule)
+  ...require("./returns.query")(ReturnGallonReceipt, startOfMonth, endOfMonth),
+  ...require("./delivery.details.lookup")(Schedule),
 };

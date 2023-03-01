@@ -1,9 +1,9 @@
-module.exports = (query, responseUtil) => {
+module.exports = (query, responseUtil, getAdminId) => {
   return {
     getAdminBasicInfo: async (req, res) => {
-      const admin = req.user?.admin;
+      const admin = getAdminId(req);
       // getAdminBasicInfo
-      const { data, error } = await query.getAdminBasicInfo(admin.toString());
+      const { data, error } = await query.getAdminBasicInfo(admin);
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,

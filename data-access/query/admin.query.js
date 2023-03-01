@@ -51,9 +51,9 @@ module.exports = (Admin) => {
       }
     },
     getAdminBasicInfo: async (adminId) => {
-      console.log("adminId",adminId)
+ 
       try {
-        const data = await Admin.findOne({id: adminId})
+        const data = await Admin.findOne({_id: adminId})
           .select(["admin", "wrs_name", "address"])
           .exec();
         return { data };
@@ -63,5 +63,4 @@ module.exports = (Admin) => {
     },
   };
 };
-
 

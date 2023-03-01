@@ -77,7 +77,7 @@ module.exports = {
     getAdminId,
     responseUtil
   ),
-  ...require("./personel/get.admin.basic.profile")(query, responseUtil),
+  ...require("./personel/get.admin.basic.profile")(query, responseUtil, getAdminId),
   ...require("./general/get.customer.controller")(
     query,
     responseUtil,
@@ -181,5 +181,11 @@ module.exports = {
     sendNotifyForDelivery,
     responseUtil,
     format
+  ),
+  // admin
+  ...require("./admin/admin.dashboard.controller")(
+    query,
+    responseUtil,
+    getAdminId
   ),
 };
