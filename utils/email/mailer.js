@@ -162,6 +162,7 @@ const sendReceipt = async ({
   ejs.renderFile(
     __dirname + "/templates/purchase.receipt.ejs",
     {
+      receiver,
       wrs_name,
       personnel_name,
       address,
