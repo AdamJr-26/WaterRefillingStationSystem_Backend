@@ -27,23 +27,25 @@ module.exports = (db, Delivery, Gallon, Vehicle, Personel) => {
         if (!delivery?.delivery_items) {
           throw new Error("No delivery was found; please try again.");
         } else {
-          const returnUndeliveredGallon = delivery?.delivery_items?.map(
-            (item) => {
-              return {
-                updateOne: {
-                  filter: {
-                    _id: item?.gallon,
-                  },
-                  update: {
-                    $inc: {
-                      total: item?.total,
-                    },
-                  },
-                },
-              };
-            }
-          );
-          await Gallon.bulkWrite(returnUndeliveredGallon);
+          
+          // const returnUndeliveredGallon = delivery?.delivery_items?.map(
+          //   (item) => {
+          //     return {
+          //       updateOne: {
+          //         filter: {
+          //           _id: item?.gallon,
+          //         },
+          //         update: {
+          //           $inc: {
+          //             total: item?.total,
+          //           },
+          //         },
+          //       },
+          //     };
+          //   }
+          // );
+          // await Gallon.bulkWrite(returnUndeliveredGallon);
+
           await Vehicle.findOneAndUpdate(
             { _id: delivery?.vehicle },
             {

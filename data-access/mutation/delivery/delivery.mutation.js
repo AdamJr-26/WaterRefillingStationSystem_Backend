@@ -7,7 +7,8 @@ module.exports = (Delivery, Gallon, db) => {
         const data = new Delivery(payload);
         await data.save((error) => {
           if (error) {
-            throw new Error("Error creatinting new delivery");
+            // throw new Error("Error creatinting new delivery");
+            console.log("[CREATING DELIVERY]", error)
           }
         });
         return { data };
