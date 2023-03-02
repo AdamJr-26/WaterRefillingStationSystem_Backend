@@ -56,6 +56,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
       }
     },
     returnGallon: async (req, res) => {
+      console.log("asdlkfjsdklfjdkfjdskfjd")
       const admin = getAdminId(req);
       const { borrow_id, gallon_id } = req.params;
       const payload = req.body;
@@ -65,6 +66,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
         payload,
         gallon_id,
       });
+      console.log("error",error)
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
