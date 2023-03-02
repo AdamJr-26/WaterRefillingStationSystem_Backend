@@ -142,8 +142,8 @@ module.exports = (Admin, startOfDay, endOfDay) => {
               },
               paidProducts: {
                 $sum: [
-                  { $sum: "$purchases.paid_orders_amount" },
-                  { $sum: "$paid_credits.amount_paid" },
+                  "$purchases.paid_orders_amount",
+                  "$paid_credits.amount_paid",
                 ],
               },
             },
