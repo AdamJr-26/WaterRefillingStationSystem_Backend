@@ -42,8 +42,8 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    paid_orders_amount: { $sum: "$total_payment" },
-                    total_orders_paid_unpaid_amount: { $sum: "$order_to_pay" },
+                    paid_orders_amount: "$total_payment",
+                    total_orders_paid_unpaid_amount: "$order_to_pay",
                   },
                 },
               ],
@@ -142,7 +142,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
               },
               paidProducts: {
                 $sum: [
-                  "$purchases.paid_orders_amount",
+                  { $sum: "$purchases.paid_orders_amount" },
                   "$paid_credits.amount_paid",
                 ],
               },
