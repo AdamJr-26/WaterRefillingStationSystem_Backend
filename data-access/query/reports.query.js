@@ -79,7 +79,7 @@ module.exports = (
                       },
                     },
                     paid_orders_amount: {
-                      $sum: {
+          
                         $multiply: [
                           {
                             $subtract: [
@@ -91,7 +91,7 @@ module.exports = (
                             $sum: "$items.price",
                           },
                         ],
-                      },
+                      
                     },
                     credited_gallon: {
                       $sum: {
