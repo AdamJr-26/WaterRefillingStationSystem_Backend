@@ -50,7 +50,7 @@ module.exports = (
             );
           }
         } catch (error) {
-          console.log("sendNotifyForDelivery=>error", error);
+          
           responseUtil.generateServerErrorCode(
             res,
             400,

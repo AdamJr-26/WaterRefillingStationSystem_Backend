@@ -9,7 +9,7 @@ module.exports = (
   return {
     sendOTP: async (req, res) => {
       const { gmail } = req.body;
-      console.log("gmail....", gmail);
+      
 
       // create random string
       if (!gmail) {
@@ -31,7 +31,7 @@ module.exports = (
           await query.checkIfPersonelIsExisting({
             gmail,
           });
-        console.log("personel", personel);
+        
         if (personel_error) {
           responseUtil.generateServerErrorCode(
             res,
@@ -50,13 +50,13 @@ module.exports = (
             token,
             userId,
           });
-          console.log("error creaetOtp", error);
+          
           const receiver = personel?.gmail;
           const firstname = personel?.firstname;
           const userOtp = otp.token;
           if (otp && !error) {
             // const link = `${req.protocol}://${req.hostname}:${clientCofing.port}/set-new-password/?id=${userId}&token=${token}`;
-            console.log("userOtp", userOtp);
+            
             await sendOTP({
               receiver: receiver,
               firstname: firstname,

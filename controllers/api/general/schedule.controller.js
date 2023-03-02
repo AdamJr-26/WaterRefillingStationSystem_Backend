@@ -61,7 +61,7 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         admin,
         place,
       });
-      console.log("[DOCSSSSSSSSSSS]", JSON.stringify(data));
+      
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -138,7 +138,7 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       }
     },
     reSchedule: async (req, res) => {
-      console.log("req.body", req.body);
+      
       const { schedule, schedule_id } = req.body; // schedule is a field in schedules document.
       const { data, error } = await mutation.reSchedule({
         schedule,

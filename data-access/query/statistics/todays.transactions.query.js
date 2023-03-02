@@ -174,7 +174,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
         ];
 
         const data = await Admin.aggregate(pipeline);
-        console.log("data", JSON.stringify(data));
+        
         return { data };
       } catch (error) {
         console.log("error", error);

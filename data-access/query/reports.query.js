@@ -299,7 +299,7 @@ module.exports = (
         ];
 
         const data = await Admin.aggregate(pipeline);
-        console.log("data", JSON.stringify(data));
+        
         return { data };
       } catch (error) {
         console.log("errrrrrrrrrr", error);

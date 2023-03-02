@@ -19,7 +19,7 @@ module.exports = (
   return {
     // Admin-------
     registerAdmin: async (req, res) => {
-      console.log(req.body);
+      
       const {
         wrs_name,
         gmail,

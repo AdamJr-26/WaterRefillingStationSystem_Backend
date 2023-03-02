@@ -140,7 +140,7 @@ module.exports = (PayCreditReceipt) => {
           },
         ];
         const data = await PayCreditReceipt.aggregate(pipeline);
-        console.log("[data-credits-receipts-history]", data);
+        
         return { data };
       } catch (error) {
         return { error };

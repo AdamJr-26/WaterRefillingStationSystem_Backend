@@ -25,7 +25,7 @@ module.exports = (
         gmail,
         password,
       });
-      console.log("isAdminExist", isAdminExist);
+      
       // if error when finding admin
       if (isAdminExist?.error) {
         responseUtil.generateServerErrorCode(
@@ -48,7 +48,7 @@ module.exports = (
       }
       // else no error or admin exists.
       else {
-        console.log("isAdminExist", isAdminExist);
+        
         const isPasswordMatched = await comparePassword(
           password,
           isAdminExist.data?.password
@@ -177,7 +177,7 @@ module.exports = (
           }
         } else {
           // password did not matched
-          console.log("error password did not matched");
+          
           responseUtil.generateServerErrorCode(
             res,
             400,
@@ -194,7 +194,7 @@ module.exports = (
           "Wrong Email or password",
           "login_personel"
         );
-        console.log("error user do not exists, or error");
+        
         // user do not exists, or error
       }
     },

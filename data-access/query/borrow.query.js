@@ -18,10 +18,10 @@ module.exports = (Borrow) => {
           },
         ];
         const data = await Borrow.aggregate(pipelines);
-        console.log("[DATA]", data);
+        
         return { data };
       } catch (error) {
-        console.log("[ERROR000000000000 -BORROW.QUERY.JS]", error);
+        
         return { error };
       }
     },
@@ -42,7 +42,7 @@ module.exports = (Borrow) => {
             },
           ])
           .exec();
-        console.log("edaaaaaaaaaaaata", data);
+        
         return { data };
       } catch (error) {
 

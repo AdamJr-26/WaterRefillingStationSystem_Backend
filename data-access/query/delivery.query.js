@@ -36,7 +36,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
     }) => {
       const total_orders =
         Number(purchase_item.orders) + Number(purchase_item.free);
-      console.log("total_orders", total_orders);
+      
       try {
         const pipelines = [
           {
@@ -148,7 +148,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
         })
           .select(["_id"])
           .exec();
-        console.log("deliveries", deliveries);
+        
         const stages = [
           {
             $match: {
@@ -191,7 +191,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
           },
         ];
         const data = await Purchase.aggregate(stages);
-        console.log("[RECENTSSSSS]", data);
+        
         return { data };
       } catch (error) {
         console.log("[error]", error);
@@ -348,7 +348,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
           },
         ];
         const data = await Delivery.aggregate(pipeline);
-        console.log("data---", data);
+        
         return { data };
       } catch (error) {
         return { error };

@@ -47,7 +47,7 @@ module.exports = (Gallon, Vehicle) => {
           // },
         ];
         const data = await Gallon.aggregate(pipeline);
-        console.log("data", data);
+        
         return { data };
       } catch (error) {
         console.log("error", error);
@@ -109,8 +109,6 @@ module.exports = (Gallon, Vehicle) => {
       ArrayOfTotal,
     }) => {
       try {
-        console.log("ArrayOfId", ArrayOfId);
-        console.log("ArrayOfTotal", ArrayOfTotal);
 
         const filter = {
           admin: admin,

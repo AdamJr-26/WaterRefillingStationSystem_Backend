@@ -2,10 +2,10 @@ module.exports = (query, responseUtil) => {
   return {
     verifyOTP: async (req, res) => {
       const { gmail, otp } = req.body;
-      console.log("req.body", req.body)
+      
       const { getEmailAndTokenData, getEmailAndTokenError } =
         await query.getEmailAndToken({ gmail, token: otp });
-        console.log("getEmailAndTokenError",getEmailAndTokenError)
+        
       if (getEmailAndTokenData && !getEmailAndTokenError) {
         if (getEmailAndTokenData.gmail && getEmailAndTokenData.token) {
           responseUtil.generateServerResponse(
@@ -42,7 +42,7 @@ module.exports = (query, responseUtil) => {
           "SOMETHING WENT WRONG",
           "verify_otp"
         );
-        console.log("etEmailAndTokenData", getEmailAndTokenData);
+        
       }
     },
   };

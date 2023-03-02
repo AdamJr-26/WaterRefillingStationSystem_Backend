@@ -9,7 +9,7 @@ module.exports = (
   return {
     sendResetVerifyLink: async (req, res) => {
       const { gmail } = req.body;
-      console.log(gmail);
+      
 
       if (!gmail) {
         // email should not be empty
@@ -51,7 +51,7 @@ module.exports = (
           const { OTPDoc, OTPError } = await query.checkIfGmailIsExistingInOTP(
             gmail
           );
-          console.log("OTPDoc", OTPDoc);
+          
           if (OTPDoc?.gmail && !OTPError) {
             responseUtil.generateServerErrorCode(
               res,

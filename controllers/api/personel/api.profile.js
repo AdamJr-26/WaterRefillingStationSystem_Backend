@@ -1,7 +1,7 @@
 module.exports = (query, mutation, responseUtil, uploadImage, deleteFiles) => {
   return {
     getPersonelProfile: async (req, res) => {
-      console.log("get profile p[ersonel req.user", req.user);
+      
       const userGmail = req.user?.gmail;
       const userId = req.user?._id;
       const personel = await query.getProfile({ gmail: userGmail, userId });
@@ -15,7 +15,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, deleteFiles) => {
           "personel_profile"
         );
       } else {
-        console.log("personel.error", personel.error);
+        
         responseUtil.generateServerErrorCode(
           res,
           400,
@@ -40,21 +40,21 @@ module.exports = (query, mutation, responseUtil, uploadImage, deleteFiles) => {
           },
           [file]
         );
-        console.log("cloudinary", cloudinary);
+        
 
         const display_photo = cloudinary.uploadResults[0].url;
-        console.log("display_photodisplay_photo", display_photo);
+        
         if (display_photo) {
           const { data, error } = await mutation.updatePersonelProfilePicture({
             personel_id,
             display_photo,
             cloudinary: cloudinary.uploadResults[0],
           });
-          // console.log("data", data);
+          
 
           if (data && !error) {
             // delete the old image from cloudinary.
-            console.log("data?.cloudinary", data?.cloudinary);
+            
             if (data?.cloudinary !== {}) {
               await deleteFiles([data?.cloudinary]);
             }

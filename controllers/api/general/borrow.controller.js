@@ -2,7 +2,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
   return {
     getTotalOfBorrowedGallon: async (req, res) => {
       const { customer_id } = req.params;
-      console.log("customer_idcustomer_id", customer_id);
+      
       const admin = getAdminId(req)?.toString();
 
       const { data, error } = await query.getTotalOfBorrowedGallon({

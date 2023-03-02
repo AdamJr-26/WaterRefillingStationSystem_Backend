@@ -16,7 +16,7 @@ module.exports = (
       const schedule_id = body?.schedule_id;
       const purchase_items = body.items;
 
-      console.log("purchase_items", purchase_items);
+      
       // first get verified delivery' id
 
       // const delivery = await query.getDeliveryId(personel); // get delivery it
@@ -38,16 +38,12 @@ module.exports = (
               delivery_id,
               purchase_item: purchase_items[p],
             });
-          console.log("[delivery_item]", delivery_item);
+          
           if (delivery_item?.data?.delivery_items.length) {
             totalItemEnough = totalItemEnough + 1;
           }
         }
-        console.log(
-          "totalItemEnough === purchase_items.length",
-          totalItemEnough,
-          purchase_items.length
-        );
+       
         if (totalItemEnough === purchase_items.length) {
           // create purchase and all
           const purchase = {
@@ -64,7 +60,7 @@ module.exports = (
               purchase,
             });
           if (data?.success && !error) {
-            console.log("[data]", data);
+            
             // send receipt, oops paano kung wala schedule?
             const { data: receiptData, error: receiptError } =
               await query.getScheduleDetails({ admin, schedule_id });

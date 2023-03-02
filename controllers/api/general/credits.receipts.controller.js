@@ -11,7 +11,7 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         from,
         to,
       });
-      console.log("from, to", from, to);
+      
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,

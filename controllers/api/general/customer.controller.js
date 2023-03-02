@@ -2,7 +2,7 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
   return {
     searchCustomerByFirstnamePlace: async (req, res) => {
       const { search_text } = req.params;
-      console.log("customer_name", search_text);
+      
       const admin = getAdminId(req);
       const { data, error } = await query.searchCustomerByNameAndPlace({
         search_text,

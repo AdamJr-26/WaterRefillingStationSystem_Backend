@@ -6,7 +6,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
       var gallon_image = req.body?.image; // from static link from frontend
       const files = req.files;
       const user = req.user;
-      console.log("files",files)
+      
       const serverResponse = (doc) => {
         if (doc.data && !doc.error) {
           responseUtil.generateServerResponse(
@@ -56,7 +56,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
           { gallon_image, name, liter, price, total },
           user?._id.toString()
         );
-        console.log("dataaaaaaaaa", doc.data);
+        
         serverResponse(doc);
       } else {
         responseUtil.generateServerErrorCode(
@@ -210,7 +210,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
     },
     getAvailableVehicles: async (req, res) => {
       const adminId = getAdminId(req);
-      console.log("adminIdadminId",adminId)
+      
       const { data, error } = await query.getAvailableVehicles({ adminId });
       if (data && !error) {
         responseUtil.generateServerResponse(
@@ -234,7 +234,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
     updateGallonPrice: async (req, res) => {
       const { admin, id } = req.params;
       const { price } = req.body;
-      console.log("admin, id ", admin, id);
+      
       const updatedGallon = await mutation.updateGallonPrice({
         admin,
         id,
@@ -250,7 +250,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
           "inventory"
         );
       } else {
-        console.log("error from updating gallon", updatedGallon?.error);
+        
         responseUtil.generateServerErrorCode(
           res,
           400,

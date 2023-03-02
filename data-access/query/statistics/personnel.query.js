@@ -4,7 +4,7 @@ module.exports = (Personnel, startOfMonth, endOfMonth) => {
   return {
     getPersonnelsSalesAchievements: async ({ admin, date, top }) => {
       try {
-        console.log(" admin, date, top ",  admin, date, top )
+        
         const pipeline = [
           {
             $match: {
@@ -152,7 +152,7 @@ module.exports = (Personnel, startOfMonth, endOfMonth) => {
           },
         ];
         const data = await Personnel.aggregate(pipeline);
-        console.log("data-----------------", JSON.stringify(data));
+        
         return { data };
       } catch (error) {
         console.log("error", error);

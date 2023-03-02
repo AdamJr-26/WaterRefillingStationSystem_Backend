@@ -80,7 +80,7 @@ module.exports = (Schedule) => {
         // wrs_name, personnel_name, address, order_details, date_of_scheduled,
         // estimated_delivery_date,
         const data = await Schedule.aggregate(pipeline);
-        console.log("data==>>>>>>>", JSON.stringify(data));
+        
         return { data };
       } catch (error) {
         console.log("error==>>>>>>", error);

@@ -13,7 +13,7 @@ module.exports = (db, Customer, uploadImage) => {
             },
             [file]
           );
-          console.log("cloudinary", cloudinary)
+          
           
           const display_photo = cloudinary?.uploadResults[0]?.url;
           if (cloudinary?.error && !display_photo) {

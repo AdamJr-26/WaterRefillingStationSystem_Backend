@@ -1,7 +1,7 @@
 module.exports =(query, responseUtil)=>{
     return {
         getAdminProfile: async (req, res) => {
-           console.log("res.user getting admin profile", req.user)
+           
            const gmail = req.user?.gmail;
             const admin = await query.getAdminProfile(gmail);
             if (admin?.data && !admin.error) {

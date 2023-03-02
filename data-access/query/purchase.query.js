@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 module.exports = (Purchase) => {
   return {
     getSummaryOfDeliveryFromPurchases: async ({ delivery_id, admin }) => {
-      console.log("delivery_id", delivery_id);
+      
       try {
         const stages = [
           {
@@ -43,7 +43,7 @@ module.exports = (Purchase) => {
         ];
 
         const data = await Purchase.aggregate(stages);
-        console.log("[DATAAA]", data);
+        
         return { data };
       } catch (error) {
         return { error };
@@ -130,7 +130,7 @@ module.exports = (Purchase) => {
           },
         ];
         const data = await Purchase.aggregate(pipeline);
-        console.log("[data-purchase-history]", data);
+        
         return { data };
       } catch (error) {
         console.log("[data-purchase-history]", error);

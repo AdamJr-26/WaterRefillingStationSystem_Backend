@@ -45,13 +45,13 @@ module.exports = (
       }
       //   if admin is exists and no error
       else if (data && !error) {
-        console.log(req.body);
+        
         const isPasswordMatched = await comparePassword(
           current_password,
           data?.password
         );
         if (isPasswordMatched) {
-          console.log("updating user......");
+          
           // hash password
           const hashed_password = await encryptPassword(new_password, 10);
 

@@ -13,7 +13,7 @@ module.exports = (query) => {
           message: "Something went wrong",
         });
       } else if (email?.email) {
-        console.log(email?.email)
+        
         res.status(200).send({
           emailExists: true,
           message: "the email is already in use",

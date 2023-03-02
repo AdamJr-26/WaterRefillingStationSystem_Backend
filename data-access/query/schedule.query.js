@@ -9,7 +9,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
           admin: payload?.admin?.toString(),
         };
         const data = await Schedule.find(filter).exec();
-        console.log("schedules dataaaaaaaa", data);
+        
         return { data };
       } catch (error) {
         return { error };
@@ -41,7 +41,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
       }
     },
     getSchedulesByDate: async ({ date, admin, place }) => {
-      console.log("placeplaceplace", place);
+      
       try {
         const pipelines = [
           {

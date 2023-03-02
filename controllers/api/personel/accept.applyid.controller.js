@@ -8,14 +8,14 @@ module.exports = (query, mutation, responseUtil, signIn) => {
           gmail: user?.gmail,
           token: applyId,
         });
-        console.log("otpotpotp", otp);
+        
         if (otp?.getEmailAndTokenData && !otp?.getEmailAndTokenError) {
           const payload = {
             gmail: otp?.getEmailAndTokenData?.gmail,
             adminId: otp?.getEmailAndTokenData?.userId?.toString(), // this is admin id
           };
           const { data, error } = await mutation.updatePersonelAdminId(payload);
-          console.log("datadata", data);
+          
           if (data && !error) {
             responseUtil.generateServerResponse(
               res,
@@ -26,7 +26,7 @@ module.exports = (query, mutation, responseUtil, signIn) => {
               "personel_apply_adminId"
             );
           } else {
-            console.log("something went wrong token cannot be created.");
+            
             // something went wrong token cannot be created.
             responseUtil.generateServerErrorCode(
               res,

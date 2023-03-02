@@ -66,7 +66,7 @@ module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
           },
         ];
         const data = await ReturnGallonReceipt.aggregate(pipeline);
-        console.log("[data-return-history]", data);
+        
         return { data };
       } catch (error) {
         console.log("[error-return-history]", error);

@@ -23,7 +23,7 @@ module.exports = (
           payload,
           user
         );
-        console.log("data", data);
+        
         if (data && !error) {
           responseUtil.generateServerResponse(
             res,

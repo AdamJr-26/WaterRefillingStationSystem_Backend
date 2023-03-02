@@ -2,7 +2,7 @@ module.exports = (db, Borrow, ReturnGallonReceipt) => {
   return {
     returnBorrowedGallon: async ({ admin, borrow_id, payload , gallon_id}) => {
       const session = await db.startSession();
-      console.log("gallon_id", gallon_id)
+      
       try {
         session.startTransaction();
 

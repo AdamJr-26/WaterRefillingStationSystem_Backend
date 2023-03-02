@@ -64,7 +64,7 @@ module.exports = (Personel) => {
           },
         ];
         const data = await Personel.aggregate(pipeline);
-        console.log("datadatadata", JSON.stringify(data));
+        
         return { data: data[0] };
       } catch (error) {
         return { error };

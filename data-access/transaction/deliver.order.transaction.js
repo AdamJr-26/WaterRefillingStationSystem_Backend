@@ -213,7 +213,7 @@ module.exports = (
           if (error) throw new Error(`[ERROR SAVING PURCHASE] ${error}`);
         });
         session.endSession();
-        console.log("purch", JSON.stringify(purch));
+        
         return { data: { success: true, purchase: purch } };
       } catch (error) {
         console.log("[ERROR]", error);

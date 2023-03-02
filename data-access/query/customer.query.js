@@ -49,7 +49,7 @@ module.exports = (Customer) => {
         const data = await Customer.aggregate(stages);
         return { data };
       } catch (error) {
-        console.log("sdfsdfsdf", error);
+        
         return { error };
       }
     },
@@ -65,7 +65,7 @@ module.exports = (Customer) => {
         // create search.
         // sort by
         //
-        console.log("exists_only", exists_only);
+        
         const match =
           search != "null"
             ? [

@@ -53,7 +53,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
       const admin = getAdminId(req);
       const { credit_id } = req.params;
       const payload = req.body;
-      console.log("ddd", { credit_id, admin, payload });
+      
       const { data, error } = await transaction.payCreditPerGallon({
         admin,
         credit_id,
@@ -114,7 +114,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
         from,
         to,
       });
-      console.log("from to", from, to);
+      
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -137,7 +137,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
     getCreditInfo: async (req, res) => {
       const admin = getAdminId(req);
       const { customer_id, credit_id } = req.params;
-      console.log("customer_id, credit_id ", customer_id, credit_id);
+      
       const { data, error } = await query.getCreditInfo({
         admin,
         customer_id,
