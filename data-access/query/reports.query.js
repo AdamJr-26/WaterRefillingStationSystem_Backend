@@ -60,16 +60,7 @@ module.exports = (
                         $sum: "$items.orders",
                       },
                     },
-                    total_orders_paid_unpaid_amount: {
-                      $sum: {
-                        $multiply: [
-                          { $sum: "$items.orders" },
-                          {
-                            $sum: "$items.price",
-                          },
-                        ],
-                      },
-                    },
+                    total_orders_paid_unpaid_amount: { $sum: "$order_to_pay" },
                     paid_orders: {
                       $sum: {
                         $subtract: [
@@ -78,21 +69,7 @@ module.exports = (
                         ],
                       },
                     },
-                    paid_orders_amount: {
-                      $sum: {
-                        $multiply: [
-                          {
-                            $subtract: [
-                              { $sum: "$items.orders" },
-                              { $sum: "$items.credit" },
-                            ],
-                          },
-                          {
-                            $sum: "$items.price",
-                          },
-                        ],
-                      },
-                    },
+                    paid_orders_amount: { $sum: "$total_payment" },
                     credited_gallon: {
                       $sum: {
                         $sum: "$items.credit",
@@ -299,7 +276,7 @@ module.exports = (
         ];
 
         const data = await Admin.aggregate(pipeline);
-        
+
         return { data };
       } catch (error) {
         console.log("errrrrrrrrrr", error);

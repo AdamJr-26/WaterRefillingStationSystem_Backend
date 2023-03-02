@@ -42,31 +42,8 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    paid_orders_amount: {
-                      $sum: {
-                        $multiply: [
-                          {
-                            $subtract: [
-                              { $sum: "$items.orders" },
-                              { $sum: "$items.credit" },
-                            ],
-                          },
-                          {
-                            $sum: "$items.price",
-                          },
-                        ],
-                      },
-                    },
-                    total_orders_paid_unpaid_amount: {
-                      $sum: {
-                        $multiply: [
-                          { $sum: "$items.orders" },
-                          {
-                            $sum: "$items.price",
-                          },
-                        ],
-                      },
-                    },
+                    paid_orders_amount: "$total_payment",
+                    total_orders_paid_unpaid_amount: "$order_to_pay"
                   },
                 },
               ],
@@ -174,7 +151,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
         ];
 
         const data = await Admin.aggregate(pipeline);
-        
+        console.log("data", JSON.stringify(data));
         return { data };
       } catch (error) {
         console.log("error", error);
