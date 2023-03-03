@@ -5,12 +5,7 @@ module.exports = (Delivery, Gallon, db) => {
       try {
         // first check if all gallons are still available.
         const data = new Delivery(payload);
-        await data.save((error) => {
-          if (error) {
-            // throw new Error("Error creatinting new delivery");
-            console.log("[CREATING DELIVERY]", error)
-          }
-        });
+        await data.save();
         return { data };
       } catch (error) {
         console.log("error---------");

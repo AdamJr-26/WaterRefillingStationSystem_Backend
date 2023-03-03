@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 module.exports = (query, mutation, responseUtil, getAdminId) => {
   return {
     createDelivery: async (req, res) => {
@@ -6,11 +7,16 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       const delivery_personel = req.user?._id;
       const vehicle = body?.vehicle_id;
       const items = body?.items;
+      const updatedItems = items.map(item => {
+        return {
+          gallon: mongoose.Types.ObjectId(item.gallon)
+        };
+      });
       const payload = {
         admin,
         delivery_personel,
         vehicle,
-        delivery_items: items,
+        delivery_items: updatedItems,
       };
 
       // before everything, first, we need to check if all gallons are still available.
