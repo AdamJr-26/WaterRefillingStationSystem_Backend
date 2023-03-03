@@ -9,7 +9,8 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       const items = body?.items;
       const updatedItems = items.map(item => {
         return {
-          gallon: mongoose.Types.ObjectId(item.gallon)
+          gallon: mongoose.Types.ObjectId(item.gallon),
+          total: item?.total
         };
       });
       const payload = {
