@@ -7,10 +7,10 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       const delivery_personel = req.user?._id;
       const vehicle = body?.vehicle_id;
       const items = body?.items;
-      const updatedItems = items.map(item => {
+      const updatedItems = items.map((item) => {
         return {
-          gallon: mongoose.Types.ObjectId(item.gallon),
-          total: item?.total
+          gallon: item.gallon.toString(),
+          total: item?.total,
         };
       });
       const payload = {
@@ -99,7 +99,10 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
     getRecentDeliveries: async (req, res) => {
       const personel_id = req.user?._id;
       const admin = getAdminId(req);
-      const { data, error } = await query.getRecentDeliveries({ personel_id ,admin});
+      const { data, error } = await query.getRecentDeliveries({
+        personel_id,
+        admin,
+      });
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
