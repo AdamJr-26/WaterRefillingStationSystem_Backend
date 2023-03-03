@@ -82,9 +82,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    amount_paid: {
-                      $sum: "$amount_paid",
-                    },
+                    amount_paid: "$amount_paid",
                   },
                 },
               ],
