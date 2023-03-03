@@ -132,7 +132,7 @@ const sendNotifyForDelivery = async ({
         console.log("[sending delivery email]", err);
       } else {
         var emailOptions = {
-          from: "wrsms_devs@gmail.com",
+          from: process.env.GOOGLE_EMAIL,
           to: receiver,
           subject: subject,
           html: data,
