@@ -22,10 +22,23 @@ const admin = new mongoose.Schema({
     lat: { type: String },
     lng: { type: String },
   },
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
+  },
   date_created: {
     type: Date,
     default: () => Math.floor(new Date().valueOf() / 1000),
   },
 });
 admin.set("timestamps", true);
+admin.index({ location: "2dsphere" });
 module.exports = admin;
