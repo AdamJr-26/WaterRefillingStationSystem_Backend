@@ -19,7 +19,6 @@ module.exports = (
   return {
     // Admin-------
     registerAdmin: async (req, res) => {
-      
       const {
         wrs_name,
         gmail,
@@ -35,6 +34,10 @@ module.exports = (
       const { region, province, city, barangay, street_building } = req.body;
       // --------------
       const hashed_password = await encryptPassword(password, 10);
+      const location = {
+        type: "Point",
+        coordinates: [geolocation.lng, geolocation.lat],
+      };
       const mutationResponse = await mutation.registerStation({
         wrs_name,
         gmail,
@@ -46,6 +49,7 @@ module.exports = (
         birthday: Math.floor(new Date(birthday).getTime() / 1000),
         password: hashed_password,
         geolocation,
+        location,
         address: { region, province, city, barangay, street_building },
       });
       //   receiver, link, subject, title, content, description
