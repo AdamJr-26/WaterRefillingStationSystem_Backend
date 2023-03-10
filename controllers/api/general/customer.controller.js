@@ -2,7 +2,7 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
   return {
     searchCustomerByFirstnamePlace: async (req, res) => {
       const { search_text } = req.params;
-      
+
       const admin = getAdminId(req);
       const { data, error } = await query.searchCustomerByNameAndPlace({
         search_text,
@@ -54,6 +54,56 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
           "Error",
           "get customers failed, please try again",
           "get_customers"
+        );
+      }
+    },
+    // client/customer access
+    getCustomerProfile: async (req, res) => {
+      try {
+        const user = req.user;
+        const data = await query.getCustomerProfile({ id: user.id });
+
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get customer's profile",
+          data,
+          "profile"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "get customer's profile failed, please try again",
+          "profile"
+        );
+      }
+    },
+    updateCustomerAddress: async (req, res) => {
+      try {
+        const updatePayload = req.body;
+        const gmail = req.user.gmail;
+        const data = await mutation.customerUpdateAddress({
+          gmail,
+          updatePayload,
+        });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "updated address",
+          data,
+          "profile"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          error,
+          "profile"
         );
       }
     },

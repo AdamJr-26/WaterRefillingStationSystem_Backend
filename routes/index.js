@@ -6,6 +6,7 @@ router.use("/auth", require("./auth/auth.login.logout.routes").router);
 router.use("/auth", require("./auth/auth.verify.routes").router);
 router.use("/auth", require("./auth/auth.authorize.users.routes").router);
 router.use("/auth", require("./auth/auth.update.users.routes").router);
+router.use("/auth", require("./auth/auth.google.routes").router);
 
 router.use("/api", require("./api/api.profile.users.routes").router);
 router.use("/api", require("./auth/auth.account.routes").router);

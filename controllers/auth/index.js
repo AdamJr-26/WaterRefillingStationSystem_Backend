@@ -27,7 +27,7 @@ module.exports = {
     encryptPassword,
     sendOTP,
     crypto,
-    query,
+    query
   ),
   ...require("./login.controller")(
     mutation,
@@ -56,10 +56,7 @@ module.exports = {
     responseUtil,
     sendOTP
   ),
-  ...require("./verification/verify.otp")(
-    query,
-    responseUtil,
-  ),
+  ...require("./verification/verify.otp")(query, responseUtil),
   ...require("./verification/send.verify.link")(
     mutation,
     query,
@@ -75,5 +72,11 @@ module.exports = {
     encryptPassword,
     sendOTP,
     crypto
+  ),
+  ...require("./google.signin.controller")(
+    query,
+    responseUtil,
+    comparePassword,
+    signIn
   ),
 };

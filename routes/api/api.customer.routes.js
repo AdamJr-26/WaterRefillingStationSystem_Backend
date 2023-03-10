@@ -38,4 +38,12 @@ router.get(
   apiController.getCustomersStatus
 );
 
+//  routes that customer have accesses
+router.get(
+  "/customers/profile",
+  authenticate,
+  apiController.getCustomerProfile
+);
+router.put("/customer/address", authenticate, apiController.updateCustomerAddress);
+
 module.exports = { router };

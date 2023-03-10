@@ -49,7 +49,6 @@ module.exports = (Customer) => {
         const data = await Customer.aggregate(stages);
         return { data };
       } catch (error) {
-        
         return { error };
       }
     },
@@ -65,7 +64,7 @@ module.exports = (Customer) => {
         // create search.
         // sort by
         //
-        
+
         const match =
           search != "null"
             ? [
@@ -213,6 +212,16 @@ module.exports = (Customer) => {
       } catch (error) {
         console.log("error", error);
         return { error };
+      }
+    },
+    // client/customer access
+    getCustomerProfile: async ({ id }) => {
+      try {
+        const data = await Customer.findOne({ _id: id }).exec();
+        
+        return data;
+      } catch (error) {
+        throw error;
       }
     },
   };

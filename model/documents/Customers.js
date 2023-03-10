@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// if Admin field is occupied that mean the customer is already subscribed to a wrs.
 module.exports = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   customer_type: { type: String, default: "regular" },
@@ -32,5 +33,4 @@ module.exports = new mongoose.Schema({
     url: { type: String },
     mimetype: { type: String },
   },
-
 });

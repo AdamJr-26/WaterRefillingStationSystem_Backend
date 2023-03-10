@@ -8,6 +8,7 @@ const {
   Schedule,
   Discount,
   Expense,
+  Customer,
 } = require("../../model/index");
 const db = require("../../db/conn");
 module.exports = {
@@ -23,5 +24,5 @@ module.exports = {
   ...require("./schedule/schedule.mutation")(db, Schedule),
   ...require("./discount/discount.mutation")(Discount),
   ...require("./expenses/expenses.mutation")(Expense),
-  
+  ...require("./customer/customer.mutation")(Customer),
 };
