@@ -27,11 +27,11 @@ const admin = new mongoose.Schema({
       type: String,
       enum: ["Point"],
       default: "Point",
-      required: true,
+      // required: true,
     },
     coordinates: {
       type: [Number],
-      required: true,
+      // required: true,
     },
   },
   date_created: {

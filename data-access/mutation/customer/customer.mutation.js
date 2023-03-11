@@ -18,5 +18,23 @@ module.exports = (Customer) => {
         throw error;
       }
     },
+    subscribeCustomer: async ({ gmail, admin }) => {
+      try {
+        const data = await Customer.findOneAndUpdate(
+          {
+            gmail: gmail,
+          },
+          {
+            $set: {
+              admin: admin,
+            },
+          },
+          { returnOriginal: false }
+        );
+        return data;
+      } catch (error) {
+        throw error;
+      }
+    },
   };
 };

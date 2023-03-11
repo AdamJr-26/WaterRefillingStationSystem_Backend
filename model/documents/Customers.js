@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 module.exports = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   customer_type: { type: String, default: "regular" },
+  role: { type: String, default: "Customer" },
   account_provided_by: { type: String },
   display_photo: {
     type: String,

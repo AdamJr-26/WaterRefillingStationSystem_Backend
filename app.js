@@ -10,6 +10,7 @@ const session = require("express-session");
 
 const app = express();
 app.use(cors(clientConfig.corsConfig));
+// app.use(cors(clientConfig.corsConfig2));
 // app.use(cors(clientConfig.ngrokConfig));
 
 // initialize express-session middleware

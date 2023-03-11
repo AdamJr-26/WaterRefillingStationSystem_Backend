@@ -9,6 +9,8 @@ const {
   Discount,
   Expense,
   Customer,
+  Products,
+  Cart,
 } = require("../../model/index");
 const db = require("../../db/conn");
 module.exports = {
@@ -25,4 +27,6 @@ module.exports = {
   ...require("./discount/discount.mutation")(Discount),
   ...require("./expenses/expenses.mutation")(Expense),
   ...require("./customer/customer.mutation")(Customer),
+  ...require("./products/products.mutation")(Products),
+  ...require("./cart/cart.mutation")(Cart,Customer),
 };

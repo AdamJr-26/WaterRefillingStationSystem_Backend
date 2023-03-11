@@ -71,6 +71,15 @@ router.use("/api", require("./api/api.notification.routes").router);
 // dashboard
 router.use("/api", require("./api/api.dashboard.routes").router);
 
+// all about stations that can see of customers
+router.use("/api", require("./api/api.stations.routes").router);
+
+// products things
+router.use("/api", require("./api/api.products.routes").router);
+
+// cart
+router.use("/api", require("./api/api.cart.routes").router);
+
 module.exports = {
   router,
 };

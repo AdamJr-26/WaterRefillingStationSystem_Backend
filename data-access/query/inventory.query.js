@@ -47,7 +47,7 @@ module.exports = (Gallon, Vehicle) => {
           // },
         ];
         const data = await Gallon.aggregate(pipeline);
-        
+
         return { data };
       } catch (error) {
         console.log("error", error);
@@ -109,7 +109,6 @@ module.exports = (Gallon, Vehicle) => {
       ArrayOfTotal,
     }) => {
       try {
-
         const filter = {
           admin: admin,
           _id: ArrayOfId,
@@ -120,6 +119,34 @@ module.exports = (Gallon, Vehicle) => {
         return { data };
       } catch (error) {
         return { error };
+      }
+    },
+    getAllGallonsNotInProducts: async ({ admin }) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+            },
+          },
+          {
+            $lookup: {
+              from: "products",
+              localField: "_id",
+              foreignField: "gallon",
+              as: "matched_docs",
+            },
+          },
+          {
+            $match: {
+              matched_docs: { $size: 0 },
+            },
+          },
+        ];
+        const data = await Gallon.aggregate(pipeline);
+        return data;
+      } catch (error) {
+        throw error;
       }
     },
   };

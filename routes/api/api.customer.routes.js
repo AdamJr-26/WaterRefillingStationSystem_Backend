@@ -44,6 +44,15 @@ router.get(
   authenticate,
   apiController.getCustomerProfile
 );
-router.put("/customer/address", authenticate, apiController.updateCustomerAddress);
+router.put(
+  "/customer/address",
+  authenticate,
+  apiController.updateCustomerAddress
+);
 
+router.put(
+  "/customer/subscribe",
+  authenticate,
+  apiController.subscribeCustomer
+);
 module.exports = { router };

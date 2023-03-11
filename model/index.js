@@ -15,7 +15,10 @@ const purchase = require("./documents/Purchases");
 const pay_credit_receipt = require("./documents/PayCreditReceipt.js");
 const return_gallon_receipt = require("./documents/ReturnGallonReceipt");
 const expense = require("./documents/Expenses");
+const products = require("./documents/Products");
+const cart = require("./documents/Cart");
 
+// model
 const Gallon = db.model("Gallon", gallon);
 const Vehicle = db.model("Vehicle", vehicle);
 const OTP = db.model("otp", otpSchema);
@@ -29,9 +32,13 @@ const Schedule = db.model("Schedule", schedule);
 const Discount = db.model("Discount", discount);
 const Purchase = db.model("Purchase", purchase);
 const PayCreditReceipt = db.model("PayCreditReceipt", pay_credit_receipt);
-const ReturnGallonReceipt = db.model("ReturnGallonReceipt", return_gallon_receipt);
-const Expense = db.model("Expense", expense)
-
+const ReturnGallonReceipt = db.model(
+  "ReturnGallonReceipt",
+  return_gallon_receipt
+);
+const Expense = db.model("Expense", expense);
+const Products = db.model("Product", products);
+const Cart = db.model("Cart", cart);
 module.exports = {
   OTP,
   Personel,
@@ -47,5 +54,7 @@ module.exports = {
   Purchase,
   PayCreditReceipt,
   ReturnGallonReceipt,
-  Expense
+  Expense,
+  Products,
+  Cart,
 };

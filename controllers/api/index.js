@@ -77,7 +77,11 @@ module.exports = {
     getAdminId,
     responseUtil
   ),
-  ...require("./personel/get.admin.basic.profile")(query, responseUtil, getAdminId),
+  ...require("./personel/get.admin.basic.profile")(
+    query,
+    responseUtil,
+    getAdminId
+  ),
   ...require("./general/get.customer.controller")(
     query,
     responseUtil,
@@ -187,5 +191,19 @@ module.exports = {
     query,
     responseUtil,
     getAdminId
+  ),
+  ...require("./general/get.nearby.station.controller")(query, responseUtil),
+  // products things
+  ...require("./general/products.controller")(
+    query,
+    mutation,
+    getAdminId,
+    responseUtil
+  ),
+  // customer
+  ...require("./customer/cart.controller")(
+    query,
+    mutation,
+    responseUtil
   ),
 };

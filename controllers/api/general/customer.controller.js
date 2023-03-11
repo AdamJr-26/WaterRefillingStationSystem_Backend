@@ -107,5 +107,28 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         );
       }
     },
+    subscribeCustomer: async (req, res) => {
+      try {
+        const gmail = req.user.gmail;
+        const admin = req.body.admin;
+        const data = await mutation.subscribeCustomer({ gmail, admin });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "subscribe to wrs",
+          data,
+          "subscribe"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          error,
+          "subscribe"
+        );
+      }
+    },
   };
 };

@@ -23,17 +23,43 @@ router.post(
 
 // GET
 router.get("/gallons", authenticate, apiController.getAllGallons);
-router.get("/gallons/availables", authenticate, apiController.getAvailableGallons);
-router.get("/vehicles",authenticate,apiController.getVehicles);
-router.get("/vehicles/available", authenticate, apiController.getAvailableVehicles);
+router.get(
+  "/gallons/availables",
+  authenticate,
+  apiController.getAvailableGallons
+);
+router.get("/vehicles", authenticate, apiController.getVehicles);
+router.get(
+  "/vehicles/available",
+  authenticate,
+  apiController.getAvailableVehicles
+);
 
-router.get("/gallon/:id/:admin", authenticate, apiController.getGallon)
+router.get("/gallon/:id/:admin", authenticate, apiController.getGallon);
 
 // update
-router.put("/gallon/price/:id/:admin",authenticate, apiController.updateGallonPrice)
-router.put("/gallon/add/:id/:admin",authenticate, apiController.updateAddCountGallon)
-router.put("/gallon/reduce/:id/:admin",authenticate, apiController.updateReduceCountGallon)
+router.put(
+  "/gallon/price/:id/:admin",
+  authenticate,
+  apiController.updateGallonPrice
+);
+router.put(
+  "/gallon/add/:id/:admin",
+  authenticate,
+  apiController.updateAddCountGallon
+);
+router.put(
+  "/gallon/reduce/:id/:admin",
+  authenticate,
+  apiController.updateReduceCountGallon
+);
 
+// get all gallons that not in products collection.
+router.get(
+  "/gallons/not-in-products",
+  authenticate,
+  apiController.getAllGallonsNotInProducts
+);
 module.exports = {
   router,
 };
