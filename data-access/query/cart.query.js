@@ -1,12 +1,17 @@
 const mongoose = require("mongoose");
-module.exports = (Cart) => {
+module.exports = (Cart, Customer) => {
   return {
     getCart: async ({ customer }) => {
       try {
+        // get admin id or where customer is subscribed.
+        const customerData = await Customer.findOne({ _id: customer })
+          .select(["admin"])
+          .exec();
         const pipeline = [
           {
             $match: {
               customer: mongoose.Types.ObjectId(customer),
+              admin: mongoose.Types.ObjectId(customerData?.admin),
             },
           },
           {
@@ -28,6 +33,7 @@ module.exports = (Cart) => {
           },
         ];
         const data = await Cart.aggregate(pipeline);
+        console.log("data", data);
         return data;
       } catch (error) {
         throw error;

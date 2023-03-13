@@ -9,8 +9,21 @@ const clientConfig = require("./config/client.config");
 const session = require("express-session");
 
 const app = express();
+const allowedOrigins = [
+  clientConfig.corsConfig2.origin,
+  clientConfig.corsConfig.origin,
+];
+const corsOptions = {
+  origin: function (origin, cb) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      cb(null, true);
+    } else {
+      cb(new Error("Not allowed by CORS"));
+    }
+  },
+};
+// app.use(cors(corsOptions));
 app.use(cors(clientConfig.corsConfig));
-// app.use(cors(clientConfig.corsConfig2));
 // app.use(cors(clientConfig.ngrokConfig));
 
 // initialize express-session middleware

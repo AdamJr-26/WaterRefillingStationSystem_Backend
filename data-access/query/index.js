@@ -55,5 +55,5 @@ module.exports = {
   ...require("./delivery.details.lookup")(Schedule),
   ...require("./station.query")(Admin),
   ...require("./products.query")(Products),
-  ...require("./cart.query")(Cart),
+  ...require("./cart.query")(Cart,Customer),
 };

@@ -26,6 +26,33 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         );
       }
     },
+    createScheduleByCustomer: async (req, res) => {
+      try {
+        // get admin id
+        const customer = req.user._id;
+        const payload = {
+          customer,
+          ...req.body,
+        };
+        const data = await mutation.createScheduleByCustomer({ payload });
+        responseUtil.generateServerResponse(
+          res,
+          201,
+          "success",
+          "creating schedule",
+          data,
+          "create_schedule"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          "Something went wrong, please try again.",
+          "error"
+        );
+      }
+    },
     checkIfcustomerHasSchedule: async (req, res) => {
       const admin = getAdminId(req);
       const { id } = req.params;
@@ -61,7 +88,7 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         admin,
         place,
       });
-      
+
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -138,7 +165,6 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       }
     },
     reSchedule: async (req, res) => {
-      
       const { schedule, schedule_id } = req.body; // schedule is a field in schedules document.
       const { data, error } = await mutation.reSchedule({
         schedule,

@@ -8,6 +8,7 @@ module.exports = (query, mutation, responseUtil) => {
           admin: body.admin,
           gallon: body.gallon,
           customer: customer,
+          price: body.price,
         };
         const data = await mutation.addToCart({ payload });
         responseUtil.generateServerResponse(

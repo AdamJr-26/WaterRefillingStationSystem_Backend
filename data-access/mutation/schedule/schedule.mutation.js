@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-module.exports = (db, Schedule) => {
+module.exports = (db, Schedule, Customer) => {
   return {
     createSchedule: async (payload) => {
       try {
@@ -13,6 +13,27 @@ module.exports = (db, Schedule) => {
       } catch (error) {
         console.log("errrrrrrrrrror", error);
         return { error };
+      }
+    },
+    createScheduleByCustomer: async ({ payload }) => {
+      //
+      try {
+        const customerData = await Customer.findOne({ _id: payload.customer })
+          .select(["admin"])
+          .exec();
+        const updatedPayload = {
+          admin: customerData?.admin,
+          ...payload,
+        };
+        const data = await new Schedule(updatedPayload);
+        await data.save();
+        // delete in the cart
+        if(data){
+          
+        }
+        return data;
+      } catch (error) {
+        throw error;
       }
     },
     assignSchedule: async ({ admin, personel_id, schedule_id }) => {

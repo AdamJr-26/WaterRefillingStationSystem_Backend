@@ -23,10 +23,10 @@ module.exports = {
   ...require("./otp/admin.create.applyid.mutation")(OTP),
   ...require("./personel/update.personel.info.mutation")(Personel, Admin, db),
   ...require("./delivery/delivery.mutation")(Delivery, Gallon, db),
-  ...require("./schedule/schedule.mutation")(db, Schedule),
+  ...require("./schedule/schedule.mutation")(db, Schedule, Customer),
   ...require("./discount/discount.mutation")(Discount),
   ...require("./expenses/expenses.mutation")(Expense),
   ...require("./customer/customer.mutation")(Customer),
   ...require("./products/products.mutation")(Products),
-  ...require("./cart/cart.mutation")(Cart,Customer),
+  ...require("./cart/cart.mutation")(Cart, Customer),
 };
