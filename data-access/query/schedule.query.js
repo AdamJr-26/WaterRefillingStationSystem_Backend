@@ -9,7 +9,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
           admin: payload?.admin?.toString(),
         };
         const data = await Schedule.find(filter).exec();
-        
+
         return { data };
       } catch (error) {
         return { error };
@@ -41,7 +41,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
       }
     },
     getSchedulesByDate: async ({ date, admin, place }) => {
-      
+      console.log("place", place);
       try {
         const pipelines = [
           {
@@ -61,7 +61,12 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
               localField: "customer",
               foreignField: "_id",
               pipeline: [
-                { $match: { $expr: { $eq: ["$address.barangay", place] } } },
+                {
+                  $addFields: {
+                    trimmedBarangay: { $trim: { input: "$address.barangay" } },
+                  },
+                },
+                { $match: { $expr: { $eq: ["$trimmedBarangay", place] } } },
               ],
               as: "customer",
             },
@@ -92,6 +97,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
           },
         ];
         const docs = await Schedule.aggregate(pipelines);
+        console.log("docs", docs);
         for await (const doc of docs) {
           doc.fromItems.forEach((item, index) => {
             item["total"] = doc.items[index].total;

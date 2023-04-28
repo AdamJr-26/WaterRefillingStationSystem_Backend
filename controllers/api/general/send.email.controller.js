@@ -20,7 +20,7 @@ module.exports = (
           // change schedule if notified to true.
           const { data: notifiedData, error: notifiedError } =
             await mutation.setToNotified(schedule_id);
-            
+          console.log("data", JSON.stringify(data[0]));
           if (notifiedData && !notifiedError) {
             await sendNotifyForDelivery({
               receiver: data[0]?.customer[0]?.gmail,
@@ -29,8 +29,10 @@ module.exports = (
               personnel_name: `${data[0]?.personnel[0].firstname} ${data[0]?.personnel[0]?.lastname}`,
               address: `${data[0]?.customer[0].address.street} ${data[0]?.customer[0]?.address.barangay} ${data[0]?.customer[0].address.municipal_city}`,
               order_details: data[0]?.total_items,
+              purchasedItems: data[0].purchasedItems,
               date_of_scheduled: format(data[0]?.createdAt, "MMMM d, yyyy"),
               estimated_delivery_date: format(new Date(), "MMMM d, yyyy"),
+              from: data[0]?.personnel[0].gmail,
             });
             responseUtil.generateServerResponse(
               res,
@@ -50,7 +52,7 @@ module.exports = (
             );
           }
         } catch (error) {
-          
+          console.log("send.email.controller.error", error);
           responseUtil.generateServerErrorCode(
             res,
             400,

@@ -10,7 +10,7 @@ const session = require("express-session");
 
 const app = express();
 const allowedOrigins = [
-  clientConfig.corsConfig2.origin,
+  // clientConfig.corsConfig2.origin,
   clientConfig.corsConfig.origin,
 ];
 const corsOptions = {

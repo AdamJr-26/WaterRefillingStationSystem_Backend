@@ -52,6 +52,7 @@ module.exports = (
                   },
                 },
                 // group by day
+                // {$unwind: "$items"},
                 {
                   $group: {
                     _id: { $dayOfMonth: "$date.utc_date" },
@@ -60,7 +61,20 @@ module.exports = (
                         $sum: "$items.orders",
                       },
                     },
-                    total_orders_paid_unpaid_amount: { $sum: "$order_to_pay" },
+                    sales: {
+                      $sum: {
+                        $sum: {
+                          $map: {
+                            input: "$items",
+                            as: "item",
+                            in: {
+                              $multiply: ["$$item.orders", "$$item.price"],
+                            },
+                          },
+                        },
+                      },
+                    },
+                    // calculate paid and unpaid amount
                     paid_orders: {
                       $sum: {
                         $subtract: [
@@ -69,7 +83,7 @@ module.exports = (
                         ],
                       },
                     },
-                    paid_orders_amount: { $sum: "$total_payment" },
+                    paid_orders_amount: { $sum: "$order_to_pay" },
                     credited_gallon: {
                       $sum: {
                         $sum: "$items.credit",
@@ -83,6 +97,19 @@ module.exports = (
                         ],
                       },
                     },
+                    // total_sales: {
+                    //   $sum: {
+                    //     $sum: {
+                    //       $map: {
+                    //         input: "$items",
+                    //         as: "item",
+                    //         in: {
+                    //           $multiply: ["$$item.orders", "$$item.price"],
+                    //         },
+                    //       },
+                    //     },
+                    //   },
+                    // },
                   },
                 },
                 // group by month
@@ -247,9 +274,7 @@ module.exports = (
               total_credited_gallons_count: {
                 $sum: "$purchases.credited_gallon",
               },
-              total_sales: {
-                $sum: "$purchases.total_orders_paid_unpaid_amount",
-              },
+              total_sales: { $sum: "$purchases.sales" },
               total_expenses: {
                 $sum: "$expenses.amount",
               },
@@ -276,7 +301,7 @@ module.exports = (
         ];
 
         const data = await Admin.aggregate(pipeline);
-
+        console.log(data[0].total_sales);
         return { data };
       } catch (error) {
         console.log("errrrrrrrrrr", error);

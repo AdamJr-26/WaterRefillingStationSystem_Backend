@@ -7,7 +7,8 @@ estimated_delivery_date,
     <body>
         <div>
             <div style="background-color:#EBECF0; padding:10px;border-radius:10px;">
-                <p style="font-weight: bold; font-size:24px; ">Dear Aaron</p>
+                <p style="font-weight: bold; font-size:16px; ">Dear <%= receiver %>
+                </p>
                 <p>We wanted to reach out and let you know that your recent order/schedule with us is now on its way to
                     you. Your
                     order will be delivered to the following address:</p>
@@ -18,7 +19,7 @@ estimated_delivery_date,
             </div>
             <div style="padding:10px; ">
                 <div style="display:flex; gap:10px;">
-                    <p>Order Details:</p>
+                    <p>Orders:</p>
                     <p style="font-weight:500; margin-left: 0.5rem;">
                         <%= order_details %> gallons
                     </p>
@@ -49,6 +50,12 @@ estimated_delivery_date,
                 <p>Delivery Personnel: </p>
                 <p style="font-weight:500; margin-left: 0.5rem;">
                     <%= personnel_name %>
+                </p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <p>If you have concern about your orders/schedule:</p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= from %>
                 </p>
             </div>
             <div style="display:flex; gap:10;">

@@ -2,6 +2,7 @@ const query = require("../../data-access/query/index");
 const mutation = require("../../data-access/mutation/index");
 const transaction = require("../../data-access/transaction/index");
 const responseUtil = require("../../utils/server.responses.util");
+const convertBufferToBase64 = require("../../utils/buffer.util");
 const {
   uploadImage,
   deleteFiles,
@@ -49,7 +50,14 @@ module.exports = {
     getAdminId,
     responseUtil
   ),
-  ...require("./admin/admin.profile.controller")(query, responseUtil),
+  ...require("./admin/admin.profile.controller")(
+    query,
+    mutation,
+    responseUtil,
+    convertBufferToBase64,
+    getAdminId,
+    uploadImage,
+  ),
 
   ...require("./personel/delivery.controller")(
     query,
@@ -201,9 +209,5 @@ module.exports = {
     responseUtil
   ),
   // customer
-  ...require("./customer/cart.controller")(
-    query,
-    mutation,
-    responseUtil
-  ),
+  ...require("./customer/cart.controller")(query, mutation, responseUtil),
 };

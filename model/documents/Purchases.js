@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const purchase = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   personel: { type: mongoose.Types.ObjectId, ref: "Personel" },
@@ -27,4 +28,7 @@ const purchase = new mongoose.Schema({
   order_to_pay: { type: Number },
   debt_payment: { type: Number },
 });
+purchase.plugin(mongoosePaginate);
+purchase.plugin(aggregatePaginate);
+
 module.exports = purchase;

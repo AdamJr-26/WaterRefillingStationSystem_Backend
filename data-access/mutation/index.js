@@ -29,4 +29,5 @@ module.exports = {
   ...require("./customer/customer.mutation")(Customer),
   ...require("./products/products.mutation")(Products),
   ...require("./cart/cart.mutation")(Cart, Customer),
+  ...require("./admin/admin.mutation")(Admin),
 };

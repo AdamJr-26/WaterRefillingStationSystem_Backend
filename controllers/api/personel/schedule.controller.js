@@ -5,6 +5,7 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
       const { data, error } = await mutation.removeAssignedSchedule({
         schedule_id,
       });
+      console.log('schedule_id',JSON.stringify(schedule_id))
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,

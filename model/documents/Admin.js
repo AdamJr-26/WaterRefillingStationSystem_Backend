@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const admin = new mongoose.Schema({
   role: { type: String, default: "Admin" },
-  wrs_image: { type: String },
+  display_photo: { type: String },
   wrs_name: { type: String },
   gmail: { type: String, unique: true },
   contact_number: { type: String },

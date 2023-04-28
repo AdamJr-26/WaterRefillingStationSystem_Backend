@@ -5,4 +5,9 @@ const {
 } = require("../../middlewares/passport.authenticate.middleware");
 
 router.post("/expense", authenticate, apiController.createNewReportExpense);
+router.get(
+  "/expenses/:limit/:page/:date",
+  authenticate,
+  apiController.getExpensesPaginated
+);
 module.exports = { router };

@@ -42,8 +42,21 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    paid_orders_amount: "$total_payment",
-                    total_orders_paid_unpaid_amount: "$order_to_pay",
+                    paid_orders_amount: "$order_to_pay",
+                    // total_orders_paid_unpaid_amount: "$order_to_pay",
+                    total_sales: {
+                      $sum: {
+                        $sum: {
+                          $map: {
+                            input: "$items",
+                            as: "item",
+                            in: {
+                              $multiply: ["$$item.orders", "$$item.price"],
+                            },
+                          },
+                        },
+                      },
+                    },
                   },
                 },
               ],
@@ -136,7 +149,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 $sum: "$expenses.amount",
               },
               total_sales: {
-                $sum: "$purchases.total_orders_paid_unpaid_amount",
+                $sum: "$purchases.total_sales",
               },
               paidProducts: {
                 $sum: [

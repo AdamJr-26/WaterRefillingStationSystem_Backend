@@ -16,6 +16,12 @@ router.get(
   apiController.getPurchasesHistoryByCustomerId
 );
 
+router.get(
+  "/purchases/:limit/:page/:date",
+  authenticate,
+  apiController.getPurchasesPaginate
+);
+
 module.exports = {
   router,
 };

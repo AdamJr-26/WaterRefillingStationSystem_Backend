@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-module.exports = (PayCreditReceipt) => {
+module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
   return {
     getPayersCredits: async ({ admin, limit, skip, from, to }) => {
       try {
@@ -140,10 +140,95 @@ module.exports = (PayCreditReceipt) => {
           },
         ];
         const data = await PayCreditReceipt.aggregate(pipeline);
-        
+
         return { data };
       } catch (error) {
         return { error };
+      }
+    },
+    getDebtPayments: async ({ page, limit, date, admin }) => {
+      try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
+
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      "$date.unix_timestamp",
+                      Math.floor(startOfMonth(new Date(date)).valueOf() / 1000),
+                    ],
+                  },
+                  {
+                    $lte: [
+                      "$date.unix_timestamp",
+                      Math.floor(endOfMonth(new Date(date)).valueOf() / 1000),
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "customer",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    firstname: 1,
+                    lastname: 1,
+                    fullname: {
+                      $concat: ["$firstname", " ", "$lastname"],
+                    },
+                  },
+                },
+              ],
+              as: "customer",
+            },
+          },
+          {
+            $lookup: {
+              from: "gallons",
+              localField: "gallon",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                  },
+                },
+              ],
+              as: "gallon",
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              date: 1,
+              credit: 1,
+              customer: { $arrayElemAt: ["$customer", 0] },
+              gallon: { $arrayElemAt: ["$gallon", 0] },
+              quantity: "$gallon_count",
+              payment: "$amount_paid",
+            },
+          },
+        ];
+        const aggregation = PayCreditReceipt.aggregate(pipeline);
+        const data = await PayCreditReceipt.aggregatePaginate(
+          aggregation,
+          options
+        );
+        console.log("data", JSON.stringify(data));
+        return data;
+      } catch (error) {
+        console.log("error", error);
+        throw error;
       }
     },
   };

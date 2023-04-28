@@ -16,6 +16,7 @@ const {
   ReturnGallonReceipt,
   Products,
   Cart,
+  Expense
 } = require("../../model/index");
 
 const { startOfMonth, endOfMonth, startOfDay, endOfDay } = require("date-fns");
@@ -32,8 +33,12 @@ module.exports = {
   ...require("./discount.query")(Discount),
   ...require("./credits.query")(Credit),
   ...require("./borrow.query")(Borrow),
-  ...require("./purchase.query")(Purchase),
-  ...require("./credits.receipt.query")(PayCreditReceipt),
+  ...require("./purchase.query")(Purchase, startOfMonth, endOfMonth),
+  ...require("./credits.receipt.query")(
+    PayCreditReceipt,
+    startOfMonth,
+    endOfMonth
+  ),
   ...require("./reports.query")(
     Admin,
     Purchase,
@@ -55,5 +60,6 @@ module.exports = {
   ...require("./delivery.details.lookup")(Schedule),
   ...require("./station.query")(Admin),
   ...require("./products.query")(Products),
-  ...require("./cart.query")(Cart,Customer),
+  ...require("./cart.query")(Cart, Customer),
+  ...require("./expenses.query")(Expense, startOfMonth, endOfMonth)
 };

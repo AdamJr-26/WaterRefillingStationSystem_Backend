@@ -14,4 +14,5 @@ router.get(
   authenticate,
   apiController.getCreditsReceiptsByCustomer
 );
+router.get("/debt-payments/:limit/:page/:date", authenticate, apiController.getDebtPayments)
 module.exports = { router };

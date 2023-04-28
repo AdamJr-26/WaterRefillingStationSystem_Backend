@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const expense = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "admin" },
@@ -14,5 +16,6 @@ const expense = new mongoose.Schema({
     utc_date: { type: Date, default: () => new Date() },
   },
 });
-
+expense.plugin(mongoosePaginate);
+expense.plugin(aggregatePaginate);
 module.exports = expense;

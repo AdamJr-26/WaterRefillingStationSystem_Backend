@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const pay_credit_receipt = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
@@ -20,5 +22,7 @@ const pay_credit_receipt = new mongoose.Schema({
     },
   },
 });
+pay_credit_receipt.plugin(mongoosePaginate);
+pay_credit_receipt.plugin(aggregatePaginate);
 
 module.exports = pay_credit_receipt;

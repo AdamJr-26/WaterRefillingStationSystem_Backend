@@ -84,10 +84,7 @@ module.exports = (db, Schedule, Customer) => {
         const sched = await Schedule.aggregate(stages);
         console.log("sched", sched);
         const data = await new Schedule(sched[0]);
-
-        await data.save((error) => {
-          if (error) throw new Error("Error rescheduling");
-        });
+        await data.save();
 
         const deleted_schedule = await Schedule.findOneAndDelete({
           _id: schedule_id,

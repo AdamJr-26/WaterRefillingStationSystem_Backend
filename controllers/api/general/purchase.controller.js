@@ -56,5 +56,29 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         );
       }
     },
+    getPurchasesPaginate: async (req, res) => {
+      try {
+        const { limit, page, date } = req.params;
+        const admin = getAdminId(req);
+
+        const data = await query.getPurchasesPaginate({page, limit, date, admin});
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "purchase histories",
+          data,
+          "purchases"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "purchases"
+        );
+      }
+    },
   };
 };

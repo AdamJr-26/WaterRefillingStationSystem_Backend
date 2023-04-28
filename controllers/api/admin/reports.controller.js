@@ -3,7 +3,10 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
     getPurchasesReport: async (req, res) => {
       const admin = getAdminId(req);
       const { date } = req.params;
-      const { data, error } = await query.getPurchasesReport({ admin, date });
+      const { data, error } = await query.getPurchasesReport({
+        admin,
+        date,
+      });
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,

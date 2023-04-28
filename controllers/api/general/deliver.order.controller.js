@@ -16,10 +16,9 @@ module.exports = (
       const schedule_id = body?.schedule_id;
       const purchase_items = body.items;
 
-      
       // first get verified delivery' id
 
-      // const delivery = await query.getDeliveryId(personel); // get delivery it
+      // const delivery = await query.getDeliveryId(personel); // get delivery id
       const delivery = await query.getApprovedDelivery(
         {
           delivery_personel: personel,
@@ -38,14 +37,14 @@ module.exports = (
               delivery_id,
               purchase_item: purchase_items[p],
             });
-          
+
           if (delivery_item?.data?.delivery_items.length) {
             totalItemEnough = totalItemEnough + 1;
           }
         }
-       
+
         if (totalItemEnough === purchase_items.length) {
-          // create purchase payload and all
+          // create purchase and all
           const purchase = {
             admin,
             personel,
@@ -54,31 +53,33 @@ module.exports = (
             ...body,
             debt_payment: debt_payment,
           };
-          console.log("BODY-------------", JSON.stringify(body))
+          console.log("[[purchasepurchasepurchasepurchase]]", purchase);
           const { data, error } =
             await transaction.deliverOrderByScheduleTransaction({
               purchase,
             });
           if (data?.success && !error) {
-            
+            console.log("[DATA------------]", JSON.stringify(data));
             // send receipt, oops paano kung wala schedule?
             const { data: receiptData, error: receiptError } =
-              await query.getScheduleDetails({ admin, schedule_id });
-
-            if (receiptData && !receiptError) {
+              await query.getScheduleDetails({
+                admin,
+                schedule_id,
+                items: data?.purchase?.items,
+              });
+            console.log("data-------", JSON.stringify(data));
+            if (receiptData.length && !receiptError) {
               await sendReceipt({
                 receiver: receiptData[0]?.customer[0]?.gmail,
                 subject: "Confirmation of Your Recent Order Delivery",
                 wrs_name: receiptData[0]?.admin[0].wrs_name,
                 personnel_name: `${receiptData[0]?.personnel[0].firstname} ${receiptData[0]?.personnel[0]?.lastname}`,
-                address: `${receiptData[0]?.customer[0].address.street || ""} ${receiptData[0]?.customer[0]?.address.barangay || ""} ${receiptData[0]?.customer[0].address.municipal_city || ""}`,
-                date_of_delivery: format(
-                  new Date(),
-                  "MMMM d, yyyy"
-                ),
-                items: data?.purchase?.items,
+                address: `${receiptData[0]?.customer[0].address.street} ${receiptData[0]?.customer[0]?.address.barangay} ${receiptData[0]?.customer[0].address.municipal_city}`,
+                date_of_delivery: format(new Date(), "MMMM d, yyyy"),
+                items: receiptData[0]?.purchasedItems,
                 debt_payment: data?.purchase.debt_payment,
                 total_payment: data?.purchase.total_payment,
+                from: receiptData[0]?.personnel[0].gmail
               });
             }
 

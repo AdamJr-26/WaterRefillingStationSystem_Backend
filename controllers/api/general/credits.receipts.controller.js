@@ -11,7 +11,7 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         from,
         to,
       });
-      
+
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -58,6 +58,29 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
           "Error",
           "getting summary of a delivery failed, please try again",
           "get_credit_receipts"
+        );
+      }
+    },
+    getDebtPayments: async (req, res) => {
+      try {
+        const { page, limit, date } = req.params;
+        const admin = getAdminId(req);
+        const data = await query.getDebtPayments({ page, limit, date, admin });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "debt payments",
+          data,
+          "debt_payments"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "debt_payments"
         );
       }
     },

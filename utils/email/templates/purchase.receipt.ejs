@@ -45,22 +45,20 @@ total_ordered_gallons, -->
                         <% items.map(function(item, i) { %>
                             <li style="display: flex;">
                                 <div style="display: flex;">
-                                    <p>Item <%= i %>
-                                    </p>
-                                    <p style="margin-left:0.5rem;">
-                                        <%= item.gallon_name %>
+                                    <p style="margin-left:0.5rem; font-weight:600;">
+                                        Gallon: <%= item.purchasedItem.name %>
                                     </p>
                                     <p style="margin-left:0.5rem; font-weight:600;">
-                                        Orders: <%= item.orders %>
+                                        Orders: <%= item.purchasedItem.orders %>
                                     </p>
                                     <p style="margin-left:0.5rem; font-weight:600;">
-                                        Price: <%= item.price %>
+                                        Price: <%= item.purchasedItem.price %>
                                     </p>
                                     <p style="margin-left:0.5rem; font-weight:600;">
-                                        Credited: <%= item.credit %>
+                                        Credited: <%= item.purchasedItem.credit %>
                                     </p>
                                     <p style="margin-left:0.5rem; font-weight:600;">
-                                        Free: <%= item.free %>
+                                        Free: <%= item.purchasedItem.free %>
                                     </p>
                                 </div>
                             </li>
@@ -85,6 +83,12 @@ total_ordered_gallons, -->
                 <p>Delivery Personnel: </p>
                 <p style="font-weight:500; margin-left: 0.5rem;">
                     <%= personnel_name %>
+                </p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <p>If you have concern about your orders/schedule:</p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= from %>
                 </p>
             </div>
             <div style="display:flex; gap:10;">

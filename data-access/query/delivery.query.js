@@ -86,7 +86,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
             {
               path: "delivery_personel",
               model: "Personel",
-              select: "firstname lastname contact_number ",
+              select: "firstname lastname contact_number display_photo ",
             },
             {
               path: "vehicle",

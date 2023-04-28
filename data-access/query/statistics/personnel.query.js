@@ -56,13 +56,14 @@ module.exports = (Personnel, startOfMonth, endOfMonth) => {
                     _id: "$personel", // personnel id.
                     sales: {
                       $sum: {
-                        $multiply: [
-                          { $sum: "$items.orders" },
-                          {
-                            $sum: "$items.price",
-                          },
-                        ],
-                      },
+                        $sum: {
+                          $map: {
+                            input: "$items",
+                            as: "item",
+                            in: { $multiply: ["$$item.orders", "$$item.price"] }
+                          }
+                        }
+                      }
                     },
                     sold_product: {
                       $sum: {

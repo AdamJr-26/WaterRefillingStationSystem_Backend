@@ -48,6 +48,7 @@ const sendEmail = async ({
   content,
   description,
   buttonLabel,
+  from,
 }) => {
   ejs.renderFile(
     __dirname + "/templates/verification.template.ejs",
@@ -89,7 +90,7 @@ const sendOTP = async ({
         console.log("error", err);
       } else {
         var emailOptions = {
-          from: "wrss_devs@gmail.com",
+          from: "adamcompiomarcaida@gmail.com",
           to: receiver,
           subject: subject,
           html: data,
@@ -116,23 +117,26 @@ const sendNotifyForDelivery = async ({
   order_details,
   date_of_scheduled,
   estimated_delivery_date,
+  from,
 }) => {
   ejs.renderFile(
     __dirname + "/templates/incoming.delivery.ejs",
     {
       wrs_name,
+      receiver,
       personnel_name,
       address,
       order_details,
       date_of_scheduled,
       estimated_delivery_date,
+      from,
     },
     async (err, data) => {
       if (err) {
         console.log("[sending delivery email]", err);
       } else {
         var emailOptions = {
-          from: process.env.GOOGLE_EMAIL,
+          from: from,
           to: receiver,
           subject: subject,
           html: data,
@@ -158,6 +162,7 @@ const sendReceipt = async ({
   items,
   debt_payment,
   total_payment,
+  from,
 }) => {
   ejs.renderFile(
     __dirname + "/templates/purchase.receipt.ejs",
@@ -170,13 +175,14 @@ const sendReceipt = async ({
       items,
       debt_payment,
       total_payment,
+      from,
     },
     async (err, data) => {
       if (err) {
         console.log("[sending delivery email]", err);
       } else {
         var emailOptions = {
-          from: "wrsms_devs@gmail.com",
+          from: from,
           to: receiver,
           subject: subject,
           html: data,
@@ -197,5 +203,5 @@ module.exports = {
   sendEmail,
   sendOTP,
   sendNotifyForDelivery,
-  sendReceipt
+  sendReceipt,
 };

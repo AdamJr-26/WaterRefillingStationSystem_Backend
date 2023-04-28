@@ -26,5 +26,33 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         );
       }
     },
+    getExpensesPaginated: async (req, res) => {
+      try {
+        const { limit, page, date } = req.params;
+        const admin = getAdminId(req);
+        const data = await query.getExpensesPaginated({
+          limit,
+          page,
+          date,
+          admin,
+        });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get expenses",
+          data,
+          "get_expenses"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "get_expenses"
+        );
+      }
+    },
   };
 };

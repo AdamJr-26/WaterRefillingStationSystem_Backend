@@ -31,6 +31,7 @@ module.exports = (
         password,
       } = req.body;
       const { geolocation } = req.body;
+      console.log("geolocation",geolocation)
       const { region, province, city, barangay, street_building } = req.body;
       // --------------
       const hashed_password = await encryptPassword(password, 10);

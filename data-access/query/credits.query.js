@@ -182,6 +182,7 @@ module.exports = (Credit) => {
                     firstname: 1,
                     lastname: 1,
                     address: 1,
+                    display_photo:1,
                   },
                 },
               ],
