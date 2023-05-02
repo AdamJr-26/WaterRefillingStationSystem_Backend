@@ -1,14 +1,14 @@
 module.exports = {
   port: 3000,
   baseUrl: "https://neptune-wrms-admin.onrender.com",
-  // corsConfig: {
-  //   origin: "https://neptune-wrms-admin.onrender.com",
-  //   credentials: true,
-  // },
   corsConfig: {
-    origin: "http://127.0.0.1:3000",
+    origin: "https://neptune-wrms-admin.onrender.com",
     credentials: true,
   },
+  // corsConfig: {
+  //   origin: "http://127.0.0.1:3000",
+  //   credentials: true,
+  // },
   // corsConfig2: {
   //   origin: "http://127.0.0.1:3000",
   //   credentials: true,
