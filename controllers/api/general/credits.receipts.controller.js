@@ -2,12 +2,12 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
   return {
     getPayersCredits: async (req, res) => {
       const admin = getAdminId(req);
-      const { limit, skip, from, to } = req.params;
+      const { limit, page, from, to } = req.params;
 
       const { data, error } = await query.getPayersCredits({
         admin,
         limit,
-        skip,
+        page,
         from,
         to,
       });
@@ -33,13 +33,13 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
     },
     getCreditsReceiptsByCustomer: async (req, res) => {
       const admin = getAdminId(req);
-      const { customer, from, to, skip, limit } = req.params;
+      const { customer, from, to, page, limit } = req.params;
       const { data, error } = await query.getCreditsReceiptsByCustomer({
         admin,
         customer,
         from,
         to,
-        skip,
+        page,
         limit,
       });
       if (data && !error) {

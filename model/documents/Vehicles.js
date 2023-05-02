@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const vehicles = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
@@ -15,5 +16,6 @@ const vehicles = new mongoose.Schema({
   },
 }).set("timestamps", true);
 vehicles.plugin(mongoosePaginate);
+vehicles.plugin(aggregatePaginate);
 
 module.exports = vehicles;

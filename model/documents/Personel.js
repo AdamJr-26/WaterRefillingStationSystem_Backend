@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
-module.exports = mongoose.Schema({
+const personnel = mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   gmail: { type: String, require: true },
   nickname: { type: String },
@@ -10,11 +12,11 @@ module.exports = mongoose.Schema({
   age: { type: String },
   contact_number: { type: String },
   address: { type: String },
-  position: { type: String, default: "Delivery Personel" },
+  position: { type: String, default: "Delivery Personnel" },
   password: { type: String },
   agreedToPrivacyAndPolicy: { type: Boolean },
   verified: { type: Boolean, default: false },
-  role: { type: String, default: "Personel" },
+  role: { type: String, default: "Personnel" },
   applyId: { type: String },
   apply_date: { type: Date },
   on_delivery: { type: Boolean, default: false },
@@ -34,3 +36,6 @@ module.exports = mongoose.Schema({
     mimetype: { type: String },
   },
 });
+personnel.plugin(mongoosePaginate);
+personnel.plugin(aggregatePaginate);
+module.exports = personnel;

@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
   return {
-    getPayersCredits: async ({ admin, limit, skip, from, to }) => {
+    getPayersCredits: async ({ admin, limit, page, from, to }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
         const match =
           from !== "null" && to !== "null"
             ? {
@@ -37,12 +38,6 @@ module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
             $sort: { "date.unix_timestamp": -1 },
           },
           {
-            $skip: Number(skip),
-          },
-          {
-            $limit: Number(limit),
-          },
-          {
             $lookup: {
               from: "customers",
               localField: "customer",
@@ -62,7 +57,12 @@ module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
             },
           },
         ];
-        const data = await PayCreditReceipt.aggregate(pipeline);
+        const aggregation = PayCreditReceipt.aggregate(pipeline);
+        const data = await PayCreditReceipt.aggregatePaginate(
+          aggregation,
+          options
+        );
+        console.log("data=>>>>>>",data)
         return { data };
       } catch (error) {
         return { error };
@@ -73,10 +73,11 @@ module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
       customer,
       from,
       to,
-      skip,
+      page,
       limit,
     }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
         const match =
           from !== "null" && to !== "null"
             ? {
@@ -113,13 +114,7 @@ module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
         const pipeline = [
           match,
           {
-            $sort: { "date.unix_timestamp": 1 },
-          },
-          {
-            $skip: Number(skip),
-          },
-          {
-            $limit: Number(limit),
+            $sort: { "date.unix_timestamp": -1 },
           },
           {
             $lookup: {
@@ -139,8 +134,11 @@ module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
             },
           },
         ];
-        const data = await PayCreditReceipt.aggregate(pipeline);
-
+        const aggregation = PayCreditReceipt.aggregate(pipeline);
+        const data = await PayCreditReceipt.aggregatePaginate(
+          aggregation,
+          options
+        );
         return { data };
       } catch (error) {
         return { error };
@@ -216,6 +214,11 @@ module.exports = (PayCreditReceipt, startOfMonth, endOfMonth) => {
               gallon: { $arrayElemAt: ["$gallon", 0] },
               quantity: "$gallon_count",
               payment: "$amount_paid",
+            },
+          },
+          {
+            $sort: {
+              "date.unix_timestamp": -1,
             },
           },
         ];

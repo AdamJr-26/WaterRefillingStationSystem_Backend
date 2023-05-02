@@ -29,11 +29,11 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
     },
     getCustomersStatus: async (req, res) => {
       const admin = getAdminId(req);
-      const { limit, skip, search, sort, exists_only } = req.params;
+      const { limit, page, search, sort, exists_only } = req.params;
       const { data, error } = await query.getCustomersStatus({
         admin,
         limit,
-        skip,
+        page,
         search,
         sort,
         exists_only,

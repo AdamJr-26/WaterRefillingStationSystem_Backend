@@ -53,10 +53,11 @@ module.exports = (Purchase, startOfMonth, endOfMonth) => {
       customer,
       from,
       to,
-      skip,
+      page,
       limit,
     }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
         const match =
           from !== "null" && to !== "null"
             ? {
@@ -91,36 +92,31 @@ module.exports = (Purchase, startOfMonth, endOfMonth) => {
         const pipeline = [
           match,
           {
-            $sort: { "date.unix_timestamp": 1 },
+            $sort: { "date.unix_timestamp": -1 },
           },
           {
-            $skip: Number(skip),
+            $lookup: {
+              from: "gallons",
+              localField: "items.gallon",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    gallon_image: 1,
+                  },
+                },
+              ],
+              as: "gallons",
+            },
           },
-          {
-            $limit: Number(limit),
-          },
-          // {
-          //   $lookup: {
-          //     from: "gallons",
-          //     localField: "items.gallon",
-          //     foreignField: "_id",
-          //     pipeline: [
-          //       {
-          //         $project: {
-          //           name: 1,
-          //           gallon_image: 1,
-          //         },
-          //       },
-          //     ],
-          //     as: "items.gallon",
-          //   },
-          // },
           {
             $project: {
               items: 1,
               total_orders: {
                 $sum: "$items.orders",
               },
+              gallons: 1,
               total_payment: 1,
               order_to_pay: 1,
               debt_payment: 1,
@@ -128,8 +124,9 @@ module.exports = (Purchase, startOfMonth, endOfMonth) => {
             },
           },
         ];
-        const data = await Purchase.aggregate(pipeline);
-
+        // const data = await Purchase.aggregate(pipeline);
+        const aggregation = Purchase.aggregate(pipeline);
+        const data = await Purchase.aggregatePaginate(aggregation, options);
         return { data };
       } catch (error) {
         console.log("[data-purchase-history]", error);

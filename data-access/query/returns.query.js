@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
   return {
-    getReturnsHistory: async ({ admin, customer, from, to, skip, limit }) => {
+    getReturnsHistory: async ({ admin, customer, from, to, page, limit }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
+
         const match =
           from !== "null" && to !== "null"
             ? {
@@ -42,12 +44,6 @@ module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
             $sort: { "date.unix_timestamp": 1 },
           },
           {
-            $skip: Number(skip),
-          },
-          {
-            $limit: Number(limit),
-          },
-          {
             $lookup: {
               from: "gallons",
               localField: "gallon",
@@ -64,9 +60,17 @@ module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
               as: "gallon",
             },
           },
+          {
+            $sort: { "date.unix_timestamp": -1 },
+          },
         ];
-        const data = await ReturnGallonReceipt.aggregate(pipeline);
-        
+
+        const aggregation = ReturnGallonReceipt.aggregate(pipeline);
+        const data = await ReturnGallonReceipt.aggregatePaginate(
+          aggregation,
+          options
+        );
+        console.log("data", data);
         return { data };
       } catch (error) {
         console.log("[error-return-history]", error);

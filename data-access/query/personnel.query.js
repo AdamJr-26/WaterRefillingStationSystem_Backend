@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 module.exports = (Personel) => {
   return {
     checkIfPersonelIsExisting: async (payload) => {
@@ -64,37 +65,101 @@ module.exports = (Personel) => {
           },
         ];
         const data = await Personel.aggregate(pipeline);
-        
+
         return { data: data[0] };
       } catch (error) {
         return { error };
       }
     },
 
-    getPersonelsByAdminId: async (payload) => {
+    getPersonelsByAdminId: async ({ adminId, page, limit }) => {
       try {
-        const filter = {
-          admin: payload.adminId,
-        };
-        const data = await Personel.find(filter)
-          .select([
-            "firstname",
-            "lastname",
-            "gender",
-            "contact_number",
-            "position",
-            "role",
-            "status",
-            "gmail",
-            "nickname",
-            "display_photo",
-          ])
-          .exec();
+        const options = { ...(page && limit ? { page, limit } : {}) };
+        // const filter = {
+        //   admin: payload.adminId,
+        // };
+        // const data = await Personel.find(filter)
+        //   .select([
+        //     "firstname",
+        //     "lastname",
+        //     "gender",
+        //     "contact_number",
+        //     "position",
+        //     "role",
+        //     "status",
+        //     "gmail",
+        //     "nickname",
+        //     "display_photo",
+        //   ])
+        //   .exec();
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(adminId),
+            },
+          },
+          // check if the personnel has  a delivery
+          {
+            $lookup: {
+              from: "deliveries",
+              localField: "_id",
+              foreignField: "delivery_personnel",
+              pipeline: [
+                {
+                  $match: {
+                    returned: false,
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "status",
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+          {
+            $project: {
+              firstname: 1,
+              lastname: 1,
+              fullname: {
+                $concat: ["$firstname", " ", "$lastname"],
+              },
+              gender: 1,
+              contact_number: 1,
+              position: 1,
+              role: 1,
+              isAvailable: {
+                $cond: {
+                  if: { $gt: [{ $size: "$status" }, 0] },
+                  then: false,
+                  else: true,
+                },
+              },
+              gmail: 1,
+              nickname: {
+                $cond: {
+                  if: { $eq: ["$nickname", ""] },
+                  then: "N/A",
+                  else: "$nickname",
+                },
+              },
+              display_photo: 1,
+            },
+          },
+        ];
+        const aggregation = Personel.aggregate(pipeline);
+        const data = await Personel.aggregatePaginate(aggregation, options);
         return { data };
       } catch (error) {
         return { error };
       }
     },
-    
   };
 };

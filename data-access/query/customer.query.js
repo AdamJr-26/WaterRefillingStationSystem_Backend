@@ -54,17 +54,14 @@ module.exports = (Customer) => {
     },
     getCustomersStatus: async ({
       admin,
-      skip,
+      page,
       limit,
       search,
       sort,
       exists_only,
     }) => {
       try {
-        // create search.
-        // sort by
-        //
-
+        const options = { ...(page && limit ? { page, limit } : {}) };
         const match =
           search != "null"
             ? [
@@ -199,15 +196,9 @@ module.exports = (Customer) => {
           {
             $sort: { [sort]: 1 },
           },
-          {
-            $skip: Number(skip),
-          },
-
-          {
-            $limit: Number(limit),
-          },
         ];
-        const data = await Customer.aggregate(pipeline);
+        const aggregation = Customer.aggregate(pipeline);
+        const data = await Customer.aggregatePaginate(aggregation, options);
         return { data };
       } catch (error) {
         console.log("error", error);
@@ -218,7 +209,7 @@ module.exports = (Customer) => {
     getCustomerProfile: async ({ id }) => {
       try {
         const data = await Customer.findOne({ _id: id }).exec();
-        
+
         return data;
       } catch (error) {
         throw error;

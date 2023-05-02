@@ -11,7 +11,7 @@ router.get(
 );
 
 router.get(
-  "/purchase/history/:limit/:skip/:from/:to/:customer",
+  "/purchase/history/:limit/:page/:from/:to/:customer",
   authenticate,
   apiController.getPurchasesHistoryByCustomerId
 );

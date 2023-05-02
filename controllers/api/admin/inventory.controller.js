@@ -140,8 +140,12 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
     // get gallons
     getAllGallons: async (req, res) => {
       const adminId = getAdminId(req);
+      const { limit, page } = req.params;
+      console.log(" limit, page------>", limit, page);
       const { data, error } = await query.getGallons({
         adminId,
+        limit,
+        page,
       });
       if (data && !error) {
         responseUtil.generateServerResponse(
@@ -164,7 +168,8 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
     },
     getVehicles: async (req, res) => {
       const adminId = getAdminId(req);
-      const { data, error } = await query.getVehicles({ adminId });
+      const { limit, page } = req.params;
+      const { data, error } = await query.getVehicles({ adminId, limit, page });
 
       if (data && !error) {
         responseUtil.generateServerResponse(

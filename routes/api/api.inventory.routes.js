@@ -22,13 +22,15 @@ router.post(
 );
 
 // GET
-router.get("/gallons", authenticate, apiController.getAllGallons);
+router.get("/gallons/:limit/:page", authenticate, apiController.getAllGallons);
+
 router.get(
   "/gallons/availables",
   authenticate,
   apiController.getAvailableGallons
 );
-router.get("/vehicles", authenticate, apiController.getVehicles);
+router.get("/vehicles/:limit/:page", authenticate, apiController.getVehicles);
+
 router.get(
   "/vehicles/available",
   authenticate,

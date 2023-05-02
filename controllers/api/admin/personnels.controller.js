@@ -2,7 +2,13 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
   return {
     getPersonels: async (req, res) => {
       const adminId = req.user?._id;
-      const personels = await query.getPersonelsByAdminId({ adminId });
+      const { limit, page } = req.params;
+
+      const personels = await query.getPersonelsByAdminId({
+        adminId,
+        limit,
+        page,
+      });
 
       if (personels?.data && !personels?.error) {
         responseUtil.generateServerResponse(
@@ -25,11 +31,11 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
     },
     getPersonnelsSalesAchievements: async (req, res) => {
       const admin = getAdminId(req);
-      const { date,top } = req.params;
+      const { date, top } = req.params;
       const { data, error } = await query.getPersonnelsSalesAchievements({
         admin,
         date,
-        top
+        top,
       });
       if (data && !error) {
         responseUtil.generateServerResponse(

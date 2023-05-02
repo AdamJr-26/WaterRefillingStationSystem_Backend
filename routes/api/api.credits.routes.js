@@ -29,7 +29,7 @@ router.get(
 );
 
 router.get(
-  "/credits/pagination/:limit/:skip/:from/:to",
+  "/credits/pagination/:limit/:page/:from/:to",
   authenticate,
   apiController.getCreditsByPaginationAndDate
 );

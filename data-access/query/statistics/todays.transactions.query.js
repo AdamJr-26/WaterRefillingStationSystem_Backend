@@ -1,15 +1,26 @@
 const mongoose = require("mongoose");
+const { sub, format, parseISO } = require("date-fns");
 module.exports = (Admin, startOfDay, endOfDay) => {
   return {
     // for dashboard api. that display cash received,sales, expenses
     getTodaysCashTransaction: async ({ date, admin }) => {
       try {
+        const today = new Date(date);
+        const yesterday = new Date(sub(today, { days: 1 }));
+        const formattedToday = format(today, "yyyy-MM-dd");
+        const formattedYesterday = format(yesterday, "yyyy-MM-dd");
         const pipeline = [
           {
             $match: {
               _id: mongoose.Types.ObjectId(admin),
             },
           },
+          {
+            $project: {
+              _id: 1,
+            },
+          },
+          // get today purchases, pay credits, expenses.
           {
             $lookup: {
               from: "purchases",
@@ -23,17 +34,13 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(
-                              startOfDay(new Date(date)).valueOf() / 1000
-                            ),
+                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(
-                              endOfDay(new Date(date)).valueOf() / 1000
-                            ),
+                            Math.floor(endOfDay(today).valueOf() / 1000),
                           ],
                         },
                       ],
@@ -42,9 +49,24 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    paid_orders_amount: "$order_to_pay",
-                    // total_orders_paid_unpaid_amount: "$order_to_pay",
-                    total_sales: {
+                    date: {
+                      $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$date.utc_date",
+                      },
+                    },
+                    items: 1,
+                    total_payment: 1,
+                    order_to_pay: 1,
+                    debt_payment: 1,
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$date",
+                    date: { $first: "$date" },
+                    payments: { $sum: "$order_to_pay" }, // halaga ng kailangan bayaran ng bawat purchase.
+                    sales: {
                       $sum: {
                         $sum: {
                           $map: {
@@ -57,6 +79,11 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         },
                       },
                     },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: -1,
                   },
                 },
               ],
@@ -76,17 +103,13 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(
-                              startOfDay(new Date(date)).valueOf() / 1000
-                            ),
+                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(
-                              endOfDay(new Date(date)).valueOf() / 1000
-                            ),
+                            Math.floor(endOfDay(today).valueOf() / 1000),
                           ],
                         },
                       ],
@@ -95,11 +118,30 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    amount_paid: "$amount_paid",
+                    date: {
+                      $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$date.utc_date",
+                      },
+                    },
+                    amount_paid: 1,
+                    gallon_count: 1,
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$date",
+                    amount_paid: { $sum: "$amount_paid" },
+                    gallon_count: { $sum: "$gallon_count" },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: -1,
                   },
                 },
               ],
-              as: "paid_credits",
+              as: "credits",
             },
           },
           {
@@ -115,17 +157,13 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(
-                              startOfDay(new Date(date)).valueOf() / 1000
-                            ),
+                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(
-                              endOfDay(new Date(date)).valueOf() / 1000
-                            ),
+                            Math.floor(endOfDay(today).valueOf() / 1000),
                           ],
                         },
                       ],
@@ -134,9 +172,25 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                 },
                 {
                   $project: {
-                    amount: {
-                      $sum: { $sum: "$amount" },
+                    date: {
+                      $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$date.utc_date",
+                      },
                     },
+                    expense_title: 1,
+                    amount: 1,
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$date",
+                    amount: { $sum: "$amount" },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: -1,
                   },
                 },
               ],
@@ -145,27 +199,190 @@ module.exports = (Admin, startOfDay, endOfDay) => {
           },
           {
             $project: {
-              total_expenses: {
-                $sum: "$expenses.amount",
+              todayPurchasePayments: {
+                $sum: {
+                  $map: {
+                    input: "$purchases",
+                    as: "purchase",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$purchase._id", formattedToday] },
+                        then: "$$purchase.payments",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
               },
-              total_sales: {
-                $sum: "$purchases.total_sales",
+              todayCreditsPayments: {
+                $sum: {
+                  $map: {
+                    input: "$credits",
+                    as: "credit",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$credit._id", formattedToday] },
+                        then: "$$credit.amount_paid",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
               },
-              paidProducts: {
-                $sum: [
-                  { $sum: "$purchases.paid_orders_amount" },
-                  { $sum: "$paid_credits.amount_paid" },
-                ],
+              expenseToday: {
+                $sum: {
+                  $map: {
+                    input: "$expenses",
+                    as: "expense",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$expense._id", formattedToday] },
+                        then: "$$expense.amount",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
+              },
+              expenseYesterday: {
+                $sum: {
+                  $map: {
+                    input: "$expenses",
+                    as: "expense",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$expense._id", formattedYesterday] },
+                        then: "$$expense.amount",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
+              },
+              salesToday: {
+                $sum: {
+                  $map: {
+                    input: "$purchases",
+                    as: "purchase",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$purchase._id", formattedToday] },
+                        then: "$$purchase.sales",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
+              },
+              salesYesterday: {
+                $sum: {
+                  $map: {
+                    input: "$purchases",
+                    as: "purchase",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$purchase._id", formattedYesterday] },
+                        then: "$$purchase.sales",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          // increase/decrease by percentage = total ammount / difference of sales today and yesterday * 100
+          {
+            $addFields: {
+              cashReceiveToday: {
+                $sum: ["$todayPurchasePayments", "$todayCreditsPayments"],
+              },
+              expensesPercentage: {
+                $toString: {
+                  $cond: {
+                    if: {
+                      $eq: [
+                        { $sum: ["$expenseToday", "$expenseYesterday"] },
+                        0,
+                      ],
+                    },
+                    then: "N/A", // or any other value you prefer for this case
+                    else: {
+                      $toString: {
+                        $round: [
+                          {
+                            $multiply: [
+                              {
+                                $divide: [
+                                  {
+                                    $subtract: [
+                                      "$expenseToday",
+                                      "$expenseYesterday",
+                                    ],
+                                  },
+                                  {
+                                    $sum: [
+                                      "$expenseToday",
+                                      "$expenseYesterday",
+                                    ],
+                                  },
+                                ],
+                              },
+                              100,
+                            ],
+                          },
+                          2,
+                        ],
+                      },
+                    },
+                  },
+                },
+              },
+
+              salesPercentage: {
+                $toString: {
+                  $cond: {
+                    if: {
+                      $eq: [{ $sum: ["$salesToday", "$salesYesterday"] }, 0],
+                    },
+                    then: "N/A", // or any other value you prefer for this case
+                    else: {
+                      $toString: {
+                        $round: [
+                          {
+                            $multiply: [
+                              {
+                                $divide: [
+                                  {
+                                    $subtract: [
+                                      "$salesToday",
+                                      "$salesYesterday",
+                                    ],
+                                  },
+                                  {
+                                    $sum: ["$salesToday", "$salesYesterday"],
+                                  },
+                                ],
+                              },
+                              100,
+                            ],
+                          },
+                          2,
+                        ],
+                      },
+                    },
+                  },
+                },
               },
             },
           },
         ];
 
         const data = await Admin.aggregate(pipeline);
-        console.log("data", JSON.stringify(data));
+        console.log("data daily ->>>>>>>>>", JSON.stringify(data));
         return { data };
       } catch (error) {
-        console.log("error", error);
+        console.log("error daily transaction->>>>>>", error);
         return { error };
       }
     },

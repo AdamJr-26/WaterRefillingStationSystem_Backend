@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 // if Admin field is occupied that mean the customer is already subscribed to a wrs.
-module.exports = new mongoose.Schema({
+const customer = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   customer_type: { type: String, default: "regular" },
   role: { type: String, default: "Customer" },
@@ -35,3 +37,7 @@ module.exports = new mongoose.Schema({
     mimetype: { type: String },
   },
 });
+
+customer.plugin(mongoosePaginate);
+customer.plugin(aggregatePaginate);
+module.exports = customer;

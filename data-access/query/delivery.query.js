@@ -36,7 +36,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
     }) => {
       const total_orders =
         Number(purchase_item.orders) + Number(purchase_item.free);
-      
+
       try {
         const pipelines = [
           {
@@ -148,7 +148,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
         })
           .select(["_id"])
           .exec();
-        
+
         const stages = [
           {
             $match: {
@@ -191,15 +191,17 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
           },
         ];
         const data = await Purchase.aggregate(stages);
-        
+
         return { data };
       } catch (error) {
         console.log("[error]", error);
         return { error };
       }
     },
-    getOngoingDeliveries: async ({ admin }) => {
+    getOngoingDeliveries: async ({ admin, page, limit }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
+
         const pipeline = [
           {
             $match: {
@@ -238,6 +240,9 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
                     gender: 1,
                     contact_number: 1,
                     display_photo: 1,
+                    fullname: {
+                      $concat: ["$firstname", "$lastname"],
+                    },
                   },
                 },
               ],
@@ -246,65 +251,85 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
           },
           {
             $project: {
-              delivery_items: 0,
+              _id: 1,
+              date_of_creation: 1,
+              returned: 1,
+              approved: 1,
+              admin: 1,
+              personnel: {
+                $arrayElemAt: ["$delivery_personnel", 0],
+              },
+              vehicle: {
+                $arrayElemAt: ["$vehicle", 0],
+              },
             },
           },
         ];
-        const data = await Delivery.aggregate(pipeline);
+
+        const aggregation = Delivery.aggregate(pipeline);
+        const data = await Delivery.aggregatePaginate(aggregation, options);
+        console.log("ongoing-deliveries", data);
         return { data };
       } catch (error) {
+        console.log("date_of_creation", error);
         return { error };
       }
     },
-    getFinishedDeliveries: async ({ admin, from, to , skip, limit}) => {
+    getFinishedDeliveries: async ({ admin, page, limit }) => {
       try {
-        const match =
-          from != "null" && to != "null"
-            ? {
-                $match: {
-                  admin: mongoose.Types.ObjectId(admin),
-                  returned: true,
-                  approved: true,
-                  $expr: {
-                    $and: [
-                      {
-                        $gte: [
-                          "$finished_date.unix_timestamp",
-                          Math.floor(new Date(from).valueOf() / 1000),
-                        ],
-                      },
-                      {
-                        $lte: [
-                          "$finished_date.unix_timestamp",
-                          Math.floor(new Date(to).valueOf() / 1000),
-                        ],
-                      },
-                    ],
-                  },
-                },
-              }
-            : {
-                $match: {
-                  admin: mongoose.Types.ObjectId(admin),
-                  returned: true,
-                  approved: true,
-                  "finished_date.utc_date": {
-                    $gte: startOfDay(new Date()),
-                    $lte: endOfDay(new Date()),
-                  },
-                },
-              };
+        const options = { ...(page && limit ? { page, limit } : {}) };
+        // const match =
+        //   from != "null" && to != "null"
+        //     ? {
+        //         $match: {
+        //           admin: mongoose.Types.ObjectId(admin),
+        //           returned: true,
+        //           approved: true,
+        //           $expr: {
+        //             $and: [
+        //               {
+        //                 $gte: [
+        //                   "$finished_date.unix_timestamp",
+        //                   Math.floor(new Date(from).valueOf() / 1000),
+        //                 ],
+        //               },
+        //               {
+        //                 $lte: [
+        //                   "$finished_date.unix_timestamp",
+        //                   Math.floor(new Date(to).valueOf() / 1000),
+        //                 ],
+        //               },
+        //             ],
+        //           },
+        //         },
+        //       }
+        //     : {
+        //         $match: {
+        //           admin: mongoose.Types.ObjectId(admin),
+        //           returned: true,
+        //           approved: true,
+        //           "finished_date.utc_date": {
+        //             $gte: startOfDay(new Date()),
+        //             $lte: endOfDay(new Date()),
+        //           },
+        //         },
+        //       };
         const pipeline = [
-          match,
           {
-            $sort: { "finished_date.unix_timestamp": 1 },
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+              returned: true,
+              approved: true,
+              // "finished_date.utc_date": {
+              //   $gte: startOfDay(new Date()),
+              //   $lte: endOfDay(new Date()),
+              // },
+            },
           },
           {
-            $skip: Number(skip),
+            $sort: { "finished_date.unix_timestamp": -1 },
           },
-          {
-            $limit: Number(limit),
-          },
+
           {
             $lookup: {
               from: "vehicles",
@@ -335,6 +360,9 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
                     gender: 1,
                     contact_number: 1,
                     display_photo: 1,
+                    fullname: {
+                      $concat: ["$firstname", "$lastname"],
+                    },
                   },
                 },
               ],
@@ -343,12 +371,23 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
           },
           {
             $project: {
-              delivery_items: 0,
+              _id: 1,
+              date_of_creation: 1,
+              returned: 1,
+              approved: 1,
+              admin: 1,
+              personnel: {
+                $arrayElemAt: ["$delivery_personnel", 0],
+              },
+              vehicle: {
+                $arrayElemAt: ["$vehicle", 0],
+              },
             },
           },
         ];
-        const data = await Delivery.aggregate(pipeline);
-        
+
+        const aggregation = Delivery.aggregate(pipeline);
+        const data = await Delivery.aggregatePaginate(aggregation, options);
         return { data };
       } catch (error) {
         return { error };

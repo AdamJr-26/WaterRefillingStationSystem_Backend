@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 module.exports = (Gallon, Vehicle) => {
   return {
-    getGallons: async ({ adminId }) => {
+    getGallons: async ({ adminId, page, limit }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
         const pipeline = [
           {
             $match: {
@@ -39,15 +40,16 @@ module.exports = (Gallon, Vehicle) => {
               as: "borrowed",
             },
           },
-
-          // {
-          //   $group: {
-          //     id: "$_id",
-          //   },
-          // },
+          {
+            $sort: {
+              _id: -1,
+            },
+          },
         ];
-        const data = await Gallon.aggregate(pipeline);
 
+        const aggregation = Gallon.aggregate(pipeline);
+        const data = await Gallon.aggregatePaginate(aggregation, options);
+        console.log("data----------->>>", JSON.stringify(data));
         return { data };
       } catch (error) {
         console.log("error", error);
@@ -90,12 +92,20 @@ module.exports = (Gallon, Vehicle) => {
         return { error };
       }
     },
-    getVehicles: async ({ adminId }) => {
+    getVehicles: async ({ adminId, page, limit }) => {
       try {
-        const filter = {
-          admin: adminId,
-        };
-        const data = await Vehicle.find(filter).exec();
+        const options = { ...(page && limit ? { page, limit } : {}) };
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(adminId),
+            },
+          },
+        ];
+
+        const aggregation = Vehicle.aggregate(pipeline);
+        const data = await Vehicle.aggregatePaginate(aggregation, options);
+        console.log("data----------->>>", JSON.stringify(data));
         return { data };
       } catch (error) {
         return { error };

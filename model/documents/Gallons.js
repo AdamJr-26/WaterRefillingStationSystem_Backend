@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
-
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const gallon = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   gallon_image: { type: String },
@@ -15,4 +15,6 @@ const gallon = new mongoose.Schema({
     mimetype: { type: String },
   },
 });
+gallon.plugin(mongoosePaginate);
+gallon.plugin(aggregatePaginate);
 module.exports = gallon;

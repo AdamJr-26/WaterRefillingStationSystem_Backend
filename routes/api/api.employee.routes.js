@@ -6,7 +6,7 @@ const {
 
 router.post("/employee/personel/apply-id", authenticate, apiController.createApplyID); // 
 
-router.get("/delivery-personels", authenticate, apiController.getPersonels) 
+router.get("/delivery-personnels/:limit/:page", authenticate, apiController.getPersonels) 
 
 
 module.exports = {

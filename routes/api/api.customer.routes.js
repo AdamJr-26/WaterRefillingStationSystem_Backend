@@ -33,7 +33,7 @@ router.get(
 );
 
 router.get(
-  "/customers/status/borrowed/credits/lastdelivery/:limit/:skip/:search/:sort/:exists_only",
+  "/customers/status/borrowed/credits/lastdelivery/:limit/:page/:search/:sort/:exists_only",
   authenticate,
   apiController.getCustomersStatus
 );

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const delivery = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "admin" },
   delivery_personel: { type: mongoose.Types.ObjectId, ref: "Personel" },
@@ -29,5 +31,7 @@ const delivery = new mongoose.Schema({
   returned: { type: Boolean, default: false },
   returned_date: { type: Number },
 });
+delivery.plugin(mongoosePaginate);
+delivery.plugin(aggregatePaginate);
 
 module.exports = delivery;

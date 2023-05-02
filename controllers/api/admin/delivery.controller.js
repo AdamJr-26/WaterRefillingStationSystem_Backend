@@ -54,7 +54,12 @@ module.exports = (query, mutation, transaction, responseUtil, getAdminId) => {
     },
     getOngoingDeliveries: async (req, res) => {
       const admin = getAdminId(req);
-      const { data, error } = await query.getOngoingDeliveries({ admin });
+      const { limit, page } = req.params;
+      const { data, error } = await query.getOngoingDeliveries({
+        limit,
+        page,
+        admin,
+      });
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -76,14 +81,12 @@ module.exports = (query, mutation, transaction, responseUtil, getAdminId) => {
     },
     getFinishedDeliveries: async (req, res) => {
       const admin = getAdminId(req);
-      const { from, to, skip, limit } = req.params;
+      const { page, limit } = req.params;
 
       const { data, error } = await query.getFinishedDeliveries({
         admin,
-        from,
-        to,
         limit,
-        skip,
+        page,
       });
       console.log("error:", error);
       if (data && !error) {

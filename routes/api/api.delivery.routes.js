@@ -39,13 +39,13 @@ router.get(
   apiController.getRecentDeliveries
 );
 router.get(
-  "/deliveries/ongoing",
+  "/deliveries/ongoing/:limit/:page",
   authenticate,
   apiController.getOngoingDeliveries
 );
 
 router.get(
-  "/deliveries/finished/:from/:to/:limit/:skip",
+  "/deliveries/finished/:limit/:page",
   authenticate,
   apiController.getFinishedDeliveries
 );

@@ -70,12 +70,12 @@ module.exports = (Credit) => {
         const data = await Credit.aggregate(pipeline);
         return { data };
       } catch (error) {
-        
         return { error };
       }
     },
-    getCreditsByPaginationAndDate: async ({ admin, limit, skip, from, to }) => {
+    getCreditsByPaginationAndDate: async ({ admin, limit, page, from, to }) => {
       try {
+        const options = { ...(page && limit ? { page, limit } : {}) };
         const match =
           from !== "null" && to !== "null"
             ? {
@@ -112,12 +112,6 @@ module.exports = (Credit) => {
             $sort: { "date.unix_timestamp": 1 },
           },
           {
-            $skip: Number(skip),
-          },
-          {
-            $limit: Number(limit),
-          },
-          {
             $lookup: {
               from: "customers",
               localField: "customer",
@@ -137,7 +131,10 @@ module.exports = (Credit) => {
             },
           },
         ];
-        const data = await Credit.aggregate(pipeline);
+
+        const aggregation = Credit.aggregate(pipeline);
+        const data = await Credit.aggregatePaginate(aggregation, options);
+        console.log("data", data);
         return { data };
       } catch (error) {
         console.log("errorerror", error);
@@ -182,7 +179,7 @@ module.exports = (Credit) => {
                     firstname: 1,
                     lastname: 1,
                     address: 1,
-                    display_photo:1,
+                    display_photo: 1,
                   },
                 },
               ],

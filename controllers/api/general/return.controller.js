@@ -2,14 +2,14 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
   return {
     getReturnReceipts: async (req, res) => {
       const admin = getAdminId(req);
-      const { customer, from, to, skip, limit } = req.params;
-
+      const { customer, from, to, page, limit } = req.params;
+      console.log("page------", page)
       const { data, error } = await query.getReturnsHistory({
         admin,
         customer,
         from,
         to,
-        skip,
+        page,
         limit,
       });
       if (data && !error) {

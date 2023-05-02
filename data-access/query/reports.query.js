@@ -299,7 +299,6 @@ module.exports = (
             },
           },
         ];
-
         const data = await Admin.aggregate(pipeline);
         console.log(data[0].total_sales);
         return { data };

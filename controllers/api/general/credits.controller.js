@@ -106,11 +106,11 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
     },
     getCreditsByPaginationAndDate: async (req, res) => {
       const admin = getAdminId(req);
-      const { limit, skip, from, to } = req.params;
+      const { limit, page, from, to } = req.params;
       const { data, error } = await query.getCreditsByPaginationAndDate({
         admin,
         limit,
-        skip,
+        page,
         from,
         to,
       });

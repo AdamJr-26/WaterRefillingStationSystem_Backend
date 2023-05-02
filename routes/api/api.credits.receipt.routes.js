@@ -5,12 +5,12 @@ const {
 } = require("../../middlewares/passport.authenticate.middleware");
 
 router.get(
-  "/credits/history/pagination/:limit/:skip/:from/:to",
+  "/credits/history/pagination/:limit/:page/:from/:to",
   authenticate,
   apiController.getPayersCredits
 );
 router.get(
-  "/customer-credit/history/:limit/:skip/:from/:to/:customer",
+  "/customer-credit/history/:limit/:page/:from/:to/:customer",
   authenticate,
   apiController.getCreditsReceiptsByCustomer
 );

@@ -28,13 +28,13 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
     },
     getPurchasesHistoryByCustomerId: async (req, res) => {
       const admin = getAdminId(req);
-      const { customer, from, to, skip, limit } = req.params;
+      const { customer, from, to, page, limit } = req.params;
       const { data, error } = await query.getPurchasesHistoryByCustomerId({
         admin,
         customer,
         from,
         to,
-        skip,
+        page,
         limit,
       });
       if (data && !error) {

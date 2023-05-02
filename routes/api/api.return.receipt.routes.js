@@ -5,7 +5,7 @@ const {
 } = require("../../middlewares/passport.authenticate.middleware");
 
 router.get(
-  "/return/history/:limit/:skip/:from/:to/:customer",
+  "/return/history/:limit/:page/:from/:to/:customer",
   authenticate,
   apiController.getReturnReceipts
 );

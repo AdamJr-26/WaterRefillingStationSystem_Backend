@@ -26,6 +26,27 @@ module.exports = (Expense, startOfMonth, endOfMonth) => {
               },
             },
           },
+          //   ["ID", "DATE", "TITLE", "AMOUNT", "DESCRIPTION"];
+          {
+            $project: {
+              _id: 1,
+              date: 1,
+              title: "$expense_title",
+              amount: 1,
+              description: {
+                $cond: {
+                  if: { $ne: ["$description", ""] },
+                  then: "$description",
+                  else: "N/A",
+                },
+              },
+            },
+          },
+          {
+            $sort: {
+              "date.unix_timestamp": -1,
+            },
+          },
         ];
         const aggregation = Expense.aggregate(pipeline);
         const data = await Expense.aggregatePaginate(aggregation, options);
