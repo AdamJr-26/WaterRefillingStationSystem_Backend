@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
-module.exports = new mongoose.Schema({
+const schedule = new mongoose.Schema({
   customer: { type: mongoose.Types.ObjectId, ref: "Customer" },
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   items: [
@@ -18,4 +20,10 @@ module.exports = new mongoose.Schema({
   assigned_to: { type: mongoose.Types.ObjectId, ref: "Personel" },
   notified: { type: Boolean, default: false },
   accepted: { type: Boolean, default: false },
+  isCanceled: { type: Boolean, default: false },
 }).set("timestamps", true);
+
+schedule.plugin(mongoosePaginate);
+schedule.plugin(aggregatePaginate);
+
+module.exports = schedule;

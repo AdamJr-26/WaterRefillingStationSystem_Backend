@@ -23,7 +23,7 @@ module.exports = (
         const debt_payment = purchase?.debt_payment; //
         const order_to_pay = purchase?.order_to_pay || 0;
         const total_payment = purchase?.total_payment;
-
+        const walkIn = purchase?.walkIn;
         // console.log("order_to_pay", order_to_pay);
         console.log("purchase", purchase);
 
@@ -82,6 +82,7 @@ module.exports = (
               credit: gallon.credit_id,
               amount_paid: gallon.total * gallon.price,
               gallon_count: gallon?.total,
+              gallon: gallon.gallon_id,
             });
             await receipt.save((error) => {
               if (error) new Error("Something went wrong, please try again.");
@@ -132,7 +133,7 @@ module.exports = (
               filter: {
                 admin,
                 customer,
-                delivery,
+                // delivery, // I HAD TO REMOVE DELIVERY FIELD IT BECAUSE WALK IN DONT HAVE THIS ID.
                 gallon: item?.gallon,
               },
               update: {
@@ -205,7 +206,10 @@ module.exports = (
         // await Gallon.bulkWrite(bulksOpsForGallonBorrow);
         // await Gallon.bulkWrite(bulksOpsForGallonReturn);
         await Credit.bulkWrite(bulksOpsForCredit);
-        await Delivery.bulkWrite(bulksOpsForDelivery);
+        // DAHIL walk-in dapat wala mababawas sa delivery if meron man.
+        if (!walkIn) {
+          await Delivery.bulkWrite(bulksOpsForDelivery);
+        }
 
         // create purchase
         const purch = await new Purchase(purchase);
@@ -213,7 +217,7 @@ module.exports = (
           if (error) throw new Error(`[ERROR SAVING PURCHASE] ${error}`);
         });
         session.endSession();
-        
+
         return { data: { success: true, purchase: purch } };
       } catch (error) {
         console.log("[ERROR]", error);

@@ -14,6 +14,7 @@ const sendSMS = require("../../utils/send.sms.util");
 const {
   sendNotifyForDelivery,
   sendReceipt,
+  sendCancelationMesssage,
 } = require("../../utils/email/mailer");
 const { format } = require("date-fns");
 module.exports = {
@@ -56,9 +57,15 @@ module.exports = {
     responseUtil,
     convertBufferToBase64,
     getAdminId,
-    uploadImage,
+    uploadImage
   ),
-
+  // query, mutation, responseUtil, getAdminId
+  ...require("./admin/admin.control.controller")(
+    query,
+    mutation,
+    responseUtil,
+    getAdminId
+  ),
   ...require("./personel/delivery.controller")(
     query,
     mutation,
@@ -99,7 +106,9 @@ module.exports = {
     query,
     mutation,
     responseUtil,
-    getAdminId
+    getAdminId,
+    sendCancelationMesssage,
+    format
   ),
   ...require("./general/discount.controller")(
     query,
@@ -210,4 +219,12 @@ module.exports = {
   ),
   // customer
   ...require("./customer/cart.controller")(query, mutation, responseUtil),
+
+  // sell-container
+  ...require("./general/sell.container.controller")(
+    query,
+    mutation,
+    responseUtil,
+    getAdminId
+  ),
 };

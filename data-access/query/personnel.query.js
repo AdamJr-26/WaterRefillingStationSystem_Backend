@@ -75,23 +75,7 @@ module.exports = (Personel) => {
     getPersonelsByAdminId: async ({ adminId, page, limit }) => {
       try {
         const options = { ...(page && limit ? { page, limit } : {}) };
-        // const filter = {
-        //   admin: payload.adminId,
-        // };
-        // const data = await Personel.find(filter)
-        //   .select([
-        //     "firstname",
-        //     "lastname",
-        //     "gender",
-        //     "contact_number",
-        //     "position",
-        //     "role",
-        //     "status",
-        //     "gmail",
-        //     "nickname",
-        //     "display_photo",
-        //   ])
-        //   .exec();
+
         const pipeline = [
           {
             $match: {
@@ -103,7 +87,7 @@ module.exports = (Personel) => {
             $lookup: {
               from: "deliveries",
               localField: "_id",
-              foreignField: "delivery_personnel",
+              foreignField: "delivery_personel",
               pipeline: [
                 {
                   $match: {

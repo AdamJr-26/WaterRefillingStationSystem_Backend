@@ -16,7 +16,9 @@ const {
   ReturnGallonReceipt,
   Products,
   Cart,
-  Expense
+  Expense,
+  Controls,
+  SoldContainer,
 } = require("../../model/index");
 
 const { startOfMonth, endOfMonth, startOfDay, endOfDay } = require("date-fns");
@@ -61,5 +63,11 @@ module.exports = {
   ...require("./station.query")(Admin),
   ...require("./products.query")(Products),
   ...require("./cart.query")(Cart, Customer),
-  ...require("./expenses.query")(Expense, startOfMonth, endOfMonth)
+  ...require("./expenses.query")(Expense, startOfMonth, endOfMonth),
+  ...require("./controls.query")(Controls),
+  ...require("./sell.containers.query")(
+    SoldContainer,
+    startOfMonth,
+    endOfMonth
+  ),
 };

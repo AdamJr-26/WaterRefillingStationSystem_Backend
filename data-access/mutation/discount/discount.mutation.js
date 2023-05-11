@@ -11,5 +11,13 @@ module.exports = (Discount) => {
         return { error };
       }
     },
+    deleteDiscount: async ({ id }) => {
+      try {
+        const data = await Discount.findOneAndDelete({ _id: id }).exec();
+        return data;
+      } catch (error) {
+        throw error;
+      }
+    },
   };
 };

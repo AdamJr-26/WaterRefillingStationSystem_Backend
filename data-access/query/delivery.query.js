@@ -73,6 +73,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
         return { error };
       }
     },
+
     // this the not approved yet delivery
     getPopulatedDeliveries: async (payload) => {
       try {
@@ -241,7 +242,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
                     contact_number: 1,
                     display_photo: 1,
                     fullname: {
-                      $concat: ["$firstname", "$lastname"],
+                      $concat: ["$firstname", " ", "$lastname"],
                     },
                   },
                 },
@@ -361,7 +362,7 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
                     contact_number: 1,
                     display_photo: 1,
                     fullname: {
-                      $concat: ["$firstname", "$lastname"],
+                      $concat: ["$firstname", " ", "$lastname"],
                     },
                   },
                 },
@@ -390,6 +391,200 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
         const data = await Delivery.aggregatePaginate(aggregation, options);
         return { data };
       } catch (error) {
+        return { error };
+      }
+    },
+    getDeliveryProgress: async ({ delivery_id, admin }) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(admin),
+              _id: mongoose.Types.ObjectId(delivery_id),
+            },
+          },
+          {
+            $lookup: {
+              from: "gallons",
+              localField: "dispatched_items.gallon",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                  },
+                },
+              ],
+              as: "dispatched_gallons",
+            },
+          },
+          {
+            $lookup: {
+              from: "purchases",
+              localField: "_id",
+              foreignField: "delivery",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    items: 1,
+                  },
+                },
+                {
+                  $unwind: "$items",
+                },
+                {
+                  $group: {
+                    _id: "$items.gallon",
+                    soldGallon: {
+                      $sum: {
+                        $sum: ["$items.orders", "$items.free"],
+                      },
+                    },
+                  },
+                },
+              ],
+              as: "purchases",
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              purchases: 1,
+              dispatched_date_time: "$approved_date",
+              dispatched_date: {
+                $dateToString: {
+                  format: "%Y-%m-%d",
+                  date: {
+                    $toDate: { $multiply: ["$approved_date", 1000] },
+                  },
+                },
+              },
+              dispatched_items: {
+                $map: {
+                  input: "$dispatched_items",
+                  as: "item",
+                  in: {
+                    $reduce: {
+                      input: {
+                        $map: {
+                          input: "$dispatched_gallons",
+                          as: "dispatched",
+                          in: {
+                            $cond: {
+                              if: {
+                                $eq: ["$$item.gallon", "$$dispatched._id"],
+                              },
+                              then: {
+                                _id: "$$dispatched._id",
+                                name: "$$dispatched.name",
+                                quantity: "$$item.total",
+                              },
+                              else: null,
+                            },
+                          },
+                        },
+                      },
+                      initialValue: [],
+                      in: {
+                        $cond: {
+                          if: { $ne: ["$$this", null] },
+                          then: { $concatArrays: ["$$value", ["$$this"]] },
+                          else: "$$value",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              dispatched_date_time: 1,
+              dispatched_date: 1,
+              purchases: 1,
+              dispatched_items: {
+                $reduce: {
+                  input: "$dispatched_items",
+                  initialValue: [],
+                  in: { $concatArrays: ["$$value", "$$this"] },
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              dispatched_date_time: 1,
+              dispatched_date: 1,
+              purchases: 1,
+              no_purchased_items: "$dispatched_items",
+              dispatched_items: {
+                $map: {
+                  input: "$dispatched_items",
+                  as: "item",
+                  in: {
+                    $reduce: {
+                      input: {
+                        $map: {
+                          input: "$purchases",
+                          as: "purch",
+                          in: {
+                            $cond: {
+                              if: {
+                                $eq: ["$$item._id", "$$purch._id"],
+                              },
+                              then: {
+                                _id: "$$item._id",
+                                name: "$$item.name",
+                                quantity: "$$item.quantity",
+                                soldGallon: "$$purch.soldGallon",
+                              },
+                              else: null,
+                            },
+                          },
+                        },
+                      },
+                      initialValue: [],
+                      in: {
+                        $cond: {
+                          if: { $ne: ["$$this", null] },
+                          then: { $concatArrays: ["$$value", ["$$this"]] },
+                          else: "$$value",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              dispatched_date_time: 1,
+              dispatched_date: 1,
+              purchases: 1,
+              no_purchased_items: 1,
+              dispatched_items: {
+                $reduce: {
+                  input: "$dispatched_items",
+                  initialValue: [],
+                  in: { $concatArrays: ["$$value", "$$this"] },
+                },
+              },
+            },
+          },
+        ];
+
+        const data = await Delivery.aggregate(pipeline);
+        console.log("[delivery.query]", JSON.stringify(data));
+        return { data };
+      } catch (error) {
+        console.log("[derror]", error);
         return { error };
       }
     },

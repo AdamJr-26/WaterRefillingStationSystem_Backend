@@ -15,6 +15,8 @@ module.exports = (
       const debt_payment = body?.total_payment - body.order_to_pay;
       const schedule_id = body?.schedule_id;
       const purchase_items = body.items;
+      const walkIn = body.walkIn;
+      console.log("walkIn", walkIn);
 
       // first get verified delivery' id
 
@@ -26,8 +28,69 @@ module.exports = (
         ["_id"]
       );
       const delivery_id = delivery?.data?._id;
-      // check if deliver is existing
-      if (delivery_id && !delivery.error) {
+      // IF the type of purchase is walk-in.
+      if (walkIn) {
+        const purchase = {
+          admin,
+          personel,
+          schedule_id,
+          walkIn: walkIn,
+          ...body,
+          debt_payment: debt_payment,
+        };
+        console.log("[[purchasepurchasepurchasepurchase]]", purchase);
+        const { data, error } =
+          await transaction.deliverOrderByScheduleTransaction({
+            purchase,
+          });
+        if (data?.success && !error) {
+          console.log("[DATA------------]", JSON.stringify(data));
+          // send receipt, oops paano kung wala schedule?
+          const { data: receiptData, error: receiptError } =
+            await query.getScheduleDetails({
+              admin,
+              schedule_id,
+              items: data?.purchase?.items,
+            });
+          if (receiptData.length && !receiptError) {
+            try {
+              await sendReceipt({
+                receiver: receiptData[0]?.customer[0]?.gmail,
+                subject: "Confirmation of Your Recent Order Delivery",
+                wrs_name: receiptData[0]?.admin[0].wrs_name,
+                personnel_name: `${receiptData[0]?.personnel[0].firstname} ${receiptData[0]?.personnel[0]?.lastname}`,
+                address: `${receiptData[0]?.customer[0].address.street} ${receiptData[0]?.customer[0]?.address.barangay} ${receiptData[0]?.customer[0].address.municipal_city}`,
+                date_of_delivery: format(new Date(), "MMMM d, yyyy"),
+                items: receiptData[0]?.purchasedItems,
+                debt_payment: data?.purchase.debt_payment,
+                total_payment: data?.purchase.total_payment,
+                from: receiptData[0]?.personnel[0].gmail,
+              });
+            } catch (error) {
+              console.log("Send email receipt failed.");
+            }
+          }
+
+          responseUtil.generateServerErrorCode(
+            res,
+            200,
+            "Deliver order successfully",
+            "Deliered successfully",
+            data,
+            "delivery_order"
+          );
+        } else {
+          responseUtil.generateServerErrorCode(
+            res,
+            400,
+            "Deliver order failed",
+            "Please check the payment.",
+            "delivery_order"
+          );
+        }
+        // check if deliver is existing
+        // IF the type of purchase is delivered.
+      } else if (delivery_id && !delivery.error) {
         // checks all items are enough for orders
 
         let totalItemEnough = 0;
@@ -67,7 +130,6 @@ module.exports = (
                 schedule_id,
                 items: data?.purchase?.items,
               });
-            console.log("data-------", JSON.stringify(data));
             if (receiptData.length && !receiptError) {
               await sendReceipt({
                 receiver: receiptData[0]?.customer[0]?.gmail,
@@ -79,7 +141,7 @@ module.exports = (
                 items: receiptData[0]?.purchasedItems,
                 debt_payment: data?.purchase.debt_payment,
                 total_payment: data?.purchase.total_payment,
-                from: receiptData[0]?.personnel[0].gmail
+                from: receiptData[0]?.personnel[0].gmail,
               });
             }
 

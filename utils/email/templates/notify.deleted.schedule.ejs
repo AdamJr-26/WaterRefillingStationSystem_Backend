@@ -1,0 +1,29 @@
+<html lang="en">
+<%- include('./partials/head.partials.ejs') %>
+    <!-- date_of_scheduled, wrs_name -->
+
+    <body>
+        <!-- <div>
+            <h4>Scheduled:</h4>
+            <p style="font-weight:500; margin-left: 0.5rem;">
+                <%= date_of_scheduled %>
+            </p>
+        </div> -->
+        <p>Dear Mr/Ms. <%= lastname %>
+        </p>
+        <p>
+            I apologize for canceling your schedule/order (<%= date_of_scheduled %>). We understand the inconvenience
+                caused and deeply regret the
+                situation. Your satisfaction is important to us, and we are working to prevent such occurrences in the
+                future. Thank you for your understanding.
+        </p>
+        <div>
+            <div style="display:flex; gap:10px;">
+                <p>Sincerely,</p>
+                <p style="font-weight:500; margin-left: 0.5rem;">
+                    <%= wrs_name %>
+                </p>
+            </div>
+    </body>
+
+</html>

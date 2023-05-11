@@ -80,6 +80,12 @@ router.use("/api", require("./api/api.products.routes").router);
 // cart
 router.use("/api", require("./api/api.cart.routes").router);
 
+//controls
+router.use("/api", require("./api/api.controls.routes").router);
+
+// sold container
+router.use("/api", require("./api/api.soldcontainer.routes").router);
+
 module.exports = {
   router,
 };

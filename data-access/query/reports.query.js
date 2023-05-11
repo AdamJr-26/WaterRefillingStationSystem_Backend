@@ -253,6 +253,40 @@ module.exports = (
             },
           },
           {
+            $lookup: {
+              from: "soldcontainers",
+              localField: "_id",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $gte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              startOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                        {
+                          $lte: [
+                            "$date.unix_timestamp",
+                            Math.floor(
+                              endOfMonth(new Date(date)).valueOf() / 1000
+                            ),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "soldContainers",
+            },
+          },
+          {
             $project: {
               purchases: 1,
               expenses: 1,
@@ -274,7 +308,12 @@ module.exports = (
               total_credited_gallons_count: {
                 $sum: "$purchases.credited_gallon",
               },
-              total_sales: { $sum: "$purchases.sales" },
+              total_sales: {
+                $sum: [
+                  { $sum: "$purchases.sales" },
+                  { $sum: "$soldContainers.orderTotal" },
+                ],
+              },
               total_expenses: {
                 $sum: "$expenses.amount",
               },
@@ -290,10 +329,12 @@ module.exports = (
               total_customers_with_credit: {
                 $sum: "$credits.credits_people",
               },
+              total_sold_containers: { $sum: "$soldContainers.orderTotal" },
               paidProducts: {
                 $sum: [
                   { $sum: "$purchases.paid_orders_amount" },
                   { $sum: "$paid_credits.amount_paid" },
+                  { $sum: "$soldContainers.orderTotal" },
                 ],
               },
             },

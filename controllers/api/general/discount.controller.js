@@ -49,6 +49,28 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         );
       }
     },
+    deleteDiscount: async (req, res) => {
+      try {
+        const { id } = req.params;
 
+        const data = await mutation.deleteDiscount({ id });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "delete discount",
+          data,
+          "delete_discount"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "delete_discount"
+        );
+      }
+    },
   };
 };

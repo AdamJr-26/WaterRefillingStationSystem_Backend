@@ -13,11 +13,20 @@ router.get(
   authenticate,
   apiController.getPopulatedDeliveries
 );
+
 router.get(
   "/delivery/by-personel",
   authenticate,
   apiController.getPersonelDelivery
 );
+
+// get the detail fo delivery from dispatched to returned delivery.
+router.get(
+  "/delivery/summary/:delivery_id",
+  authenticate,
+  apiController.getSummaryOfDeliveryFromPurchases
+);
+
 //update
 router.put("/delivery", authenticate, apiController.acceptDelivery);
 
@@ -38,6 +47,7 @@ router.get(
   authenticate,
   apiController.getRecentDeliveries
 );
+
 router.get(
   "/deliveries/ongoing/:limit/:page",
   authenticate,
@@ -49,6 +59,13 @@ router.get(
   authenticate,
   apiController.getFinishedDeliveries
 );
+
+router.get(
+  "/delivery/progress/:delivery_id",
+  authenticate,
+  apiController.getDeliveryProgress
+);
+// getDeliveryProgress
 module.exports = {
   router,
 };

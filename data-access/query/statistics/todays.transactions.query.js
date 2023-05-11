@@ -198,6 +198,58 @@ module.exports = (Admin, startOfDay, endOfDay) => {
             },
           },
           {
+            $lookup: {
+              from: "soldcontainers",
+              localField: "_id",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $gte: [
+                            "$date.unix_timestamp",
+                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
+                          ],
+                        },
+                        {
+                          $lte: [
+                            "$date.unix_timestamp",
+                            Math.floor(endOfDay(today).valueOf() / 1000),
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    date: {
+                      $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$date.utc_date",
+                      },
+                    },
+                    orderTotal: 1,
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$date",
+                    orderTotal: { $sum: "$orderTotal" },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: -1,
+                  },
+                },
+              ],
+              as: "soldContainers",
+            },
+          },
+          {
             $project: {
               todayPurchasePayments: {
                 $sum: {
@@ -289,13 +341,59 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                   },
                 },
               },
+              todaySoldContainers: {
+                $sum: {
+                  $map: {
+                    input: "$soldContainers",
+                    as: "soldContainer",
+                    in: {
+                      $cond: {
+                        if: { $eq: ["$$soldContainer._id", formattedToday] },
+                        then: "$$soldContainer.orderTotal",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
+              },
+              yesterdaySoldContainers: {
+                $sum: {
+                  $map: {
+                    input: "$soldContainers",
+                    as: "soldContainer",
+                    in: {
+                      $cond: {
+                        if: {
+                          $eq: ["$$soldContainer._id", formattedYesterday],
+                        },
+                        then: "$$soldContainer.orderTotal",
+                        else: 0,
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
           // increase/decrease by percentage = total ammount / difference of sales today and yesterday * 100
           {
             $addFields: {
+              totalSalesToday: {
+                $sum: ["$salesToday", "$todaySoldContainers"],
+              },
+              totalSalesYesterday: {
+                $sum: ["$salesYesterday", "$yesterdaySoldContainers"],
+              },
+            },
+          },
+          {
+            $addFields: {
               cashReceiveToday: {
-                $sum: ["$todayPurchasePayments", "$todayCreditsPayments"],
+                $sum: [
+                  "$todayPurchasePayments",
+                  "$todayCreditsPayments",
+                  "$todaySoldContainers",
+                ],
               },
               expensesPercentage: {
                 $toString: {
@@ -355,12 +453,15 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                                 $divide: [
                                   {
                                     $subtract: [
-                                      "$salesToday",
-                                      "$salesYesterday",
+                                      "$totalSalesToday",
+                                      "$totalSalesYesterday",
                                     ],
                                   },
                                   {
-                                    $sum: ["$salesToday", "$salesYesterday"],
+                                    $sum: [
+                                      "$totalSalesToday",
+                                      "$totalSalesYesterday",
+                                    ],
                                   },
                                 ],
                               },

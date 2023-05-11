@@ -17,6 +17,8 @@ const return_gallon_receipt = require("./documents/ReturnGallonReceipt");
 const expense = require("./documents/Expenses");
 const products = require("./documents/Products");
 const cart = require("./documents/Cart");
+const controls = require("./documents/Controls");
+const soldContainer = require("./documents/SoldContainer");
 
 // model
 const Gallon = db.model("Gallon", gallon);
@@ -39,6 +41,8 @@ const ReturnGallonReceipt = db.model(
 const Expense = db.model("Expense", expense);
 const Products = db.model("Product", products);
 const Cart = db.model("Cart", cart);
+const Controls = db.model("Control", controls);
+const SoldContainer = db.model("SoldContainer", soldContainer);
 module.exports = {
   OTP,
   Personel,
@@ -57,4 +61,6 @@ module.exports = {
   Expense,
   Products,
   Cart,
+  Controls,
+  SoldContainer
 };

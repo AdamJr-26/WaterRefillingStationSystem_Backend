@@ -4,14 +4,13 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 
-router.post("/discount/get-free", authenticate, apiController.createDiscount);
+router.post("/sell-container", authenticate, apiController.sellContainer);
 
 router.get(
-  "/discounts/get-free",
+  "/sold-containers/:limit/:page/:date",
   authenticate,
-  apiController.getDiscountsByGetFree
+  apiController.getSoldContainers
 );
-router.delete("/discount/:id", authenticate, apiController.deleteDiscount);
 
 module.exports = {
   router,

@@ -26,7 +26,7 @@ module.exports = (db, Credit, PayCreditReceipt) => {
           session.endSession();
           return { data: null };
         } else {
-          
+          console.log("payload->>>", payload)
           const receipt = new PayCreditReceipt({
             admin: admin,
             customer: credit?.customer,

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 module.exports = (Purchase, startOfMonth, endOfMonth) => {
   return {
     getSummaryOfDeliveryFromPurchases: async ({ delivery_id, admin }) => {
+      
       try {
         const stages = [
           {
@@ -42,7 +43,7 @@ module.exports = (Purchase, startOfMonth, endOfMonth) => {
         ];
 
         const data = await Purchase.aggregate(stages);
-
+        
         return { data };
       } catch (error) {
         return { error };
@@ -181,9 +182,26 @@ module.exports = (Purchase, startOfMonth, endOfMonth) => {
             $unwind: "$items",
           },
           {
+            $addFields: {
+              type: {
+                $cond: {
+                  if: {
+                    $ne: [
+                      { $ifNull: ["$delivery", "__DOES_NOT_EXIST__"] },
+                      "__DOES_NOT_EXIST__",
+                    ],
+                  },
+                  then: "delivered",
+                  else: "walk-in",
+                },
+              },
+            },
+          },
+          {
             $group: {
               _id: "$_id",
               customer: { $first: "$customer" },
+              type: { $first: "$type" },
               date: { $first: "$date" },
               totalOrders: {
                 $sum: {
@@ -228,6 +246,7 @@ module.exports = (Purchase, startOfMonth, endOfMonth) => {
               free: 1,
               price: 1,
               payment: 1,
+              type: 1,
             },
           },
           {

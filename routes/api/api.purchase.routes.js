@@ -4,11 +4,8 @@ const {
   authenticate,
 } = require("../../middlewares/passport.authenticate.middleware");
 
-router.get(
-  "/delivery/summary/:delivery_id",
-  authenticate,
-  apiController.getSummaryOfDeliveryFromPurchases
-);
+
+
 
 router.get(
   "/purchase/history/:limit/:page/:from/:to/:customer",

@@ -59,7 +59,7 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
         credit_id,
         payload,
       });
-
+      
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,

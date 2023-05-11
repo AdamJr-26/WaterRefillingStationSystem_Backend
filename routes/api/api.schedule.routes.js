@@ -40,6 +40,8 @@ router.put(
   authenticate,
   apiController.removeAssignedSchedule
 );
+router.put("/schedule/accept/:id", authenticate, apiController.acceptSchedule);
+router.put("/schedule/reject/:id", authenticate, apiController.rejectSchedule);
 
 router.delete(
   "/schedule/:schedule_id",
@@ -52,5 +54,19 @@ router.get(
   authenticate,
   apiController.getOutdatedSchedules
 );
-
+router.get(
+  "/schedules/approved/:search/:page/:limit",
+  authenticate,
+  apiController.getSchedulesAndSearchApproved
+);
+router.get(
+  "/schedules/pending/:search/:page/:limit",
+  authenticate,
+  apiController.getSchedulesAndSearchPending
+);
+router.get(
+  "/schedules/rejected/:search/:page/:limit",
+  authenticate,
+  apiController.getSchedulesAndSearchRejected
+);
 module.exports = { router };

@@ -198,10 +198,48 @@ const sendReceipt = async ({
     }
   );
 };
+const sendCancelationMesssage = async ({
+  receiver,
+  subject,
+  wrs_name,
+  date_of_scheduled,
+  lastname,
+}) => {
+  ejs.renderFile(
+    __dirname + "/templates/notify.deleted.schedule.ejs",
+    {
+      date_of_scheduled,
+      receiver,
+      wrs_name,
+      lastname,
+    },
+
+    async (err, data) => {
+      if (err) {
+        console.log("[sending cancelation of order.]", err);
+      } else {
+        var emailOptions = {
+          from: "adamcompiomarcaida@gmail.com",
+          to: receiver,
+          subject: subject,
+          html: data,
+        };
+        let emailTransporter = await createTransporter();
+        emailTransporter.sendMail(emailOptions, (err, info) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("Message sent:", info.messageId);
+        });
+      }
+    }
+  );
+};
 module.exports = {
   createTransporter,
   sendEmail,
   sendOTP,
   sendNotifyForDelivery,
   sendReceipt,
+  sendCancelationMesssage,
 };

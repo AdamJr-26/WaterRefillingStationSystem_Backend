@@ -1,8 +1,15 @@
-module.exports = (query, mutation, responseUtil, getAdminId) => {
+module.exports = (
+  query,
+  mutation,
+  responseUtil,
+  getAdminId,
+  sendCancelationMesssage,
+  format
+) => {
   return {
     createSchedule: async (req, res) => {
       const admin = getAdminId(req);
-      const payload = req.body;
+      const { ...payload } = req.body;
       const { schedule: data, error } = await mutation.createSchedule({
         ...payload,
         admin,
@@ -173,7 +180,7 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
-          201,
+          200,
           "success",
           "assigend schedule",
           { message: "Create a new schedule successfully." },
@@ -208,6 +215,151 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
           "Error",
           "Cannot delete schedule",
           "delete_schedule"
+        );
+      }
+    },
+    rejectSchedule: async (req, res) => {
+      const { id } = req.params;
+      const { data, error } = await mutation.rejectSchedule({
+        schedule_id: id,
+      });
+      if (data && !error) {
+        // send email
+        console.log("JSON.stringify(data)", JSON.stringify(data));
+        await sendCancelationMesssage({
+          receiver: data?.customer?.gmail,
+          subject: "Rejected order",
+          lastname: data?.customer?.lastname,
+          wrs_name: data?.admin?.wrs_name,
+          date_of_scheduled: format(
+            new Date(data.schedule.utc_date),
+            "MMM-dd-yyyy"
+          ),
+        });
+        responseUtil.generateServerResponse(
+          res,
+          201,
+          "success",
+          "delete schedule",
+          { message: "Delete a schedule successfully." },
+          "delete_schedule"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Cannot delete schedule",
+          "delete_schedule"
+        );
+      }
+    },
+    acceptSchedule: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const admin = getAdminId(req);
+        const data = await mutation.acceptSchedule({ id, admin });
+
+        // send email to the customer.
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "update schedule",
+          data,
+          "accept_schedule"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "accept_schedule"
+        );
+      }
+    },
+    getSchedulesAndSearchApproved: async (req, res) => {
+      try {
+        const { search, page, limit } = req.params;
+        const admin = getAdminId(req);
+        const data = await query.getSchedulesAndSearchApproved({
+          admin,
+          search,
+          page,
+          limit,
+        });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get schedules",
+          data,
+          "get_schedules"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "get_schedules"
+        );
+      }
+    },
+    getSchedulesAndSearchPending: async (req, res) => {
+      try {
+        const { search, page, limit } = req.params;
+        const admin = getAdminId(req);
+        const data = await query.getSchedulesAndSearchPending({
+          admin,
+          search,
+          page,
+          limit,
+        });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get schedules",
+          data,
+          "get_schedules"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "get_schedules"
+        );
+      }
+    },
+    getSchedulesAndSearchRejected: async (req, res) => {
+      try {
+        const { search, page, limit } = req.params;
+        const admin = getAdminId(req);
+        const data = await query.getSchedulesAndSearchRejected({
+          admin,
+          search,
+          page,
+          limit,
+        });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get schedules",
+          data,
+          "get_schedules_rejected1"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error.name,
+          error.message,
+          "get_schedules_rejected1"
         );
       }
     },

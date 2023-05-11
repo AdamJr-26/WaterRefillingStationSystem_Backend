@@ -6,7 +6,6 @@ const vehicles = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   vehicle_name: { type: String },
   vehicle_id: { type: String },
-  available: { type: Boolean, default: true },
   vehicle_image: { type: String },
   cloudinary: {
     userFolder: { type: String },

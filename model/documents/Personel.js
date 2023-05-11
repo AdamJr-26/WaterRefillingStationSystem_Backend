@@ -19,7 +19,6 @@ const personnel = mongoose.Schema({
   role: { type: String, default: "Personnel" },
   applyId: { type: String },
   apply_date: { type: Date },
-  on_delivery: { type: Boolean, default: false },
   display_photo: {
     type: String,
     default:

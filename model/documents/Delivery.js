@@ -12,7 +12,12 @@ const delivery = new mongoose.Schema({
       total: { type: Number },
     }),
   ],
-
+  dispatched_items: [
+    new mongoose.Schema({
+      gallon: { type: mongoose.Types.ObjectId, ref: "Gallon" },
+      total: { type: Number },
+    }),
+  ],
   date_of_creation: {
     unix_timestamp: {
       type: Number,

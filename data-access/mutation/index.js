@@ -11,6 +11,8 @@ const {
   Customer,
   Products,
   Cart,
+  Controls,
+  SoldContainer,
 } = require("../../model/index");
 const db = require("../../db/conn");
 module.exports = {
@@ -30,4 +32,6 @@ module.exports = {
   ...require("./products/products.mutation")(Products),
   ...require("./cart/cart.mutation")(Cart, Customer),
   ...require("./admin/admin.mutation")(Admin),
+  ...require("./admin/admin.controls.mutation")(Controls),
+  ...require("./sold.containers/sell.containers.mutation")(SoldContainer),
 };

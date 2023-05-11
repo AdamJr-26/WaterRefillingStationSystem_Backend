@@ -82,11 +82,51 @@ module.exports = (Gallon, Vehicle) => {
     },
     getAvailableVehicles: async ({ adminId }) => {
       try {
-        const filter = {
-          admin: adminId,
-          available: true,
-        };
-        const data = await Vehicle.find(filter).exec();
+        const pipeline = [
+          {
+            $match: {
+              admin: mongoose.Types.ObjectId(adminId),
+            },
+          },
+          {
+            $lookup: {
+              from: "deliveries",
+              localField: "_id",
+              foreignField: "vehicle",
+              pipeline: [
+                {
+                  $match: {
+                    returned: false,
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "deliveries",
+            },
+          },
+          {
+            $addFields: {
+              isAvailable: {
+                $cond: {
+                  if: { $gt: [{ $size: "$deliveries" }, 0] },
+                  then: false,
+                  else: true,
+                },
+              },
+            },
+          },
+          {
+            $match: {
+              isAvailable: true,
+            },
+          },
+        ];
+        const data = await Vehicle.aggregate(pipeline);
+
         return { data };
       } catch (error) {
         return { error };
@@ -99,6 +139,37 @@ module.exports = (Gallon, Vehicle) => {
           {
             $match: {
               admin: mongoose.Types.ObjectId(adminId),
+            },
+          },
+          {
+            $lookup: {
+              from: "deliveries",
+              localField: "_id",
+              foreignField: "vehicle",
+              pipeline: [
+                {
+                  $match: {
+                    returned: false,
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "deliveries",
+            },
+          },
+          {
+            $addFields: {
+              isAvailable: {
+                $cond: {
+                  if: { $gt: [{ $size: "$deliveries" }, 0] },
+                  then: false,
+                  else: true,
+                },
+              },
             },
           },
         ];

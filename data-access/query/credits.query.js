@@ -130,6 +130,21 @@ module.exports = (Credit) => {
               as: "customer_info",
             },
           },
+          {
+            $lookup: {
+              from: "gallons",
+              localField: "gallon",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                  },
+                },
+              ],
+              as: "gallonInfo",
+            },
+          },
         ];
 
         const aggregation = Credit.aggregate(pipeline);

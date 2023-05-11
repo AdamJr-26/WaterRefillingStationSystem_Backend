@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+
 module.exports = (query, mutation, responseUtil, getAdminId) => {
   return {
     createDelivery: async (req, res) => {
@@ -13,12 +13,19 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
           total: item?.total,
         };
       });
+      const control = await query.getControls({ admin });
+
       const payload = {
         admin,
         delivery_personel,
         vehicle,
         delivery_items: updatedItems,
+        dispatched_items : items,
       };
+      if (control?.autoAcceptDelivery) {
+        payload["approved"] = true;
+        payload["approved_date"] = Math.floor(new Date().valueOf() / 1000);
+      }
 
       // before everything, first, we need to check if all gallons are still available.
       // const ArrayOfId = [];

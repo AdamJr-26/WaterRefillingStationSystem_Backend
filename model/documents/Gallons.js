@@ -5,8 +5,9 @@ const gallon = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   gallon_image: { type: String },
   name: { type: String },
-  liter: { type: Number },
-  price: { type: Number },
+  liter: { type: Number, required: true },
+  price: { type: Number, required: true },
+  containerPrice: { type: Number, required: true, default: 0 },
   total: { type: Number },
   cloudinary: {
     userFolder: { type: String },

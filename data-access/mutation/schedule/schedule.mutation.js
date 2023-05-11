@@ -3,7 +3,7 @@ module.exports = (db, Schedule, Customer) => {
   return {
     createSchedule: async (payload) => {
       try {
-        const schedule = await new Schedule(payload);
+        const schedule = await new Schedule({ accepted: true, ...payload });
         await schedule.save((error) => {
           if (error) {
             new Error("[create schedule]", error);
@@ -28,8 +28,7 @@ module.exports = (db, Schedule, Customer) => {
         const data = await new Schedule(updatedPayload);
         await data.save();
         // delete in the cart
-        if(data){
-          
+        if (data) {
         }
         return data;
       } catch (error) {
@@ -83,7 +82,7 @@ module.exports = (db, Schedule, Customer) => {
 
         const sched = await Schedule.aggregate(stages);
         console.log("sched", sched);
-        const data = await new Schedule(sched[0]);
+        const data = await new Schedule({ accepted: true, ...sched[0] });
         await data.save();
 
         const deleted_schedule = await Schedule.findOneAndDelete({
@@ -126,15 +125,54 @@ module.exports = (db, Schedule, Customer) => {
       try {
         const data = await Schedule.findOneAndDelete({
           _id: schedule_id,
-        })
-          .select(["_id"])
-          .exec();
+        }).exec();
         if (data?._id) {
           return { data };
         } else {
           throw new Error("No schedule were find.");
         }
       } catch (error) {
+        return { error };
+      }
+    },
+    rejectSchedule: async ({ schedule_id }) => {
+      try {
+        const data = await Schedule.findOneAndUpdate(
+          {
+            _id: schedule_id,
+          },
+          {
+            $set: {
+              isCanceled: true,
+              accepted: false,
+              assigned: false,
+              notified: false,
+            },
+          },
+          { returnOriginal: false }
+        )
+          .populate([
+            {
+              path: "admin",
+              model: "Admin",
+              select: "gmail wrs_name",
+            },
+            {
+              path: "customer",
+              model: "Customer",
+              select: "gmail firstname lastname",
+            },
+          ])
+          .exec();
+        // populate the admin and customer
+
+        if (data?._id) {
+          return { data };
+        } else {
+          throw new Error("No schedule were find.");
+        }
+      } catch (error) {
+        console.log("[ERROR REJECTING SCHEDULE]", error);
         return { error };
       }
     },
@@ -156,6 +194,30 @@ module.exports = (db, Schedule, Customer) => {
         return { data };
       } catch (error) {
         return { error };
+      }
+    },
+    acceptSchedule: async ({ id, admin }) => {
+      try {
+        const data = await Schedule.findOneAndUpdate(
+          {
+            _id: id,
+            admin: admin,
+          },
+          {
+            $set: {
+              accepted: true,
+            },
+          },
+          {
+            returnOriginal: false,
+          }
+        )
+          .select(["_id"])
+          .exec();
+
+        return data;
+      } catch (error) {
+        throw error;
       }
     },
   };

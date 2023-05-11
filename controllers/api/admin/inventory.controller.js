@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
   return {
     addGallon: async (req, res) => {
-      var { name, liter, price, total } = JSON.parse(req.body.data);
+      var { name, liter, price, total, containerPrice } = JSON.parse(
+        req.body.data
+      );
       var gallon_image = req.body?.image; // from static link from frontend
       const files = req.files;
       const user = req.user;
@@ -38,7 +40,15 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
         if (cloudinary?.uploadResults && !cloudinary?.error) {
           gallon_image = cloudinary?.uploadResults[0]?.url;
           const doc = await mutation.addGallon(
-            { gallon_image, name, liter, price, total, cloudinary },
+            {
+              gallon_image,
+              name,
+              liter,
+              price,
+              containerPrice,
+              total,
+              cloudinary,
+            },
             user?._id.toString()
           );
           serverResponse(doc);
@@ -53,7 +63,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
         }
       } else if (gallon_image && !files.length) {
         const doc = await mutation.addGallon(
-          { gallon_image, name, liter, price, total },
+          { gallon_image, name, liter, containerPrice, price, total },
           user?._id.toString()
         );
 
