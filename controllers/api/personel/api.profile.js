@@ -4,6 +4,7 @@ module.exports = (query, mutation, responseUtil, uploadImage, deleteFiles) => {
       
       const userGmail = req.user?.gmail;
       const userId = req.user?._id;
+      console.log("userId",userId)
       const personel = await query.getProfile({ gmail: userGmail, userId });
       if (personel?.data && !personel.error) {
         responseUtil.generateServerResponse(

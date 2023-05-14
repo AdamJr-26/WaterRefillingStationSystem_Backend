@@ -28,7 +28,7 @@ passport.use(
       const foundRole = (r) => roles.find((role) => role === r);
       if (foundRole(r) === "Admin") {
         return Admin;
-      } else if (foundRole(r) === "Personel") {
+      } else if (foundRole(r) === "Personnel") {
         return Personel;
       } else {
          // else custoemr

@@ -145,11 +145,12 @@ module.exports = (
             //   })
             //   .status(200)
             //   .json({ success: true, user: personelData, token: accessToken });
+            console.log("log in success.")
             responseUtil.generateServerResponse(
               res,
               201,
               "Login Admin",
-              "You just logged in.",
+              "Log in successfully",
               {
                 token: `Bearer ${accessToken}`,
                 user: personelData,
