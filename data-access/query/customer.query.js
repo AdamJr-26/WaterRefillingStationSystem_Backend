@@ -43,6 +43,13 @@ module.exports = (Customer) => {
             },
           },
           {
+            $addFields: {
+              fullName: {
+                $concat: ["$firstname", " ", "$lastname"],
+              },
+            },
+          },
+          {
             $limit: 10,
           },
         ];

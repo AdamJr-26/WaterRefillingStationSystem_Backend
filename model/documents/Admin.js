@@ -12,11 +12,11 @@ const admin = new mongoose.Schema({
   password: { type: String },
   verify: { type: Boolean, default: false },
   address: {
-    region: { type: String },
-    province: { type: String },
-    city: { type: String },
-    barangay: { type: String },
-    street_building: { type: String },
+    region: { type: String, lowercase: true },
+    province: { type: String, lowercase: true },
+    city: { type: String, lowercase: true },
+    barangay: { type: String, lowercase: true },
+    street_building: { type: String, lowercase: true },
   },
   geolocation: {
     lat: { type: String },
