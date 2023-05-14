@@ -37,7 +37,7 @@ module.exports = (
       const hashed_password = await encryptPassword(password, 10);
       const location = {
         type: "Point",
-        coordinates: [geolocation.lng, geolocation.lat],
+        coordinates: [geolocation?.lng, geolocation?.lat],
       };
       const mutationResponse = await mutation.registerStation({
         wrs_name,

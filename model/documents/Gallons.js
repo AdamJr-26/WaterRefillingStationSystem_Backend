@@ -7,7 +7,7 @@ const gallon = new mongoose.Schema({
   name: { type: String },
   liter: { type: Number, required: true },
   price: { type: Number, required: true },
-  containerPrice: { type: Number, required: true, default: 0 },
+  containerPrice: { type: Number, default: 0 },
   total: { type: Number },
   cloudinary: {
     userFolder: { type: String },

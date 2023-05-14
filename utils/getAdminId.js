@@ -8,11 +8,11 @@ const getAdminId = (req) => {
     if (role === "Admin") {
       adminId = req.user?._id?.toString();
       return adminId;
-    } else if (role === "Personel") {
+    } else if (role === "Personnel") {
       adminId = req.user?.admin?.toString();
       return adminId
     }else{
-        return false
+        return ""
     }
   }
 };
