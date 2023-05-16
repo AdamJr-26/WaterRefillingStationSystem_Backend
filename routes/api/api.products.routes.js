@@ -7,6 +7,7 @@ const {
 router.post("/product", authenticate, apiController.addProductToShop);
 
 router.get("/products", authenticate, apiController.getProducts);
+router.delete("/product/:id", authenticate, apiController.deleteProducts);
 
 router.get(
   "/products/from-customer/:admin",

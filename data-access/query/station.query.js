@@ -7,7 +7,7 @@ module.exports = (Admin) => {
             $geoNear: {
               near: position,
               distanceField: "dist.calculated",
-              maxDistance: 10000,
+              maxDistance: 5000,
               includeLocs: "dist.location",
               spherical: true,
             },
@@ -17,6 +17,7 @@ module.exports = (Admin) => {
               dist: 1,
               address: 1,
               wrs_name: 1,
+              display_photo:1,
             },
           },
         ];

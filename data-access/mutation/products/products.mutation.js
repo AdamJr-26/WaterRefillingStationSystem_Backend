@@ -9,5 +9,13 @@ module.exports = (Products) => {
         throw error;
       }
     },
+    deleteProducts: async ({ id }) => {
+      try {
+        const data = await Products.findOneAndDelete({ _id: id });
+        return data;
+      } catch (error) {
+        throw error;
+      }
+    },
   };
 };

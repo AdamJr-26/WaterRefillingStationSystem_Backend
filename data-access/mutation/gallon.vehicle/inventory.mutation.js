@@ -78,5 +78,22 @@ module.exports = (Gallon, Vehicle) => {
         return { error };
       }
     },
+    updateContainerPrice: async ({ admin, id, containerPrice }) => {
+      try {
+        const filter = {
+          admin: admin,
+          _id: id,
+        };
+        const update = {
+          $set: { containerPrice: containerPrice },
+        };
+        const data = await Gallon.findOneAndUpdate(filter, update, {
+          returnOriginal: false,
+        });
+        return { data };
+      } catch (error) {
+        return { error };
+      }
+    },
   };
 };

@@ -9,6 +9,8 @@ module.exports = (Admin, startOfDay, endOfDay) => {
         const yesterday = new Date(sub(today, { days: 1 }));
         const formattedToday = format(today, "yyyy-MM-dd");
         const formattedYesterday = format(yesterday, "yyyy-MM-dd");
+        console.log("startOfDay(yesterday)", startOfDay(yesterday));
+        console.log("endOfDay(today)", endOfDay(today));
         const pipeline = [
           {
             $match: {
@@ -34,13 +36,24 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [
+                                  startOfDay(yesterday).valueOf(),
+                                  1000,
+                                ],
+                              },
+                            },
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(endOfDay(today).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [endOfDay(today).valueOf(), 1000],
+                              },
+                            },
                           ],
                         },
                       ],
@@ -61,6 +74,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                     debt_payment: 1,
                   },
                 },
+
                 {
                   $group: {
                     _id: "$date",
@@ -103,13 +117,24 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [
+                                  startOfDay(yesterday).valueOf(),
+                                  1000,
+                                ],
+                              },
+                            },
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(endOfDay(today).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [endOfDay(today).valueOf(), 1000],
+                              },
+                            },
                           ],
                         },
                       ],
@@ -157,13 +182,24 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [
+                                  startOfDay(yesterday).valueOf(),
+                                  1000,
+                                ],
+                              },
+                            },
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(endOfDay(today).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [endOfDay(today).valueOf(), 1000],
+                              },
+                            },
                           ],
                         },
                       ],
@@ -210,13 +246,24 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                         {
                           $gte: [
                             "$date.unix_timestamp",
-                            Math.floor(startOfDay(yesterday).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [
+                                  startOfDay(yesterday).valueOf(),
+                                  1000,
+                                ],
+                              },
+                            },
                           ],
                         },
                         {
                           $lte: [
                             "$date.unix_timestamp",
-                            Math.floor(endOfDay(today).valueOf() / 1000),
+                            {
+                              $floor: {
+                                $divide: [endOfDay(today).valueOf(), 1000],
+                              },
+                            },
                           ],
                         },
                       ],

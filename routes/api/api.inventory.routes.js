@@ -55,7 +55,11 @@ router.put(
   authenticate,
   apiController.updateReduceCountGallon
 );
-
+router.put(
+  "/gallon/container-price/:id/:admin",
+  authenticate,
+  apiController.updateContainerPrice
+);
 // get all gallons that not in products collection.
 router.get(
   "/gallons/not-in-products",

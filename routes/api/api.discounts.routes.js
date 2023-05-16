@@ -12,7 +12,11 @@ router.get(
   apiController.getDiscountsByGetFree
 );
 router.delete("/discount/:id", authenticate, apiController.deleteDiscount);
-
+router.get(
+  "/discounts/get-free/:station",
+  authenticate,
+  apiController.getDiscounts
+);
 module.exports = {
   router,
 };

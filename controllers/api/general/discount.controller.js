@@ -49,6 +49,29 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         );
       }
     },
+    // used in ordering web app.
+    getDiscounts: async (req, res) => {
+      const { station: admin } = req.params;
+      const { data, error } = await query.getDiscountsByGetFree(admin);
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "get free discounts",
+          data,
+          "get_get_free_discounts"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "get free discounts failed, please try again",
+          "get_get_free_discounts"
+        );
+      }
+    },
     deleteDiscount: async (req, res) => {
       try {
         const { id } = req.params;

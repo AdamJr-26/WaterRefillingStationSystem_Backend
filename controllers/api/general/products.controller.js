@@ -77,5 +77,27 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
         );
       }
     },
+    deleteProducts: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const data = await mutation.deleteProducts({ id });
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "Success",
+          "Remove products from shop successfully",
+          data,
+          "delete_products"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          error,
+          "delete_products"
+        );
+      }
+    },
   };
 };

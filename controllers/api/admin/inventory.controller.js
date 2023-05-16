@@ -332,6 +332,35 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
         );
       }
     },
+    updateContainerPrice: async (req, res) => {
+      const { admin, id } = req.params;
+      const { containerPrice } = req.body;
+
+      const updatedGallon = await mutation.updateContainerPrice({
+        admin,
+        id,
+        containerPrice,
+      });
+      if (updatedGallon?.data && !updatedGallon?.error) {
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "updating gallon",
+          { data: updatedGallon?.data },
+          "inventory"
+        );
+      } else {
+        console.log("error from updating gallon", updatedGallon?.error);
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          { error: updatedGallon?.error },
+          "inventory"
+        );
+      }
+    },
     getAllGallonsNotInProducts: async (req, res) => {
       try {
         //

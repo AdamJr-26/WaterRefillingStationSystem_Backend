@@ -33,5 +33,5 @@ module.exports = {
   ...require("./cart/cart.mutation")(Cart, Customer),
   ...require("./admin/admin.mutation")(Admin),
   ...require("./admin/admin.controls.mutation")(Controls),
-  ...require("./sold.containers/sell.containers.mutation")(SoldContainer),
+  ...require("./sold.containers/sell.containers.mutation")(SoldContainer, Gallon),
 };
