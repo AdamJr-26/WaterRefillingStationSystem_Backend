@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
+module.exports = (ReturnGallonReceipt, startOfDay, endOfDay) => {
   return {
     getReturnsHistory: async ({ admin, customer, from, to, page, limit }) => {
       try {
@@ -17,13 +17,24 @@ module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
                       {
                         $gte: [
                           "$date.unix_timestamp",
-                          Math.floor(new Date(from).valueOf() / 1000),
+                          {
+                            $floor: {
+                              $divide: [
+                                startOfDay(new Date(from)).valueOf(),
+                                1000,
+                              ],
+                            },
+                          },
                         ],
-                      },
+                      }, 
                       {
                         $lte: [
                           "$date.unix_timestamp",
-                          Math.floor(new Date(to).valueOf() / 1000),
+                          {
+                            $floor: {
+                              $divide: [endOfDay(new Date(to)).valueOf(), 1000],
+                            },
+                          },
                         ],
                       },
                     ],
@@ -37,12 +48,9 @@ module.exports = (ReturnGallonReceipt, startOfMonth, endOfMonth) => {
                   total_returned: { $gt: 0 },
                 },
               };
-
         const pipeline = [
           match,
-          {
-            $sort: { "date.unix_timestamp": 1 },
-          },
+        
           {
             $lookup: {
               from: "gallons",

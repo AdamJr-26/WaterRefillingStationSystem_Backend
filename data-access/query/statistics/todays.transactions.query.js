@@ -45,7 +45,7 @@ module.exports = (Admin, startOfDay, endOfDay) => {
                               },
                             },
                           ],
-                        },
+                        }, 
                         {
                           $lte: [
                             "$date.unix_timestamp",

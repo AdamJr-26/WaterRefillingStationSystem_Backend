@@ -7,10 +7,12 @@ module.exports = (
   Purchase,
   Gallon,
   Schedule,
-  PayCreditReceipt
+  PayCreditReceipt,
+  ReturnGallonReceipt
 ) => {
   return {
     deliverOrderByScheduleTransaction: async ({ purchase }) => {
+      console.log("purchase=>>>>>>>>>>", purchase);
       // includes transaction, session
       const session = await db.startSession();
       try {
@@ -96,7 +98,25 @@ module.exports = (
         ) {
           throw new Error("Cannot accept payment");
         }
-
+        // return gallon bulkwrite options
+        const bulkWriteOpsForReturnGallons = items?.map((item) => {
+          return {
+            updateOne: {
+              filter: {
+                _id: mongoose.Types.ObjectId(),
+                admin: admin,
+                customer: customer,
+                gallon: item.gallon,
+              },
+              update: {
+                $set: {
+                  total_returned: item.return,
+                },
+              },
+              upsert: true,
+            },
+          };
+        });
         const bulksOpsForBorrow = items?.map((item) => {
           return {
             updateOne: {
@@ -205,6 +225,7 @@ module.exports = (
         await Borrow.bulkWrite(bulksOpsForReturn);
         // await Gallon.bulkWrite(bulksOpsForGallonBorrow);
         // await Gallon.bulkWrite(bulksOpsForGallonReturn);
+        await ReturnGallonReceipt.bulkWrite(bulkWriteOpsForReturnGallons);
         await Credit.bulkWrite(bulksOpsForCredit);
         // DAHIL walk-in dapat wala mababawas sa delivery if meron man.
         if (!walkIn) {

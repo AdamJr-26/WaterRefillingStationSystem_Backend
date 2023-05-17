@@ -34,7 +34,8 @@ module.exports = {
     Purchase,
     Gallon,
     Schedule,
-    PayCreditReceipt
+    PayCreditReceipt,
+    ReturnGallonReceipt
   ),
   ...require("./delivery.transaction")(db, Delivery, Gallon, Vehicle, Personel),
   ...require("./pay.credits.transaction")(db, Credit, PayCreditReceipt),

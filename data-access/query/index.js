@@ -58,7 +58,7 @@ module.exports = {
     startOfDay,
     endOfDay
   ),
-  ...require("./returns.query")(ReturnGallonReceipt, startOfMonth, endOfMonth),
+  ...require("./returns.query")(ReturnGallonReceipt, startOfDay, endOfDay),
   ...require("./delivery.details.lookup")(Schedule),
   ...require("./station.query")(Admin),
   ...require("./products.query")(Products),
