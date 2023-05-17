@@ -282,10 +282,20 @@ module.exports = (
                     },
                   },
                 },
+                {
+                  $group: {
+                    _id: { $dayOfMonth: "$date.utc_date" },
+                    orderTotal: {
+                      $sum: "$orderTotal",
+                    },
+                  },
+                },
               ],
               as: "soldContainers",
             },
           },
+
+          // add the soldContainers to purchases. - sales - cash received.
           {
             $project: {
               purchases: 1,
@@ -293,6 +303,7 @@ module.exports = (
               paid_credits: 1,
               sales: 1,
               credits: 1,
+              soldContainers: 1,
               total_purchased_product: {
                 $sum: "$purchases.purchases",
               },
@@ -341,7 +352,7 @@ module.exports = (
           },
         ];
         const data = await Admin.aggregate(pipeline);
-        console.log(data[0].total_sales);
+        console.log("data[0].total_sales=>>>>>>>>>>>>>>", JSON.stringify(data));
         return { data };
       } catch (error) {
         console.log("errrrrrrrrrr", error);
