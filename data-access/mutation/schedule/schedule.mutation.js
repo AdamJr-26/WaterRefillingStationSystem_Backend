@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-module.exports = (db, Schedule, Customer) => {
+module.exports = (db, Schedule, Customer, Delivery) => {
   return {
     createSchedule: async (payload) => {
       try {
@@ -101,7 +101,7 @@ module.exports = (db, Schedule, Customer) => {
         return { error };
       }
     },
-    removeAssignedSchedule: async ({ schedule_id }) => {
+    removeAssignedSchedule: async ({ schedule_id, personnelId }) => {
       try {
         const filter = {
           _id: schedule_id,
@@ -110,6 +110,17 @@ module.exports = (db, Schedule, Customer) => {
           assigned: false,
           $unset: { assigned_to: "" },
         };
+        // do not remove assigned schedule if there's an active delivery.
+        const isHasDelivery = await Delivery.findOne({
+          delivery_personel: personnelId,
+          returned: false,
+        })
+          .select("[_id]")
+          .exec();
+        console.log("isHasDelivery", isHasDelivery);
+        if (isHasDelivery) {
+          throw "Cannot edit routes while delivering.";
+        }
         const data = await Schedule.findOneAndUpdate(filter, update, {
           returnOriginal: false,
         })
@@ -117,7 +128,6 @@ module.exports = (db, Schedule, Customer) => {
           .exec();
         return { data };
       } catch (error) {
-        console.log("errorerror", error);
         return { error };
       }
     },

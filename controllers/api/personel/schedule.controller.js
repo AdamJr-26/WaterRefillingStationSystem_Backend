@@ -2,10 +2,11 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
   return {
     removeAssignedSchedule: async (req, res) => {
       const { schedule_id } = req.params;
+      const personnelId = req.user._id;
       const { data, error } = await mutation.removeAssignedSchedule({
         schedule_id,
+        personnelId,
       });
-      console.log('schedule_id',JSON.stringify(schedule_id))
       if (data && !error) {
         responseUtil.generateServerResponse(
           res,
@@ -16,11 +17,12 @@ module.exports = (query, mutation, getAdminId, responseUtil) => {
           "remove_assigned_schedule"
         );
       } else {
+        console.log("error",error)
         responseUtil.generateServerErrorCode(
           res,
           400,
-          "Error",
-          "Oops something went wrong, please try again",
+          error,
+          error.message,
           "remove_assigned_schedule"
         );
       }

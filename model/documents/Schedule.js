@@ -21,6 +21,7 @@ const schedule = new mongoose.Schema({
   notified: { type: Boolean, default: false },
   accepted: { type: Boolean, default: false },
   isCanceled: { type: Boolean, default: false },
+  isToCredit: { type: Boolean, default: false },
 }).set("timestamps", true);
 
 schedule.plugin(mongoosePaginate);

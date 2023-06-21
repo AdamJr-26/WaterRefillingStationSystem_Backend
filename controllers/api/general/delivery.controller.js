@@ -80,5 +80,57 @@ module.exports = (query, mutation, transaction, getAdminId, responseUtil) => {
         );
       }
     },
+    recommendedLoad: async (req, res) => {
+      try {
+        // const data = await
+        const admin = getAdminId(req);
+        const personnel = req.user._id;
+        const { vehicle } = req.params;
+        const data = await query.recommendedLoad({ vehicle, admin, personnel });
+        console.log("data->>>>>>>>>>", JSON.stringify(data));
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "Recommended deliery load.",
+          data,
+          "delivery_load"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error,
+          error.message,
+          "delivery_load"
+        );
+      }
+    },
+    deliveryRoutesDetails: async (req, res) => {
+      try {
+        // const data = await
+        const admin = getAdminId(req);
+
+        const { delivery } = req.params;
+        const data = await query.deliveryRoutesDetails({ delivery });
+        console.log("data->>>>>>>>>>", JSON.stringify(data));
+        responseUtil.generateServerResponse(
+          res,
+          200,
+          "success",
+          "Delivery routes",
+          data,
+          "delivery_routes"
+        );
+      } catch (error) {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          error,
+          error.message,
+          "delivery_routes"
+        );
+      }
+    },
   };
 };

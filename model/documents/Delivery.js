@@ -18,6 +18,11 @@ const delivery = new mongoose.Schema({
       total: { type: Number },
     }),
   ],
+  selectedRoutes: [
+    new mongoose.Schema({
+      schedule: { type: mongoose.Types.ObjectId, ref: "Schedule" },
+    }),
+  ],
   date_of_creation: {
     unix_timestamp: {
       type: Number,

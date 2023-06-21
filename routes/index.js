@@ -86,6 +86,9 @@ router.use("/api", require("./api/api.controls.routes").router);
 // sold container
 router.use("/api", require("./api/api.soldcontainer.routes").router);
 
+// credit limit
+router.use("/api", require("./api/api.credit.limit.routes").router);
+
 module.exports = {
   router,
 };

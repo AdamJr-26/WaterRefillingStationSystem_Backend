@@ -19,7 +19,7 @@ const products = require("./documents/Products");
 const cart = require("./documents/Cart");
 const controls = require("./documents/Controls");
 const soldContainer = require("./documents/SoldContainer");
-
+const creditLimit = require("./documents/CreditLimit");
 // model
 const Gallon = db.model("Gallon", gallon);
 const Vehicle = db.model("Vehicle", vehicle);
@@ -43,6 +43,7 @@ const Products = db.model("Product", products);
 const Cart = db.model("Cart", cart);
 const Controls = db.model("Control", controls);
 const SoldContainer = db.model("SoldContainer", soldContainer);
+const CreditLimit = db.model("creditLimit", creditLimit);
 module.exports = {
   OTP,
   Personel,
@@ -62,5 +63,6 @@ module.exports = {
   Products,
   Cart,
   Controls,
-  SoldContainer
+  SoldContainer,
+  CreditLimit,
 };

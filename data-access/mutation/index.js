@@ -13,6 +13,7 @@ const {
   Cart,
   Controls,
   SoldContainer,
+  CreditLimit,
 } = require("../../model/index");
 const db = require("../../db/conn");
 module.exports = {
@@ -25,7 +26,7 @@ module.exports = {
   ...require("./otp/admin.create.applyid.mutation")(OTP),
   ...require("./personel/update.personel.info.mutation")(Personel, Admin, db),
   ...require("./delivery/delivery.mutation")(Delivery, Gallon, db),
-  ...require("./schedule/schedule.mutation")(db, Schedule, Customer),
+  ...require("./schedule/schedule.mutation")(db, Schedule, Customer, Delivery),
   ...require("./discount/discount.mutation")(Discount),
   ...require("./expenses/expenses.mutation")(Expense),
   ...require("./customer/customer.mutation")(Customer),
@@ -33,5 +34,9 @@ module.exports = {
   ...require("./cart/cart.mutation")(Cart, Customer),
   ...require("./admin/admin.mutation")(Admin),
   ...require("./admin/admin.controls.mutation")(Controls),
-  ...require("./sold.containers/sell.containers.mutation")(SoldContainer, Gallon),
+  ...require("./sold.containers/sell.containers.mutation")(
+    SoldContainer,
+    Gallon
+  ),
+  ...require("./credit.limit/credit.limit")(CreditLimit),
 };

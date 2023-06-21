@@ -84,8 +84,9 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
     addVehicle: async (req, res) => {
       var vehicle_image = req.body?.image; // from static link from frontend
       const files = req.files;
-      var { vehicle_name, vehicle_id } = JSON.parse(req.body.data);
+      var { vehicle_name, vehicle_id, loadLimit } = JSON.parse(req.body.data);
       const user = req.user;
+
       const serverResponse = (doc) => {
         if (doc.data && !doc.error) {
           responseUtil.generateServerResponse(
@@ -117,8 +118,9 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
         if (cloudinary?.uploadResults && !cloudinary?.error) {
           const vehicle_image = cloudinary?.uploadResults[0]?.url;
           const doc = await mutation.addVehicle(
-            { vehicle_image, vehicle_name, vehicle_id, cloudinary },
-            user?._id
+            { vehicle_image, vehicle_name, vehicle_id, cloudinary,loadLimit },
+            user?._id,
+            
           );
           serverResponse(doc);
         } else {
@@ -132,8 +134,9 @@ module.exports = (query, mutation, responseUtil, uploadImage, getAdminId) => {
         }
       } else if (vehicle_image && !files.length) {
         const doc = await mutation.addVehicle(
-          { vehicle_image, vehicle_name, vehicle_id },
-          user?._id
+          { vehicle_image, vehicle_name, vehicle_id, loadLimit },
+          user?._id,
+          
         );
         serverResponse(doc);
       } else {

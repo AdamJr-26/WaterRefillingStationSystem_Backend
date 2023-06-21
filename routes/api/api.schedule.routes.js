@@ -33,6 +33,12 @@ router.get(
   apiController.getAssignedScheduleByPersonel
 );
 
+router.get(
+  "/schedules/assigned-delivery",
+  authenticate,
+  apiController.getSchedulesAssignedToDelivery
+);
+
 router.post("/re-schedule", authenticate, apiController.reSchedule);
 
 router.put(

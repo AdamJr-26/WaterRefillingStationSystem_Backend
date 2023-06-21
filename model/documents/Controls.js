@@ -6,6 +6,7 @@ const controls = new mongoose.Schema({
   admin: { type: mongoose.Types.ObjectId, ref: "Admin" },
   autoAcceptDelivery: { type: Boolean, default: false },
   autoAcceptSchedules: { type: Boolean, default: false },
+  creditLimit: { type: Number, default: 0 },
 });
 
 controls.plugin(mongoosePaginate);

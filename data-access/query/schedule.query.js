@@ -16,6 +16,161 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
         return { error };
       }
     },
+    getSchedulesAssignedToDelivery: async (payload) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              assigned: true,
+              isCanceled: false,
+              assigned_to: payload.personel_id,
+            },
+          },
+          {
+            $addFields: {
+              personnelId: mongoose.Types.ObjectId(payload.personel_id),
+            },
+          },
+          {
+            $lookup: {
+              from: "deliveries",
+              localField: "personnelId",
+              foreignField: "delivery_personel",
+              pipeline: [
+                {
+                  $match: {
+                    returned: false,
+                  },
+                },
+                {
+                  $project: {   
+                    _id: 1,
+                    selectedRoutes: 1,
+                  },
+                },
+              ],
+              as: "assignedToDelivery",
+            },
+          },
+          {
+            $unwind: "$assignedToDelivery",
+          },
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $in: [
+                      "$_id",
+                      "$assignedToDelivery.selectedRoutes.schedule",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "customer",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    firstname: 1,
+                    lastname: 1,
+                    address: 1,
+                    mobile_number: 1,
+                    display_photo: 1,
+                    fullName: {
+                      $concat: ["$firstname", " ", "$lastname"],
+                    },
+                    fullAddress: {
+                      $concat: [
+                        "$address.street",
+                        " ",
+                        "$address.barangay",
+                        " ",
+                        "$address.municipal_city",
+                        " ",
+                        "$address.province",
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "customer",
+            },
+          },
+          {
+            $unwind: "$customer",
+          },
+          {
+            $lookup: {
+              from: "gallons",
+              localField: "items.gallon",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $addFields: {
+                    gallon: {
+                      name: "$name",
+                      gallon_image: "$gallon_image",
+                      liter: "$liter",
+                      _id: "$_id",
+                      price: "$price",
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    gallon: 1,
+                  },
+                },
+              ],
+              as: "gallons",
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              customer: 1,
+              schedule: 1,
+              notified: 1,
+              accepted: 1,
+              assigned: 1,
+              items: {
+                $map: {
+                  input: "$items",
+                  as: "item",
+                  in: {
+                    $mergeObjects: [
+                      "$$item",
+                      {
+                        $arrayElemAt: [
+                          "$gallons",
+                          {
+                            $indexOfArray: ["$gallons._id", "$$item.gallon"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        ];
+        const data = await Schedule.aggregate(pipeline);
+
+        console.log("sample=>>>>>>>>>>>", JSON.stringify(data));
+
+        return { data };
+      } catch (error) {
+        console.log("errror", error);
+        return { error };
+      }
+    },
     getAssignedScheduleByPersonel: async (payload) => {
       try {
         const filter = {
@@ -39,7 +194,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
           .exec();
         return { data };
       } catch (error) {
-        return { error };
+        throw { error };
       }
     },
     getSchedulesByDate: async ({ date, admin, place }) => {
@@ -421,6 +576,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
                   },
                 },
               },
+              isToCredit: "$isToCredit",
               date: "$schedule",
               customer: "$customer",
             },
@@ -446,7 +602,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
             $match: {
               admin: mongoose.Types.ObjectId(admin),
               // add match for approved
-              accepted: false, 
+              accepted: false,
               isCanceled: true,
             },
           },
@@ -567,7 +723,7 @@ module.exports = (Schedule, endOfDay, startOfDay) => {
         const data = await Schedule.aggregatePaginate(aggregation, options);
         return data;
       } catch (error) {
-        console.log("errorerrorerror",error)
+        console.log("errorerrorerror", error);
         throw error;
       }
     },

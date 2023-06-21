@@ -105,7 +105,6 @@ module.exports = (
             totalItemEnough = totalItemEnough + 1;
           }
         }
-
         if (totalItemEnough === purchase_items.length) {
           // create purchase and all
           const purchase = {

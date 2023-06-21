@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
+module.exports = (Delivery, Purchase, Personel, endOfDay, startOfDay) => {
   return {
     getPersonelDelivery: async (payload, selected) => {
       try {
@@ -586,6 +586,316 @@ module.exports = (Delivery, Purchase, endOfDay, startOfDay) => {
       } catch (error) {
         console.log("[derror]", error);
         return { error };
+      }
+    },
+    recommendedLoad: async ({ vehicle, admin, personnel }) => {
+      try {
+        // get all assigned schedules from personnel.
+        // get limit of vehicle
+        // fetch all by admin.
+        // get all items of orders from assigned schedule from personnel.
+        const pipeline = [
+          // get the
+          {
+            $match: {
+              _id: mongoose.Types.ObjectId(personnel),
+            },
+          },
+          {
+            $project: {
+              personnelId: "$_id",
+              adminId: "$admin",
+            },
+          },
+          {
+            $addFields: {
+              vehicleId: mongoose.Types.ObjectId(vehicle),
+            },
+          },
+          // get the vehicle.
+          {
+            $lookup: {
+              from: "vehicles",
+              let: { vehicleId: "$vehicleId" },
+              localField: "adminId",
+              foreignField: "admin",
+              pipeline: [
+                {
+                  $match: {
+                    _id: mongoose.Types.ObjectId(vehicle),
+                  },
+                },
+                {
+                  $match: {
+                    loadLimit: { $exists: true },
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    vehicle_name: 1,
+                    loadLimit: 1,
+                  },
+                },
+              ],
+              as: "vehicle",
+            },
+          },
+          { $unwind: "$vehicle" },
+          // get all assigned schedules to the customer.
+          {
+            $lookup: {
+              from: "schedules",
+              localField: "personnelId",
+              foreignField: "assigned_to",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "gallons",
+                    let: { total: "$total" },
+                    localField: "items.gallon",
+                    foreignField: "_id",
+                    pipeline: [
+                      {
+                        $project: {
+                          _id: 1,
+                          name: 1,
+                          totalGallon: "$$total",
+                          liter: 1,
+                          gallon_image: 1,
+                          admin: 1,
+                          price: 1,
+                          container_price: 1,
+                        },
+                      },
+                    ],
+                    as: "gallons",
+                  },
+                },
+                {
+                  $project: {
+                    items: {
+                      $map: {
+                        input: "$items",
+                        as: "item",
+                        in: {
+                          $mergeObjects: [
+                            "$$item",
+                            {
+                              $arrayElemAt: [
+                                "$gallons",
+                                {
+                                  $indexOfArray: [
+                                    "$gallons._id",
+                                    "$$item.gallon",
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    totalLitersPerSchedules: {
+                      $sum: "$items.liter",
+                    },
+                  },
+                },
+              ],
+              as: "assignedSchedules",
+            },
+          },
+          {
+            $addFields: {
+              totalLitersFromSchedules: {
+                $sum: "$assignedSchedules.totalLitersPerSchedules",
+              },
+            },
+          },
+          {
+            $addFields: {
+              validCapacity: {
+                $cond: {
+                  if: {
+                    $gte: ["$vehicle.loadLimit", "$totalLitersFromSchedules"],
+                  },
+                  then: true,
+                  else: false,
+                },
+              },
+            },
+          },
+          { $unwind: "$assignedSchedules" },
+          { $unwind: "$assignedSchedules.items" },
+          {
+            $group: {
+              _id: "$assignedSchedules.items.admin",
+              validCapacity: { $first: "$validCapacity" },
+              vehicleLoadLimit: { $first: "$vehicle.loadLimit" },
+              totalLoadOnAssignedSchedules: {
+                $first: "$totalLitersFromSchedules",
+              },
+              totalExceed: {
+                $sum: {
+                  $subtract: [
+                    "$totalLitersFromSchedules",
+                    "$vehicle.loadLimit",
+                  ],
+                },
+              },
+              orderedGallons: {
+                $push: "$assignedSchedules.items",
+              },
+            },
+          },
+        ];
+
+        const data = await Personel.aggregate(pipeline);
+        return data;
+      } catch (error) {
+        console.log("errror", error);
+        throw error;
+      }
+    },
+    deliveryRoutesDetails: async ({ delivery }) => {
+      try {
+        const pipeline = [
+          {
+            $match: {
+              _id: mongoose.Types.ObjectId(delivery),
+            },
+          },
+          {
+            $lookup: {
+              from: "personels",
+              localField: "delivery_personel",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    fullName: {
+                      $concat: ["$firstname", " ", "$lastname"],
+                    },
+                  },
+                },
+              ],
+              as: "personnels",
+            },
+          },
+          { $unwind: "$personnels" },
+          {
+            $lookup: {
+              from: "schedules",
+              localField: "selectedRoutes.schedule",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "gallons",
+                    let: { total: "$total" },
+                    localField: "items.gallon",
+                    foreignField: "_id",
+                    pipeline: [
+                      {
+                        $project: {
+                          name: 1,
+                          admin: 1,
+                          _id: 1,
+                        },
+                      },
+                    ],
+                    as: "gallons",
+                  },
+                },
+                {
+                  $project: {
+                    customer: 1,
+                    items: {
+                      $map: {
+                        input: "$items",
+                        as: "item",
+                        in: {
+                          $mergeObjects: [
+                            "$$item",
+                            {
+                              $arrayElemAt: [
+                                "$gallons",
+                                {
+                                  $indexOfArray: [
+                                    "$gallons._id",
+                                    "$$item.gallon",
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "customers",
+                    localField: "customer",
+                    foreignField: "_id",
+                    pipeline: [
+                      {
+                        $addFields: {
+                          fullName: {
+                            $concat: ["$firstname", " ", "$lastname"],
+                          },
+                          fullAddress: {
+                            $concat: [
+                              "$address.street",
+                              " ",
+                              "$address.barangay",
+                              " ",
+                              "$address.municipal_city",
+                              " ",
+                              "$address.province",
+                            ],
+                          },
+                        },
+                      },
+                      {
+                        $project: {
+                          fullName: 1,
+                          fullAddress: 1,
+                        },
+                      },
+                    ],
+                    as: "customer",
+                  },
+                },
+                {
+                  $unwind: "$customer",
+                },
+                {
+                  $addFields: {
+                    scheduleOrdered: { $sum: "$items.total" },
+                  },
+                },
+              ],
+              as: "assignedSchedules",
+            },
+          },
+          {
+            $project: {
+              assignedSchedules: 1,
+            },
+          },
+        ];
+        const data = await Delivery.aggregate(pipeline);
+        return data;
+      } catch (error) {
+        console.log("error", error);
+        throw error;
       }
     },
   };

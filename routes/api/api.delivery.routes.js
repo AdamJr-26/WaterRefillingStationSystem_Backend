@@ -65,6 +65,18 @@ router.get(
   authenticate,
   apiController.getDeliveryProgress
 );
+
+// AUTO LOAD GALLON ON DELIVERY/VEHICLE
+router.get(
+  "/delivery/recommened-load/:vehicle",
+  authenticate,
+  apiController.recommendedLoad
+);
+router.get(
+  "/delivery/show-routes/:delivery",
+  authenticate,
+  apiController.deliveryRoutesDetails
+);
 // getDeliveryProgress
 module.exports = {
   router,

@@ -1,4 +1,3 @@
-
 module.exports = (query, mutation, responseUtil, getAdminId) => {
   return {
     createDelivery: async (req, res) => {
@@ -6,6 +5,7 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
       const admin = getAdminId(req);
       const delivery_personel = req.user?._id;
       const vehicle = body?.vehicle_id;
+      const selectedRoutes = body?.selectedRoutes;
       const items = body?.items;
       const updatedItems = items.map((item) => {
         return {
@@ -20,7 +20,8 @@ module.exports = (query, mutation, responseUtil, getAdminId) => {
         delivery_personel,
         vehicle,
         delivery_items: updatedItems,
-        dispatched_items : items,
+        dispatched_items: items,
+        selectedRoutes: selectedRoutes,
       };
       if (control?.autoAcceptDelivery) {
         payload["approved"] = true;

@@ -7,6 +7,7 @@ const vehicles = new mongoose.Schema({
   vehicle_name: { type: String },
   vehicle_id: { type: String },
   vehicle_image: { type: String },
+  loadLimit: { type: Number},
   cloudinary: {
     userFolder: { type: String },
     publicId: { type: String },

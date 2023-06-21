@@ -41,6 +41,7 @@ module.exports = (
           customer,
           ...req.body,
         };
+        console.log("payload=>>>>>>>>>>>", payload);
         const data = await mutation.createScheduleByCustomer({ payload });
         responseUtil.generateServerResponse(
           res,
@@ -141,6 +142,33 @@ module.exports = (
           "Error",
           "Oops something went wrong, please try again",
           "assign_schedule"
+        );
+      }
+    },
+    getSchedulesAssignedToDelivery: async (req, res) => {
+      const personel_id = req.user?._id;
+      const payload = {
+        personel_id,
+      };
+      const { data, error } = await query.getSchedulesAssignedToDelivery(
+        payload
+      );
+      if (data && !error) {
+        responseUtil.generateServerResponse(
+          res,
+          201,
+          "success",
+          "assigend schedule",
+          data,
+          "get_assigend_schedule"
+        );
+      } else {
+        responseUtil.generateServerErrorCode(
+          res,
+          400,
+          "Error",
+          "Oops something went wrong, please try again",
+          "get_assigend_schedule"
         );
       }
     },

@@ -227,4 +227,10 @@ module.exports = {
     responseUtil,
     getAdminId
   ),
+  ...require("./general/credit.limit.controller")(
+    query,
+    mutation,
+    responseUtil,
+    getAdminId
+  ),
 };

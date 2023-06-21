@@ -19,6 +19,7 @@ const {
   Expense,
   Controls,
   SoldContainer,
+  CreditLimit,
 } = require("../../model/index");
 
 const { startOfMonth, endOfMonth, startOfDay, endOfDay } = require("date-fns");
@@ -29,7 +30,13 @@ module.exports = {
   ...require("./otp.query")(OTP),
   ...require("./personnel.query")(Personel),
   ...require("./address.query")(Address),
-  ...require("./delivery.query")(Delivery, Purchase, endOfDay, startOfDay),
+  ...require("./delivery.query")(
+    Delivery,
+    Purchase,
+    Personel,
+    endOfDay,
+    startOfDay
+  ),
   ...require("./customer.query")(Customer),
   ...require("./schedule.query")(Schedule, endOfDay, startOfDay),
   ...require("./discount.query")(Discount),
@@ -70,4 +77,5 @@ module.exports = {
     startOfMonth,
     endOfMonth
   ),
+  ...require("./credit.limit.query")(CreditLimit),
 };

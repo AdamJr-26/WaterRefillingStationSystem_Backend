@@ -27,6 +27,7 @@ module.exports = (Gallon, Vehicle) => {
         return { error };
       }
     },
+    
     updateGallonPrice: async ({ admin, id, price }) => {
       try {
         const filter = {
