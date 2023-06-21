@@ -19,8 +19,8 @@ const admin = new mongoose.Schema({
     street_building: { type: String, lowercase: true },
   },
   geolocation: {
-    lat: { type: String , required: true},
-    lng: { type: String , required: true},
+    lat: { type: String },
+    lng: { type: String },
   },
   location: {
     type: {
